@@ -4,7 +4,6 @@ import Breadcrumb from "@/pages/components/Breadcrumb";
 import OurClients from "./components/OurClients"
 import excelr_intro from "../../public/excelr_intro.png"
 import Image from "next/image"
-import corporate_usp from "../../public/corporate_usp_v1.webp"
 
 
 export default function CorporateTraining(){
