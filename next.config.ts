@@ -1,7 +1,20 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  images: {
+      domains: [
+      "demo.excelr.com",   // for demo site images
+      "www.excelr.com",    // for production site images
+      "excelr.com",        // backup
+      "excelrcom.b-cdn.net" // CDN backup if used
+    ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'excelrcom.b-cdn.net',
+        pathname: '/assets/**',
+      },
+    ],
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;

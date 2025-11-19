@@ -1,0 +1,410 @@
+@import "tailwindcss";
+
+
+/* Define CSS variables for fonts */
+:root {
+  --font-inter: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  --font-open-sans: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  --font-jetbrains-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace;
+}
+
+/* Global body styles */
+body {
+  background: #ffffff;
+  color: #171717;
+  font-family: var(--font-open-sans), sans-serif; /* default body font */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Use Inter for headings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-inter);
+}
+
+code, pre {
+  font-family: var(--font-jetbrains-mono), monospace;
+}
+.shadow{
+  box-shadow:0px 4px 20px 2px rgb(16 30 87 / 7%)
+}
+.recourse li a::after {
+      content: "|";
+    font-weight: 600;
+    color: #000;
+    margin: 3px;
+    vertical-align: middle;
+}
+.recourse li:last-child a::after {
+  display: none;
+}
+.bgouglobal:before{
+      position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 465px;
+    content: '';
+    background-color: #F4F7FF;
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 38%, 0% 100%);
+    clip-path: polygon(0 0, 100% 0, 100% 38%, 0% 100%);
+}
+.b-progress-list-2{
+  position: relative;
+}
+.b-progress-list__item{
+      position: relative;
+    float: left;
+    width: 200px;
+    height: 200px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 21px;
+    padding-bottom: 30px;
+    font-style: italic;
+    text-align: center;
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+}
+.home-youtube::after{
+  content: '';
+      width: 64px;
+    height: 64px;
+    display: block;
+    position: absolute;
+    top: 0%;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    pointer-events: none;
+    border-radius: 50%;
+    background: url(/youtube-play-btn.svg) no-repeat center;
+}
+.yesexpr{
+  background: url('/bg-map.png');
+  background-size: contain;
+  background-position: 50%;
+  background-repeat: no-repeat;
+}
+.area-bg_grad{
+    position: relative;
+    background: url('/bg-3.jpg');
+    -webkit-transform: none;
+    transform: none;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    z-index: 999999;
+}
+.career-bg_grad{
+   position: relative;
+    background: url('/job_list.jpg');
+    -webkit-transform: none;
+    transform: none;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    z-index: 9;
+    padding-bottom: 60px;
+    padding-top: 60px;
+}
+.corporateform_bgform{
+  position: relative;
+    background: url('/corporateform_bg.webp');
+    -webkit-transform: none;
+    transform: none;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    z-index: 9;
+    padding-bottom: 60px;
+    padding-top: 60px;
+  
+}
+.area-bg_grad::after, .career-bg_grad::after, .corporateform_bgform::after{
+  position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    content: '';
+    opacity: .8;
+    background: rgba(0, 0, 0, 0.8117647058823529);
+    z-index: 1;
+}
+.b-scale__number{
+      margin-top: 0px;
+    font-size: 60px;
+    font-style: italic;
+    color: #fff;
+}
+.b-scale__item{
+  position: relative;
+    display: inline-block;
+    width: 33.33%;
+}
+.b-scale__decor{
+      position: relative;
+    z-index: 1;
+    display: inline-block;
+    width: 29px;
+    height: 29px;
+}
+.b-scale__decor:before {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: block;
+    width: 9px;
+    height: 9px;
+    content: '';
+    border-radius: 50%;
+    box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.12);
+    background-color: #197b9f;
+}
+.b-scale__decor:after {
+    display: block;
+    width: 1px;
+    height: 15px;
+    margin: 19px auto 0;
+    content: '';
+    background-color: #197b9f;
+}
+.b-scale__item:after {
+    position: absolute;
+    top: 14px;
+    left: 50%;
+    display: block;
+    width: 100%;
+    height: 1px;
+    content: '';
+    background-color: rgba(255, 255, 255, 0.2);
+}
+.reulist li:last-child.b-scale__item::after{
+  display: none;
+}
+.reulist{
+  display: flex;
+  gap: 10;
+}
+.slidervbp .swiper-button-prev svg, .slidervbp .swiper-button-next svg{
+  display: none;
+}
+.slidervbp .swiper-button-prev{
+  left:0px !important;
+  font-size: 14px;
+    background: #fff;
+    box-shadow: 0px 4px 20px 2px rgb(16 30 87 / 7%);
+    border-radius: 50%;
+}
+.slidervbp .swiper-button-next{
+  right:0px !important;
+  font-size: 14px;
+    background: #fff;
+    box-shadow: 0px 4px 20px 2px rgb(16 30 87 / 7%);
+    border-radius: 50%;
+}
+.slidervbp  .swiper-button-prev::after{
+  font-size: 16px !important;
+  content: '';
+  background: url('/left-arrow.svg') no-repeat center;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background-size: contain;
+}
+.slidervbp .swiper-button-next::after{
+  font-size: 16px !important;
+  content: '';
+  background: url('/right-arrow.svg') no-repeat center;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background-size: contain;
+}
+.line-clamp-3{
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+.courselist ul li:after {
+    display: block;
+    position: absolute;
+    left: 0px;
+    top: 2px;
+    font-size: 14px;
+    color: #ff9600;
+    font-family: 'FontAwesome' !important;
+    font-weight: 500;
+    content: "\f00c";
+}
+.home-popc-content{
+  color: #0b0b0b;
+    max-height: 170px;
+    min-height: 170px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+}
+.dic-amt {
+    width: 120px;
+    text-align: center;
+}
+.benfgtlist li::before{
+    background: url(https://www.excelr.com/assets/media/general/checkmark.png);
+    list-style-position: outside;
+    text-align: left;
+    content: '';
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    left: 0;
+    top: 2px;
+    background-size: cover;
+
+}
+.benfgtlist li{ 
+          padding-left: 1.25rem;
+          position: relative;
+          padding-bottom: .5rem;
+}
+.clsschdate {
+    background: url(https://www.excelr.com/assets/media/general/course-calender.svg) no-repeat;
+    color: #333;
+    display: inline-block;
+    font-size: 17px;
+    font-weight: 700;
+    padding: 25px 20px 7px 15px;
+}
+.disam {
+    background: url(https://www.excelr.com/assets/media/general/int.svg) no-repeat;
+    padding: 36px;
+    background-size: 100%;
+    top: 7px !important;
+    display: inline-block;
+    position: absolute;
+    right: auto;
+}
+.img-fluid{
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+.b-progress-list-2 .b-progress-list__item:nth-child(3) {
+    /* margin-top: 20px; */
+    margin-top: 60px;
+}
+.b-progress-list-2 .b-progress-list__item:nth-child(2) {
+    /* margin-top: 80px; */
+    margin-top: 120px;
+}
+.b-progress-list-2 .b-progress-list__item:nth-child(1) {
+    /* margin-top: 140px; */
+    margin-top: 180px;
+}
+.banerdec p+p {
+    margin-top: 26px;
+}
+.iti{
+  display: block !important;
+}
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary::before {
+  content: "+";
+    font-weight: 500;
+    color: #ff9600;
+    font-size: 22px;
+    line-height: 8px;
+}
+.list-type-circle {
+    list-style-type: circle;
+}
+.list-decimal{
+  list-style-type: decimal;
+}
+details[open] summary{
+  color: black;
+}
+details[open] summary::before {
+  content: "−";
+}
+
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slideDown {
+  animation: slideDown 0.3s ease-in-out;
+}
+
+@media (min-width: 1399px) and (max-width: 1610px) {
+    .b-progress-list-2 .b-progress-list__item:nth-child(1) {
+        margin-top: 160px;
+    }
+    .b-progress-list-2 .b-progress-list__item:nth-child(2){
+        margin-top: 100px;
+    }
+    .b-progress-list-2 .b-progress-list__item:nth-child(3) {
+        margin-top: 40px;
+    }
+    .b-scale__item{
+      padding-right: 20px;
+        padding-left: 20px;
+}
+}
+@media(max-width:767px){
+      .b-progress-list-2 .b-progress-list__item:nth-child(1) {
+        margin-top: 10px !important;
+    }
+        .b-progress-list-2 .b-progress-list__item:nth-child(2) {
+        margin-top: 10px !important;
+    }
+        .b-progress-list-2 .b-progress-list__item:nth-child(3) {
+        margin-top: 10px !important;
+    }
+.b-progress-list-2{
+    text-align: center;
+  }
+.b-progress-list__item{
+  float: initial;
+}
+.home-popc-content{
+  min-height: auto;
+}
+.b-scale__item{
+  width: 100%;
+}
+.reulist{
+  display: block;
+}
+.b-scale__item:after{
+  display: none;
+}
+}
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #0a0a0a;
+    color: #ededed;
+  }
+}
