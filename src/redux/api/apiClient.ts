@@ -1,7 +1,8 @@
 // src/redux/api/apiClient.ts
 import axios, { AxiosRequestConfig } from 'axios';
 
-const BASE_URL = 'https://demo.excelr.com/api';
+//const BASE_URL = 'https://demo.excelr.com/api';
+const BASE_URL = 'https://demo3.excelr.com/api';
 const API_KEY = 'sk_KcJ4OSav26Zm240UNRgZeFDgZZ6vKsiK';
 
 const api = axios.create({

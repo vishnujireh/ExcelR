@@ -15,7 +15,7 @@ import PopularCourse from "../../components/course/PopularCourse";
 import CourseWhyExcelr from "../../components/course/CourseWhyExcelr";
 import StickyHeader from "../../components/course/StickyHeader";
 import { CourseData } from "../../../redux/slices/courseSlice";
-import Breadcrumb from "@/pages/components/Breadcrumb";
+import CourseBreadcrumb  from "../../components/course/CourseBreadcrumb";
 
 interface LayoutProps {
   data: CourseData;
@@ -52,10 +52,10 @@ export default function Layout1({ data }: LayoutProps) {
 
   return (
     <div>
-      <Breadcrumb />
+     <CourseBreadcrumb courseName={data?.course_name ?? ""} />
       <CourseBanner data={data} />
       <CourseBenefit data={data} />
-      <CourseBatche />
+      <CourseBatche courseName={data?.course_name ?? ""}   />
       <CoursePrice />
 
       {stickySections.length > 0 && <StickyHeader sections={stickySections} />}
@@ -102,3 +102,4 @@ export default function Layout1({ data }: LayoutProps) {
     </div>
   );
 }
+ 

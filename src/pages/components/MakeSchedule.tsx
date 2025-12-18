@@ -1,202 +1,393 @@
 "use client";
+
 import { useState, useEffect, useRef } from "react";
-import { RiUserFill, RiMailOpenFill, RiPhoneFill, RiCalendarFill } from "react-icons/ri";
+import {
+  RiUserFill,
+  RiMailOpenFill,
+  RiPhoneFill,
+  RiCalendarFill,
+  RiMapPin2Fill,
+} from "react-icons/ri";
+import { useSearchParams } from "next/navigation";
 import intlTelInput from "intl-tel-input";
 import "intl-tel-input/build/css/intlTelInput.css";
 
-const MakeSchedule = ({ closeModal }: { closeModal: () => void }) => {
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "@/redux/store";
+
+import {
+  fetchCountries,
+  fetchStates,
+  fetchLocations,
+  resetStatesAndLocations,
+  resetLocations,
+} from "@/redux/slices/locationSlice";
+
+import {
+  submitLetUsKnow,
+  resetLetUsKnowState,
+} from "@/redux/slices/letUsKnowSlice";
+
+/* ---------------- TYPES ---------------- */
+type Props = {
+  closeModal: () => void;
+  courseName: string;
+  courseUrl: string;
+};
+const formatDateToDDMMYYYY = (dateStr: string) => {
+  // Already DD/MM/YYYY → return as-is
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+    return dateStr;
+  }
+
+  // ISO or Date string → convert
+  const d = new Date(dateStr);
+  if (isNaN(d.getTime())) return "";
+
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yyyy = d.getFullYear();
+
+  return `${dd}-${mm}-${yyyy}`;
+};
+
+export default function MakeSchedule({
+  closeModal,
+  courseName,
+}: Props) {
+  const dispatch = useDispatch<AppDispatch>();
+  const searchParams = useSearchParams();
+
+  
+  /* ---------------- FORM STATE ---------------- */
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     mobile: "",
-    enquiry: "",
     preferredDate: "",
+    enquiry: "",
+    countryCode:"",
+    country: "",
+    state: "",
+    location: "",
   });
+console.log("Sending preferred_date:", formData.preferredDate);
 
+  /* ---------------- LOCATION SLICE ---------------- */
+  const {
+    countries,
+    states,
+    locations,
+    loadingCountries,
+    loadingStates,
+    loadingLocations,
+  } = useSelector((state: RootState) => state.location);
+
+  /* ---------------- LET US KNOW SLICE ---------------- */
+  const { loading: submitting, error } = useSelector(
+    (state: RootState) => state.letUsKnow
+  );
+
+  useEffect(() => {
+    dispatch(fetchCountries());
+  }, [dispatch]);
+
+  /* ---------------- PHONE INPUT ---------------- */
   const phoneInputRef = useRef<HTMLInputElement | null>(null);
   const itiRef = useRef<any>(null);
 
-  // ✅ Initialize intl-tel-input once when component mounts
   useEffect(() => {
-  if (typeof window === "undefined" || !phoneInputRef.current) return;
+    if (!phoneInputRef.current) return;
 
-  const inputElement = phoneInputRef.current; // ✅ stable reference
-
-  itiRef.current = intlTelInput(inputElement, {
-    initialCountry: "in",
-    separateDialCode: true,
-  });
-
-  const handlePhoneChange = () => {
-    const fullNumber = itiRef.current.getNumber();
-    setFormData((prev) => ({ ...prev, mobile: fullNumber }));
-  };
-
-  inputElement.addEventListener("input", handlePhoneChange);
-  inputElement.addEventListener("countrychange", handlePhoneChange);
-
-  // ✅ Cleanup uses the same reference, no warning
-  return () => {
-    inputElement.removeEventListener("input", handlePhoneChange);
-    inputElement.removeEventListener("countrychange", handlePhoneChange);
-    itiRef.current?.destroy();
-  };
-}, []);
-
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+    itiRef.current = intlTelInput(phoneInputRef.current, {
+      initialCountry: "in",
+      separateDialCode: true,
     });
+
+    const handlePhoneChange = () => {
+  const iti = itiRef.current;
+  if (!iti || !phoneInputRef.current) return;
+
+  const countryData = iti.getSelectedCountryData();
+  const dialCode = countryData?.dialCode || "";
+  const rawNumber = phoneInputRef.current.value || "";
+
+  setFormData((prev) => ({
+    ...prev,
+    mobile: rawNumber.replace(/\D/g, ""), // ONLY number
+    countryCode: dialCode,
+  }));
+};
+
+
+
+    phoneInputRef.current.addEventListener("input", handlePhoneChange);
+    phoneInputRef.current.addEventListener(
+      "countrychange",
+      handlePhoneChange
+    );
+
+    return () => {
+      phoneInputRef.current?.removeEventListener(
+        "input",
+        handlePhoneChange
+      );
+      phoneInputRef.current?.removeEventListener(
+        "countrychange",
+        handlePhoneChange
+      );
+      itiRef.current?.destroy();
+    };
+  }, []);
+
+  /* ---------------- CHANGE HANDLER ---------------- */
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "country") {
+      dispatch(resetStatesAndLocations());
+      if (value) dispatch(fetchStates({ country_id: value }));
+    }
+
+    if (name === "state") {
+      dispatch(resetLocations());
+      if (value) dispatch(fetchLocations({ state_id: value }));
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  /* ---------------- SUBMIT (SAME AS QUICKENQUIRY) ---------------- */
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    closeModal(); // Close modal after submit
+const pathname =
+  typeof window !== "undefined"
+    ? window.location.pathname.replace(/^\/+/, "")
+    : "";
+
+    const payload = {
+      user_name: formData.name,
+      user_email: formData.email,
+      user_mobile: formData.mobile,
+      user_course: courseName,
+      preferred_date: formatDateToDDMMYYYY(formData.preferredDate),
+
+      form_source: "Let us know schedule",
+      country_code: formData.countryCode,
+      user_country: formData.country,
+      user_state: formData.state,
+      user_location: formData.location,
+
+      user_course_url: pathname,
+      landing_page_url: window.location.href,
+
+      looking_for: formData.enquiry,
+
+      source: searchParams?.get("utm_source") || "",
+      medium: searchParams?.get("utm_medium") || "",
+      campaign: searchParams?.get("utm_campaign") || "",
+      term: searchParams?.get("utm_term") || "",
+      ucontent: searchParams?.get("utm_content") || "",
+      adgroup: searchParams?.get("utm_adgroup") || "",
+      gclid: searchParams?.get("gclid") || "",
+
+      utm_channel: searchParams?.get("utm_channel") || "",
+      utm_type: searchParams?.get("utm_type") || "",
+      utm_variety: searchParams?.get("utm_variety") || "",
+      utm_experiment: searchParams?.get("utm_experiment") || "",
+
+      device: "web",
+    };
+
+    try {
+      await dispatch(submitLetUsKnow(payload)).unwrap();
+
+      // ✅ Reset form
+      setFormData({
+        name: "",
+        email: "",
+        mobile: "",
+        preferredDate: "",
+        enquiry: "",
+        country: "",
+        state: "",
+        location: "",
+        countryCode: "",
+      }); 
+
+      // ✅ Redirect (same as QuickEnquiry)
+      window.location.href = "https://www.excelr.com/thank-you";
+
+      // ✅ Reset redux state
+      dispatch(resetLetUsKnowState());
+    } catch (err) {
+      console.error("Let Us Know submission failed", err);
+    }
   };
 
+  /* ---------------- UI ---------------- */
   return (
     <div
-      className="fixed inset-0 bg-[#000000cc] bg-opacity-50 flex justify-center items-center z-50"
+      className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
       onClick={closeModal}
     >
       <div
-        className="bg-[#171717] rounded-lg shadow-lg p-6 w-full max-w-sm"
+        className="bg-[#171717] rounded-lg p-6 w-full max-w-sm relative"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="relative flex justify-end">
-          <button
-            className="text-2xl cursor-pointer absolute w-10 h-10 -top-8 -end-8 bg-white text-[#171717] rounded-full flex items-center justify-center"
-            onClick={closeModal}
-          >
-            ×
-          </button>
-        </div>
+        <button
+          onClick={closeModal}
+          className="absolute -top-4 -right-4 w-10 h-10 bg-white text-black rounded-full text-2xl"
+        >
+          ×
+        </button>
 
-        <p className="text-lg mt-2 mb-3 font-semibold text-center text-white">
+        <p className="text-white text-lg font-semibold text-center mb-4">
           Let us know your convenient schedule
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name */}
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-              <RiUserFill className="text-gray-700" />
-            </div>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Name *"
-              className="border border-[#fff] text-gray-900 bg-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
-              required
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <Input
+            icon={<RiUserFill />}
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="Name *"
+          />
 
-          {/* Email */}
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-              <RiMailOpenFill className="text-gray-700" />
-            </div>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email *"
-              className="border border-[#fff] bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
-              required
-            />
-          </div>
+          <Input
+            icon={<RiMailOpenFill />}
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="Email *"
+            type="email"
+          />
 
-          {/* ✅ Mobile (with intl-tel-input) */}
+          {/* PHONE */}
           <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-              <RiPhoneFill className="text-gray-700" />
-            </div>
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-900 z-50">
+              <RiPhoneFill />
+            </span>
             <input
               ref={phoneInputRef}
-              type="tel"
               name="mobile"
               placeholder="Mobile No. *"
-              className="border border-[#fff] bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+              type="tel"
               required
+              className="border bg-white text-sm rounded-lg block w-full ps-10 p-2.5 moblig"
             />
           </div>
 
-          {/* Preferred Date */}
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-              <RiCalendarFill className="text-gray-700" />
-            </div>
-            <input
-              type="text"
-              name="preferredDate"
-              value={formData.preferredDate}
-              onChange={handleChange}
-              placeholder="Preferred Date (DD/MM/YYYY) *"
-              className="border border-[#fff] bg-white text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
-              required
-            />
-          </div>
+          <Input
+            icon={<RiCalendarFill />}
+            name="preferredDate"
+            value={formData.preferredDate}
+            onChange={handleChange}
+            placeholder="Preferred Date (DD/MM/YYYY) *"
+          />
 
-          {/* Enquiry */}
-          <div className="relative">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-              <RiUserFill className="text-gray-700" />
-            </div>
-            <select
-              name="enquiry"
-              value={formData.enquiry}
-              onChange={handleChange}
-              className="border bg-white border-[#fff] text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
-              required
-            >
-              <option value="">Looking for?</option>
-              <option value="Myself">Myself</option>
-              <option value="Others">Others</option>
-            </select>
-          </div>
+          <Select
+            icon={<RiMapPin2Fill />}
+            name="country"
+            value={formData.country}
+            onChange={handleChange}
+            options={countries}
+            loading={loadingCountries}
+            placeholder="Country"
+          />
 
-          {/* Terms & Conditions */}
-          <div className="flex items-start space-x-2 text-sm">
-            <input
-              type="checkbox"
-              id="terms"
-              className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-              required
-            />
-            <label htmlFor="terms" className="text-white">
-              I hereby agree to the{" "}
-              <a href="/terms" className="text-blue-600 underline" target="_blank">
-                Terms and Conditions
-              </a>{" "}
-              and{" "}
-              <a href="/privacy-policy" className="text-blue-600 underline" target="_blank">
-                Privacy Policy
-              </a>{" "}
-              of Excelr Solutions.
-            </label>
-          </div>
+          <Select
+            icon={<RiMapPin2Fill />}
+            name="state"
+            value={formData.state}
+            onChange={handleChange}
+            options={states}
+            loading={loadingStates}
+            disabled={!formData.country}
+            placeholder="State"
+          />
 
-          {/* Submit */}
+          <Select
+            icon={<RiMapPin2Fill />}
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            options={locations}
+            loading={loadingLocations}
+            disabled={!formData.state}
+            placeholder="Location"
+          />
+
+          <Select
+            icon={<RiUserFill />}
+            name="enquiry"
+            value={formData.enquiry}
+            onChange={handleChange}
+            required
+            options={[
+              { ID: "Myself", name: "Myself" },
+              { ID: "Others", name: "Others" },
+            ]}
+            placeholder="Looking for?"
+          />
+
+          {error && (
+            <p className="text-red-500 text-xs text-center">{error}</p>
+          )}
+
           <div className="text-center">
             <button
               type="submit"
-              className="border cursor-pointer border-solid border-[#0071BC] bg-[#0071BC] text-white hover:bg-[#4ba7de] font-medium text-sm py-2.5 px-5 rounded-lg"
+              disabled={submitting}
+              className="bg-[#0071BC] hover:bg-[#4ba7de] disabled:bg-gray-400 text-white px-6 py-2 rounded-lg"
             >
-              Submit
+              {submitting ? "Submitting..." : "Submit"}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-};
+}
 
-export default MakeSchedule;
+/* ---------------- INPUT ---------------- */
+function Input({ icon, ...props }: any) {
+  return (
+    <div className="relative">
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700">
+        {icon}
+      </span>
+      <input
+        {...props}
+        required
+        className="border bg-white text-sm rounded-lg block w-full ps-10 p-2.5"
+      />
+    </div>
+  );
+}
+
+/* ---------------- SELECT ---------------- */
+function Select({ icon, options = [], loading, placeholder, ...props }: any) {
+  return (
+    <div className="relative">
+      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-700">
+        {icon}
+      </span>
+      <select
+        {...props}
+        className="border bg-white text-sm rounded-lg block w-full ps-10 p-2.5"
+      >
+        <option value="">{placeholder}</option>
+        {loading && <option>Loading...</option>}
+        {options.map((opt: any) => (
+          <option key={opt.ID} value={opt.ID}>
+            {opt.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}

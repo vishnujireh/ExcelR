@@ -121,7 +121,7 @@ const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeDat
                     {/* Date section */}
                     <div className="text-center min-w-[80px]">
                       <span className="clsschdate time-change-wrapper text-2xl font-bold">
-                        {dateInfo.day} <sup className="text-sm">{dateInfo.suffix}</sup>
+                        {dateInfo.day} <sup className="text-sm -left-1">{dateInfo.suffix}</sup>
                       </span>
                       <p className="text-[#666] text-sm mt-1">{dateInfo.month}</p>
                       

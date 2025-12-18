@@ -82,7 +82,7 @@ code, pre {
     margin: auto;
     pointer-events: none;
     border-radius: 50%;
-    background: url(/youtube-play-btn.svg) no-repeat center;
+    background: url(../../icons/youtube-play-btn.svg) no-repeat center;
 }
 .yesexpr{
   background: url('/bg-map.png');
@@ -208,7 +208,7 @@ code, pre {
 .slidervbp  .swiper-button-prev::after{
   font-size: 16px !important;
   content: '';
-  background: url('/left-arrow.svg') no-repeat center;
+  background: url('../../icons/left-arrow.svg') no-repeat center;
   width: 16px;
   height: 16px;
   display: inline-block;
@@ -217,7 +217,7 @@ code, pre {
 .slidervbp .swiper-button-next::after{
   font-size: 16px !important;
   content: '';
-  background: url('/right-arrow.svg') no-repeat center;
+  background: url('../../icons/right-arrow.svg') no-repeat center;
   width: 16px;
   height: 16px;
   display: inline-block;
@@ -357,7 +357,47 @@ details[open] summary::before {
 .animate-slideDown {
   animation: slideDown 0.3s ease-in-out;
 }
-
+.fotrlink{
+  align-items: center;
+      flex-wrap: wrap;
+      display: flex;
+}
+.fotrlink li{
+  display: inline-block;
+}
+.fotrlink li::after {
+    content: "|";
+    font-weight: 600;
+    color: #fff;
+    margin: 3px 4px;
+}
+.fotrlink li:last-child::after {
+  display: none;
+}
+.fotrlink .titlgh::after{
+  display: none;
+}
+.fotrlink .titlgh{
+  margin-right: 5px;
+}
+.quickenbg {
+  background: url(../../public/quick_bg.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.recalbg{
+  background: url(../../public/callback_bg.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.iti__country-container{
+  left: 30px !important;
+}
+.moblig{
+  padding-left: 120px !important;
+}
 @media (min-width: 1399px) and (max-width: 1610px) {
     .b-progress-list-2 .b-progress-list__item:nth-child(1) {
         margin-top: 160px;
@@ -374,6 +414,9 @@ details[open] summary::before {
 }
 }
 @media(max-width:767px){
+  .coursebanner_mobile{
+    background: #000000 !important;
+  }
       .b-progress-list-2 .b-progress-list__item:nth-child(1) {
         margin-top: 10px !important;
     }

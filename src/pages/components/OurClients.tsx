@@ -9,7 +9,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation, Autoplay } from "swiper/modules";
 
-export default function OurClients() {
+export default function OurClients({ title = "Our Clients" }: { title?: string }) {
   const dispatch = useDispatch<AppDispatch>();
 
   // ✅ Correct state key
@@ -26,7 +26,9 @@ export default function OurClients() {
   if (!data || data.length === 0) return <>nodata</>;
 
   return (
-    <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 slidervbp"> <div className="text-center mb-10"> <h2 className="text-2xl font-bold mb-1 text-center">Our Clients</h2> </div>
+    <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 slidervbp"> <div className="text-center mb-10"> 
+    <h2 className="text-2xl font-bold mb-1 text-center">{title}</h2>
+    </div>
       <Swiper
         modules={[Navigation, Autoplay]}
         spaceBetween={20}

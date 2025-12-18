@@ -78,18 +78,20 @@ export default function Navbar() {
           <button className="text-2xl text-gray-800" onClick={toggleMobileMenu}>
             <RiMenuLine />
           </button>
+          
+        </div>
+        <div>
           <Link href="/" className="flex items-center">
             <Image src={logo} alt="Logo" width={140} height={40} />
           </Link>
         </div>
-
         <div className="flex gap-1.5">
-          <button
+          {/* <button
             onClick={() => setSearchOpen(true)}
             className="w-10 h-10 flex items-center justify-center border border-solid border-black bg-black text-white rounded-full"
           >
             <FiSearch className="text-lg" />
-          </button>
+          </button> */}
           <Link
             href="tel:18002122121"
             className="flex items-center justify-center gap-3 border border-solid border-[#0071BC] bg-[#0071BC] text-white font-medium text-sm w-10 h-10 rounded-full"
@@ -105,213 +107,11 @@ export default function Navbar() {
           <Image src={logo} alt="Logo" width={180} height={50} />
         </Link>
 
-        {/* Browse Button with Progressive Mega Menu */}
-        <div 
-          className="relative group"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <button
-            onClick={() => setDropdownVisible(!dropdownVisible)}
-            className="flex items-center gap-1 text-white bg-black border border-solid border-black font-semibold text-sm py-2.5 px-4 rounded-lg cursor-pointer transition-colors duration-200"
-          >
-            All Courses
-            {dropdownVisible ? (
-              <RiArrowUpSLine className="ml-1 text-lg" />
-            ) : (
-              <RiArrowDownSLine className="ml-1 text-lg" />
-            )}
-          </button>
+       
 
-          {/* --- PROGRESSIVE MEGA MENU --- */}
-          {error && (
-            <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg p-4 border border-red-200 text-red-600">
-              Failed to load menu. Please try again.
-            </div>
-          )}
-          {dropdownVisible && categories.length > 0 && (
-            <div
-              className="absolute top-full left-0 bg-white shadow-2xl rounded-lg z-50 border border-gray-200 flex"
-            >
-              {/* 1️⃣ COLUMN 1 - Main Categories */}
-              <div className="w-72 bg-gray-50 border-r border-gray-200 rounded-l-lg">
-                <div className="p-4 border-b border-gray-200">
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                    All Courses
-                  </h3>
-                </div>
-                <div className="py-2 overflow-y-auto max-h-[500px]">
-                  {categories.map((cat, i) => {
-                    const hasSubcategories =
-                      cat.subcategories && cat.subcategories.length > 0;
-
-                    return (
-                      <Link
-                        key={i}
-                        href={cat.base_url}
-                        onMouseEnter={() => {
-                          setSelectedCategory(hasSubcategories ? i : null);
-                          setHoveredSubcategory(null);
-                          setDropdownVisible(true);
-                        }}
-                        className={`py-3 px-3 mx-2 rounded-md transition-all flex items-center justify-between group/cat ${
-                          selectedCategory === i
-                            ? "bg-blue-50 text-[#0071BC]"
-                            : "hover:bg-white text-gray-700"
-                        }`}
-                      >
-                        <span className="font-semibold text-sm text-[#171717]">
-                          {cat.parent_category}
-                        </span>
-                        {hasSubcategories && (
-                          <RiArrowRightSLine
-                            className={`text-xl transition-all ${
-                              selectedCategory === i
-                                ? "opacity-100"
-                                : "opacity-0 group-hover/cat:opacity-40"
-                            }`}
-                          />
-                        )}
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* 2️⃣ COLUMN 2 - Subcategories and/or Direct Courses */}
-              {selectedCategory !== null && (() => {
-                const subs = categories[selectedCategory]?.subcategories || [];
-                const namedSubs = subs.filter((s: any) => s.subcategory);
-                const unnamedSubs = subs.filter((s: any) => !s.subcategory);
-                const directCourses = unnamedSubs.flatMap((s: any) => s.courses || []);
-
-                const hasContent = namedSubs.length > 0 || directCourses.length > 0;
-                if (!hasContent) return null;
-
-                if (namedSubs.length === 0) {
-                  return (
-                    <div className="w-80">
-                      <div className="p-4 border-b border-gray-200">
-                        <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                          {categories[selectedCategory]?.parent_category} Courses
-                        </h3>
-                      </div>
-                      <div className="py-2 px-3 overflow-y-auto max-h-[500px]">
-                        {directCourses.map((c: any, idx: number) => (
-                          <Link
-                            key={idx}
-                            href={c.base_url}
-                            className="block py-2 px-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#0071BC] rounded-md transition-all"
-                          >
-                            {c.course_name}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                }
-
-                return (
-                  <div className="w-80 bg-white border-gray-200">
-                    <div className="p-4 border-b border-gray-200">
-                      <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                        Sub Categories
-                      </h3>
-                    </div>
-                    <div className="py-2 px-3 overflow-y-auto max-h-[500px]">
-                      {namedSubs.map((sub: any, j: number) => (
-                        <div
-                          key={j}
-                          onMouseEnter={() => setHoveredSubcategory(j)}
-                          className={`py-2.5 px-3 cursor-pointer rounded-md transition-all flex items-center justify-between group/sub ${
-                            hoveredSubcategory === j
-                              ? "bg-blue-50 text-[#0071BC]"
-                              : "hover:bg-gray-50 text-gray-700"
-                          }`}
-                        >
-                          <span className="font-semibold text-sm">
-                            {sub.subcategory}
-                          </span>
-                          <RiArrowRightSLine
-                            className={`text-xl transition-all ${
-                              hoveredSubcategory === j
-                                ? "opacity-100"
-                                : "opacity-0 group-hover/sub:opacity-40"
-                            }`}
-                          />
-                        </div>
-                      ))}
-
-                      {directCourses.length > 0 && (
-                        <div 
-                          className="mt-2.5 pt-4 border-t border-gray-200"
-                          onMouseEnter={() => setHoveredSubcategory(null)}
-                        >
-                          <h6 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3">
-                            Courses
-                          </h6>
-                          {directCourses.map((c: any, idx: number) => (
-                            <Link
-                              key={`direct-${idx}`}
-                              href={c.base_url}
-                              className="block py-2 px-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#0071BC] rounded-md transition-all"
-                            >
-                              {c.course_name}
-                            </Link>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {/* 3️⃣ COLUMN 3 - Courses */}
-              {selectedCategory !== null && hoveredSubcategory !== null && (() => {
-                const subs = categories[selectedCategory]?.subcategories || [];
-                const namedSubs = subs.filter((s: any) => s.subcategory);
-
-                if (
-                  namedSubs[hoveredSubcategory] &&
-                  Array.isArray(namedSubs[hoveredSubcategory].courses)
-                ) {
-                  const allCourses = namedSubs[hoveredSubcategory].courses;
-                  const premiumCourses = allCourses.slice(0, 1);
-                  const freeCourses = allCourses.slice(1);
-
-                  return (
-                    <div className="w-96 bg-white border-l border-gray-200 rounded-r-lg overflow-y-auto max-h-[580px]">
-                      <div className="p-4">
-                        {(premiumCourses.length > 0 || freeCourses.length > 0) && (
-                          <div className="mb-6">
-                            <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-                              All Courses
-                            </h3>
-                            <div className="space-y-3">
-                              {[...premiumCourses, ...freeCourses].map((c: any, k: number) => (
-                                <Link
-                                  key={k}
-                                  href={c.base_url}
-                                  className="block text-sm text-gray-700 hover:text-[#0071BC] font-medium transition-colors"
-                                >
-                                  {c.course_name}
-                                </Link>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                }
-                return null;
-              })()}
-            </div>
-          )}
-        </div>
 
         {/* Desktop Search */}
-        <div className="hidden md:flex relative items-center">
+        {/* <div className="hidden md:flex relative items-center">
           <div className="flex items-center 2xl:min-w-xs mx-auto bg-white rounded-lg pr-3 border border-gray-300">
             <input
               type="text"
@@ -322,10 +122,219 @@ export default function Navbar() {
               <FiSearch className="text-black text-lg" />
             </Link>
           </div>
+        </div> */}
+      </div>
+             {/* Browse Button with Progressive Mega Menu */}
+             <div className="flex ">
+                <div
+  className="relative group mr-4 hidden md:flex"
+  onMouseEnter={handleMouseEnter}
+  onMouseLeave={handleMouseLeave}
+>
+  <button
+    onClick={() => setDropdownVisible(!dropdownVisible)}
+    className="flex items-center gap-1 text-white bg-black border border-solid border-black font-semibold text-sm py-2.5 px-4 rounded-lg cursor-pointer transition-colors duration-200"
+  >
+    All Courses
+    {dropdownVisible ? (
+      <RiArrowUpSLine className="ml-1 text-lg" />
+    ) : (
+      <RiArrowDownSLine className="ml-1 text-lg" />
+    )}
+  </button>
+
+  {/* Error UI */}
+  {error && (
+    <div className="absolute top-full left-0 bg-white shadow-lg rounded-lg p-4 border border-red-200 text-red-600">
+      Failed to load menu. Please try again.
+    </div>
+  )}
+
+  {dropdownVisible && categories.length > 0 && (
+    <div className="absolute top-full left-0 bg-white shadow-2xl rounded-lg z-50 border border-gray-200 flex">
+
+      {/* ------------------------------------------
+        1️⃣ COLUMN 1 — MAIN CATEGORIES
+      ------------------------------------------- */}
+      <div className="w-72 bg-gray-50 border-r border-gray-200 rounded-l-lg">
+        <div className="p-4 border-b border-gray-200">
+          <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            All Courses
+          </h3>
+        </div>
+
+        <div className="py-2 overflow-y-auto max-h-[500px]">
+          {categories.map((cat, i) => {
+            const hasSubcategories =
+              cat.subcategories && cat.subcategories.length > 0;
+
+            const categoryContent = (
+              <div
+                onMouseEnter={() => {
+                  setSelectedCategory(hasSubcategories ? i : null);
+                  setHoveredSubcategory(null);
+                  setDropdownVisible(true);
+                }}
+                className={`py-3 px-3 mx-2 rounded-md flex items-center justify-between cursor-pointer ${
+                  selectedCategory === i
+                    ? "bg-blue-50 text-[#0071BC]"
+                    : "hover:bg-white text-gray-700"
+                }`}
+              >
+                <span className="font-semibold text-sm text-[#171717]">
+                  {cat.parent_category}
+                </span>
+
+                {hasSubcategories && (
+                  <RiArrowRightSLine
+                    className={`text-xl ${
+                      selectedCategory === i
+                        ? "opacity-100"
+                        : "opacity-0 group-hover/cat:opacity-40"
+                    }`}
+                  />
+                )}
+              </div>
+            );
+
+            return (
+              <div key={i}>
+                {hasSubcategories ? (
+                  categoryContent
+                ) : (
+                  <Link href={cat.base_url}>{categoryContent}</Link>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
 
-      {/* --- DESKTOP RIGHT LINKS --- */}
+      {/* -------------------------------------------
+        2️⃣ COLUMN 2 — SUBCATEGORIES (NO ANIMATION)
+      -------------------------------------------- */}
+      {selectedCategory !== null && (() => {
+        const subs = categories[selectedCategory]?.subcategories || [];
+        const namedSubs = subs.filter((s) => s.subcategory);
+        const unnamedSubs = subs.filter((s) => !s.subcategory);
+        const directCourses = unnamedSubs.flatMap((s) => s.courses || []);
+
+        const hasContent =
+          namedSubs.length > 0 || directCourses.length > 0;
+        if (!hasContent) return null;
+
+        // If no named subcategories → show only direct courses
+        if (namedSubs.length === 0) {
+          return (
+            <div className="w-80">
+              <div className="p-4 border-b border-gray-200">
+                <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  {categories[selectedCategory]?.parent_category} Courses
+                </h3>
+              </div>
+
+              <div className="py-2 px-3 overflow-y-auto max-h-[500px]">
+                {directCourses.map((c, idx) => (
+                  <Link
+                    key={idx}
+                    href={c.base_url}
+                    className="block py-2 px-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#0071BC] rounded-md"
+                  >
+                    {c.course_name}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          );
+        }
+
+        // CASE: Named subcategories exist → No animation version
+        return (
+          <div className="w-80 bg-white border-gray-200">
+            <div className="p-4 border-b border-gray-200">
+              <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                Sub Categories
+              </h3>
+            </div>
+
+            <div className="py-2 px-3 overflow-y-auto max-h-[500px] space-y-3">
+
+              {namedSubs.map((sub, j) => {
+                const isOpen = hoveredSubcategory === j;
+                const subCourses = sub.courses || [];
+
+                return (
+                  <div key={j} className="rounded-md">
+
+                    {/* SUBCATEGORY HEADER */}
+                    <div
+                      onMouseEnter={() => setHoveredSubcategory(j)}
+                      className={`py-2.5 px-3 cursor-pointer rounded-md flex items-center justify-between ${
+                        isOpen
+                          ? "bg-blue-50 text-[#0071BC] border border-blue-200 shadow-sm"
+                          : "hover:bg-gray-50 text-gray-700"
+                      }`}
+                    >
+                      <span className="font-semibold text-sm">
+                        {sub.subcategory}
+                      </span>
+
+                      {/* ARROW ROTATION */}
+                      <RiArrowRightSLine
+                        className={`text-xl transition-transform ${
+                          isOpen ? "rotate-90 text-[#0071BC]" : "rotate-0"
+                        }`}
+                      />
+                    </div>
+
+                    {/* SUBCATEGORY → COURSES (INSTANT, NO ANIMATION) */}
+                    {isOpen && (
+                      <div className="pl-5 py-2 space-y-1">
+                        {subCourses.map((c, idx) => (
+                          <Link
+                            key={idx}
+                            href={c.base_url}
+                            className="block text-sm py-1 px-2 text-gray-600 hover:text-[#0071BC] hover:bg-gray-50 rounded-md"
+                          >
+                            {c.course_name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {/* DIRECT COURSES */}
+              {directCourses.length > 0 && (
+                <div
+                  className="mt-2.5 pt-4 border-t border-gray-200"
+                  onMouseEnter={() => setHoveredSubcategory(null)}
+                >
+                  <h6 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3">
+                    Courses
+                  </h6>
+
+                  {directCourses.map((c, idx) => (
+                    <Link
+                      key={idx}
+                      href={c.base_url}
+                      className="block py-2 px-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#0071BC] rounded-md"
+                    >
+                      {c.course_name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+    </div>
+  )}
+</div>
+
+ {/* --- DESKTOP RIGHT LINKS --- */}
       <ul className="hidden md:flex items-center space-x-6 text-sm font-semibold">
         <li>
           <Link href="/blogs">Blog</Link>
@@ -348,6 +357,7 @@ export default function Navbar() {
           </Link>
         </li>
       </ul>
+             </div>
 
       {/* --- MOBILE MENU (Accordion) --- */}
       {isOpen && (

@@ -1,9 +1,16 @@
 "use client";
 import React from "react";
 import Breadcrumb from "@/pages/components/Breadcrumb";
-import OurClients from "./components/OurClients"
+// import OurClients from "./components/OurClients"
 import excelr_intro from "../../public/excelr_intro.png"
+import edlofferingim from "../../public/edl-offerings.webp"
 import Image from "next/image"
+import Link from "next/link";
+import { LuPhoneCall, LuMail  } from "react-icons/lu";
+import OurClients from "./components/OurClients";
+import AcademicPartners from "./components/AcademicPartners";
+import Collaborated from "./components/Collaborated";
+import PopularCourse from "./components/PopularCourse"
 
 
 export default function CorporateTraining(){
@@ -27,8 +34,8 @@ export default function CorporateTraining(){
                 ExcelR has grown to become a leading giant in the space of Training and Consulting, helping students and professionals across the globe by delivering top-notch, world-class classroom and online training.
               </p>
               <p className="text-[#666] text-sm leading-7 mb-1.5">With world headquarters in Houston, USA and presence in Malaysia and India, we have set up a firm global footprint transcending boundaries and reaching out to students from far and wide. Our passionate and dedicated team of experts have successfully trained students and professionals in multifarious domains which include Data Science, Artificial Intelligence, IOT, Cloud Computing, Project Management etc.</p>
-             <div className="grid grid-cols-5 gap-4 z-10 relative items-center">
-            <div className="col-span-2 col-start-2">
+             <div className="grid grid-cols-7 gap-4 z-10 relative items-center">
+            <div className="col-span-2 col-start-3">
 
               <div className="mt-3">
               <Image src={excelr_intro} alt="worldmap" className="img-fluid text-center mx-auto" />
@@ -44,301 +51,192 @@ export default function CorporateTraining(){
                Every Day Learning Program
               </p>
       
-              <form className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="col-span-1">
-                    <div className="relative">
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Name *"
-                    className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="relative">
-                  <input
-                    type="text"
-                    name="company_name"
-                    placeholder="College Name"
-                    className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="relative">
-                  
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email *"
-                    className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="relative">
-                  
-                  <input
-                    type="tel"
-                    name="mobile"
-                    placeholder="Mobile No. *"
-                    className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="relative">
-                  
-                  <input
-                    type="tel"
-                    name="location"
-                    placeholder="Location"
-                    className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="relative">
-                  
-                  <input
-                    type="tel"
-                    name="country"
-                    placeholder="Country"
-                    className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-2">
-                    <div className="relative">
-                  <input
-                    type="tel"
-                    name="course"
-                    placeholder="Course"
-                    className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-2">
-                    {/* Terms & Conditions */}
-                <div className="flex items-start space-x-2 text-sm">
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                    required
-                  />
-                  <label htmlFor="terms" className="text-gray-500">
-                    I hereby agree to the{" "}
-                    <a href="/terms" className="text-blue-600 underline" target="_blank">
-                      Terms and Conditions
-                    </a>{" "}
-                    and{" "}
-                    <a href="/privacy-policy" className="text-blue-600 underline" target="_blank">
-                      Privacy Policy
-                    </a>{" "}
-                    of Excelr Solutions.
-                  </label>
-                </div>
-      
-                {/* Submit */}
-                <div className="text-center mt-5">
-                  <button
-                    type="submit"
-                    className="border cursor-pointer border-solid border-[#0071BC] bg-[#0071BC] text-white hover:bg-[#4ba7de] font-medium text-sm py-2.5 px-5 rounded-lg"
-                  >
-                    Submit
-                  </button>
-                </div>
-                  </div>
-                </div>
-                        
-              </form>
+             <form className="space-y-4">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    
+    {/* Name */}
+    <input
+      type="text"
+      name="name"
+      placeholder="Name *"
+      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+      required
+    />
+
+    {/* College Name */}
+    <input
+      type="text"
+      name="company_name"
+      placeholder="College Name"
+      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+      required
+    />
+
+    {/* Email */}
+    <input
+      type="email"
+      name="email"
+      placeholder="Email *"
+      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+      required
+    />
+
+    {/* Mobile */}
+    <input
+      type="tel"
+      name="mobile"
+      placeholder="Mobile No. *"
+      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+      required
+    />
+
+    {/* Location */}
+    <input
+      type="text"
+      name="location"
+      placeholder="Location"
+      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+      required
+    />
+
+    {/* Country */}
+    <input
+      type="text"
+      name="country"
+      placeholder="Country"
+      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+      required
+    />
+
+    {/* Course — full width */}
+    <div className="sm:col-span-2">
+      <input
+        type="text"
+        name="course"
+        placeholder="Course"
+        className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+        required
+      />
+    </div>
+
+    {/* Terms & Conditions — full width */}
+    <div className="sm:col-span-2">
+      <div className="flex items-start space-x-2 text-sm">
+        <input
+          type="checkbox"
+          id="terms"
+          className="w-4 h-4 rounded border-gray-300 focus:ring-blue-500"
+          required
+        />
+        <label htmlFor="terms" className="text-gray-500">
+          I hereby agree to the{" "}
+          <a href="/terms" target="_blank" className="text-blue-600 underline">
+            Terms and Conditions
+          </a>{" "}
+          and{" "}
+          <a href="/privacy-policy" target="_blank" className="text-blue-600 underline">
+            Privacy Policy
+          </a>{" "}
+          of Excelr Solutions.
+        </label>
+      </div>
+
+      <div className="text-center mt-5">
+        <button
+          type="submit"
+          className="border cursor-pointer border-[#0071BC] bg-[#0071BC] hover:bg-[#4ba7de] text-white font-medium text-sm py-2.5 px-5 rounded-lg"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+
+  </div>
+</form>
+
     </div>
           </div>
         </div> 
       </section>
       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF]">
         <div>
-          <h2>Every Day Learning (EDL)</h2>
-          <p>Provide application and industry-oriented learning on various trending technologies for free from industry experts with in-depth knowledge on the subjects. This will help the students to have an actual feel of the real-world solutions and help them in their placements</p>
-        <h2 className="ui-title-block">Objective</h2>
-        <ul >
+          <h2 className="text-xl font-semibold mb-2">Every Day Learning (EDL)</h2>
+          <p className="text-[#666] text-sm leading-7 mb-1.5">Provide application and industry-oriented learning on various trending technologies for free from industry experts with in-depth knowledge on the subjects. This will help the students to have an actual feel of the real-world solutions and help them in their placements</p>
+        <p className="text-md font-semibold mb-1 mt-6">Objective</p>
+        <ul className="list-decimal text-[#666] space-y-1 text-sm ml-5 mt-2 mb-3">
 	<li>Application oriented training for Students and Faculty</li>
 	<li>Hands on training on the trending technologies</li>
 	<li>Help the colleges in fulfilling a few of the NAAC/NBA requirements</li>
 </ul>
         </div>
       </div>
-       <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 corporateform_bgform">
-       <div className="relative z-50 text-center text-white">
-        <h3 className="text-2xl font-semibold mb-1.5">Corporate Training</h3>
-        <p className="mb-1.5">Post your query. Write us at corporatesales@excelr.com</p>
-        <p>We are more than happy to partner with you</p>
+       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
+       <div className="relative z-50 text-center">
+        <h3 className="text-2xl font-semibold mb-1.5">EDL Offerings</h3>
+         
         </div>
         <div className="mt-5">
           <div className="grid grid-cols-6 gap-4 z-10 relative items-center">
             <div className="col-span-4 col-start-2">
-              <div className="bg-white p-5 border-4 border-gray-200">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="col-span-1">
-                    <div className="relative">
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Name *"
-                    className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="relative">
-                  <input
-                    type="text"
-                    name="company_name"
-                    placeholder="Company Name"
-                    className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="relative">
-                  
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email *"
-                    className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="relative">
-                  
-                  <input
-                    type="tel"
-                    name="mobile"
-                    placeholder="Mobile No. *"
-                    className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="relative">
-                  
-                  <input
-                    type="tel"
-                    name="location"
-                    placeholder="Location"
-                    className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-1">
-                    <div className="relative">
-                  
-                  <input
-                    type="tel"
-                    name="country"
-                    placeholder="Country"
-                    className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-2">
-                    <div className="relative">
-                  <input
-                    type="tel"
-                    name="course"
-                    placeholder="Course"
-                    className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                </div>
-                  </div>
-                  <div className="col-span-2">
-                    <div className="relative">
-                  <select
-              name="enquiry"
-              className="border-b border-gray-200 bg-white text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-              required
-            >
-              <option value="">How did you hear about Us</option>
-              <option value="Search Engine"> Search Engine</option>
-              <option value="Email"> Email</option>
-              <option value="LinkedIn post">LinkedIn post</option>
-              <option value="Word of mouth">Word of mouth</option>
-              <option value="Others">Others</option>
-            </select>
-                </div>
-                  </div>
-                  <div className="col-span-2">
-                    <textarea
-                    name="name"
-                    placeholder="Query *"
-                    className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                    required
-                  />
-                  </div>
-                  <div className="col-span-2">
-                    {/* Terms & Conditions */}
-                <div className="flex items-start space-x-2 text-sm">
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                    required
-                  />
-                  <label htmlFor="terms" className="text-gray-500">
-                    I hereby agree to the{" "}
-                    <a href="/terms" className="text-blue-600 underline" target="_blank">
-                      Terms and Conditions
-                    </a>{" "}
-                    and{" "}
-                    <a href="/privacy-policy" className="text-blue-600 underline" target="_blank">
-                      Privacy Policy
-                    </a>{" "}
-                    of Excelr Solutions.
-                  </label>
-                </div>
-      
-                {/* Submit */}
-                <div className="text-center mt-5">
-                  <button
-                    type="submit"
-                    className="border cursor-pointer border-solid border-[#0071BC] bg-[#0071BC] text-white hover:bg-[#4ba7de] font-medium text-sm py-2.5 px-5 rounded-lg"
-                  >
-                    Submit
-                  </button>
-                </div>
-                  </div>
-                </div>
-              </div>
+
+              <div className="text-center mx-auto">
+              <Image src={edlofferingim} alt="worldmap" className="img-fluid text-center mx-auto" />
             </div>
           </div>
+            </div>
+          
         </div>
        </div>
-       <section className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
-        <p className="text-2xl font-bold mb-1 text-center">Popular Courses</p>
+       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF]">
+        <div>
+          <h2 className="text-2xl font-bold mb-1 text-center">Contact Us</h2>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-4 z-10 relative items-center">
+  <div className="col-span-1 md:col-span-3 md:col-start-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center">
+      
+      <div className="text-center">
+        <Link
+          href="tel:+91 96069 57287"
+          className="flex items-center justify-center sm:justify-start gap-3 text-md font-semibold"
+        >
+          <span className="w-10 h-10 bg-white shadow rounded-3xl flex items-center justify-center">
+            <LuPhoneCall className="text-[#0071BC] text-xl" />
+          </span>
+          +91 96069 57287
+        </Link>
+      </div>
+
+      <div className="text-center">
+        <Link
+          href="mailto:edl@excelr.com"
+          className="flex items-center justify-center sm:justify-start gap-3 text-md font-semibold"
+        >
+          <span className="w-10 h-10 bg-white shadow rounded-3xl flex items-center justify-center">
+            <LuMail className="text-[#0071BC] text-xl" />
+          </span>
+          edl@excelr.com
+        </Link>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+        </div>
+      </div>
+       <section> 
+        <AcademicPartners />
        </section>
-        <section className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF]">
-        <p className="text-2xl font-bold mb-1 text-center">Testimonials</p>
+        <section>
+        <Collaborated />
        </section>
-      <OurClients />
+       <section className="w-full">
+        <OurClients title="Industry Partners" />
+       </section>
+       <section className="slidervbp">
+        <PopularCourse page_name="every-day-learning" heading="Popular Courses" />
+       </section>
+      {/* <OurClients /> */}
         </>
     );
 }

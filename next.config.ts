@@ -2,7 +2,8 @@
 const nextConfig = {
   images: {
       domains: [
-      "demo.excelr.com",   // for demo site images
+      "demo.excelr.com",
+      "demo3.excelr.com",   // for demo site images
       "www.excelr.com",    // for production site images
       "excelr.com",        // backup
       "excelrcom.b-cdn.net" // CDN backup if used
@@ -15,6 +16,14 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/:slug',
+        destination: '/course/:slug',
+      },
+    ];
+  }, 
 };
 
 module.exports = nextConfig;

@@ -10,9 +10,35 @@ import type { TrainingMode } from "@/redux/slices/upcomingBatchSlice";
 import QuickEnquiry from "../QuickEnquiry"
 import ComboOffer from "../ComboOffer";
 
+/*   THIS HELPER HERE */
+const formatDayWithSuffix = (rawDate: string) => {
+  const date = new Date(rawDate);
+  const day = date.getDate().toString().padStart(2, "0");
+
+  const suffix =
+    day.endsWith("1") && day !== "11" ? "st" :
+    day.endsWith("2") && day !== "12" ? "nd" :
+    day.endsWith("3") && day !== "13" ? "rd" : "th";
+
+  return { day, suffix };
+};
+/* ⭐️ END HELPER */
+
+const formatPrice = (amount: number | string) => {
+  if (!amount) return "";
+  return Number(amount).toLocaleString("en-IN"); // Adds commas for Indian numbering style
+};
+
 export default function CoursePrice() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isQuickModalOpen, setIsQuickModalOpen] = useState(false);
+const [formName, setFormName] = useState("");
+const [variant, setVariant] = useState<"default" | "callback">("default");
+const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "default") => {
+  setFormName(name);
+  setVariant(type);
+  setIsQuickModalOpen(true);
+};
   const [isComboModalOpen, setIsComboModalOpen] = useState(false);
   const [selectedType, setSelectedType] = useState<string>("");
   const [selectedModeData, setSelectedModeData] =
@@ -118,10 +144,10 @@ const comboOfferData = batchData?.combo_offer
                         
                         <div className="flex justify-around mb-6 relative">
                     <h6 className="dis-amt font-bold text-lg">
-                     <span className='disam'></span> {item.currency} {item.mrp}
+                     <span className='disam'></span> {item.currency} {formatPrice(item.mrp)}
                     </h6>
                     <h6 className="font-bold text-lg text-[#ea9b0a]">
-                         {item.currency} {item.discount_price}
+                         {item.currency} {formatPrice (item.discount_price)}
                       </h6>
                   </div>
                          
@@ -138,7 +164,7 @@ const comboOfferData = batchData?.combo_offer
                     ))}
                     <div className="flex flex-col gap-2 mt-5">
                     <button
-                      onClick={() => setIsQuickModalOpen(true)}
+                      onClick={() => openQuickEnquiryModal("Quick Enquiry", "default")}
                       className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
                     >
                      Enquire Now
@@ -183,13 +209,13 @@ const comboOfferData = batchData?.combo_offer
 
                   <div className="flex justify-around mb-6 relative">
                     <h6 className="dis-amt font-bold text-xl">
-                     <span className='disam'></span> {mode.price_info.currency} {mode.price_info.amount}
+                     <span className='disam'></span> {mode.price_info.currency} {formatPrice(mode.price_info.amount)}
                     </h6>
 
                     {mode.price_info.discount_amount && (
                       <h6 className="font-bold text-xl text-[#ea9b0a]">
                         {mode.price_info.currency}{" "}
-                        {mode.price_info.discount_amount}
+                        {formatPrice(mode.price_info.discount_amount)}
                       </h6>
                     )}
                   </div>
@@ -209,16 +235,18 @@ const comboOfferData = batchData?.combo_offer
                     <h6 className="font-semibold mb-3">Upcoming Batches</h6>
 
                     <div className="flex justify-center flex-wrap gap-4">
-                      {mode.upcoming_dates_preview?.map((batch, i) => (
-                        <div key={i} className="text-center">
-                          <span className="clsschdate time-change-wrapper">
-                            {batch.date.display.split(" ")[0]}
-                          </span>
-                          <p className="text-[#666] text-sm mt-1">
-                            {batch.date.display.split(" ")[1]}
-                          </p>
-                        </div>
-                      ))}
+                     {mode.upcoming_dates_preview?.map((batch, i) => {
+  const { day, suffix } = formatDayWithSuffix(batch.date.raw);
+
+  return (
+    <div key={i} className="text-center">
+      <span className="clsschdate time-change-wrapper">
+        {day} <sup className="-left-1">{suffix}</sup>
+      </span>
+      <p className="text-[#666] text-sm mt-1">{batch.date.display.split(" ")[1]}</p>
+    </div>
+  );
+})}
                     </div>
                   </div>
 
@@ -262,7 +290,11 @@ const comboOfferData = batchData?.combo_offer
       )}
 
         {isQuickModalOpen && (
-  <QuickEnquiry closeModal={() => setIsQuickModalOpen(false)} />
+  <QuickEnquiry
+    closeModal={() => setIsQuickModalOpen(false)}
+    formName={formName}   // ✅ dynamic form name
+    variant={variant}     // ✅ UI variant
+  />
 )}
       </div>
     </>

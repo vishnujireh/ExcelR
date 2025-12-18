@@ -3,6 +3,18 @@ import courseReducer from './slices/courseSlice';
 import courseMenuReducer  from './slices/courseMenuSlice';
 import upcomingBatchReducer from './slices/upcomingBatchSlice'
 import ourClientsReducer from './slices/ourClientsSlice';
+import countryReducer from './slices/countrySlice';
+import cityReducer from './slices/citySlice';
+import redirectReducer from './slices/redirectSlice';
+import blogReducer from './slices/blogSlice';
+import careerReducer from './slices/careerSlice'
+import newsEventsReducer from './slices/newsEventsSlice'
+import popularCoursesReducer from "./slices/popularCoursesSlice";
+import testimonialReducer from "./slices/testimonialSlice";
+import dropQuerySlice from "./slices/dropQuerySlice";
+import locationReducer from "@/redux/slices/locationSlice";
+import letUsKnowReducer from './slices/letUsKnowSlice';
+
 
 export const store = configureStore({
   reducer: {
@@ -10,7 +22,17 @@ export const store = configureStore({
     courseMenu: courseMenuReducer,
     upcomingBatch: upcomingBatchReducer,
     OurClients: ourClientsReducer,
-
+    country: countryReducer,
+    city: cityReducer,
+    redirect: redirectReducer,
+    blogs: blogReducer,
+    career: careerReducer,
+    newsEvents: newsEventsReducer,
+    popularCourses: popularCoursesReducer,
+    testimonials: testimonialReducer,
+    dropQuery: dropQuerySlice,
+    location: locationReducer,
+    letUsKnow: letUsKnowReducer,
   },
 });
 

@@ -61,7 +61,7 @@ export default function CourseWhyExcelr({ data }: CourseWhyExcelrProps) {
           <div className="col-span-1 lg:col-span-1 flex items-center md:justify-start justify-center">
             <Link
               href="/about"
-              className="text-white text-center font-semibold border border-solid border-white bg-[#1f2227] hover:bg-white hover:text-[#1f2227] text-sm h-10 px-4 rounded-lg flex items-center"
+              className="text-black text-center font-semibold border border-solid border-white bg-white hover:bg-white hover:text-[#1f2227] text-sm h-10 px-4 rounded-lg flex items-center"
             >
               Get in Touch
             </Link>

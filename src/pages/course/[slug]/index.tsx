@@ -4,8 +4,9 @@ import Layout1 from '../layouts/Layout1';
 import Layout2 from '../layouts/Layout2';
 import { serverApiGet } from '../../../redux/api/apiClient';
 import { CourseData } from '../../../redux/slices/courseSlice';
-import Head from "next/head";
-
+import Meta from '@/pages/components/Meta';
+import Footer from '@/pages/components/Footer';
+ 
 interface LayoutProps {
   data: CourseData;
 }
@@ -61,18 +62,16 @@ export default function CoursePage({ courseData, error }: PageProps) {
 
   return (
     <>
-      <Head>
-        <title>{courseData.meta_title || courseData.title}</title>
-        <meta
-          name="description"
-          content={courseData.meta_description || courseData.description}
-        />
-        <meta
-          name="keywords"
-          content={courseData.meta_keyword || ''}
-        />
-      </Head>
+       <Meta
+  title={courseData.meta_title}
+  description={courseData.meta_description}
+  keywords={courseData.meta_keyword}
+  ogImage={courseData.course_image ?
+    `https://www.excelr.com/uploads/course/${courseData.course_image}` : undefined}
+  schema={courseData.schema_field?.replace(/<\/?script[^>]*>/g, "")}
+/>
       <LayoutComponent data={courseData} />
+      <Footer footerHtml={courseData.footer_course || null} />
     </>
   );
 }
@@ -102,6 +101,7 @@ export async function getServerSideProps(context: any) {
       sticky_section: response.data.sticky_section,
       rating: response.data.rating,
       footer: response.data.footer,
+      footerHtml: response.data.course_details[0].footer_course,
       popular_courses: response.data.popular_courses || [],
       our_clients: response.data.our_clients || [],
     };
