@@ -6,22 +6,21 @@ import 'react-photo-view/dist/react-photo-view.css';
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import FooterSticky from "./components/FooterSticky";
-import Meta from "./components/Meta";
+// import Meta from "./components/Meta";
 import { useRouter } from "next/router";
 
-import { Open_Sans, JetBrains_Mono } from "next/font/google";
+
+import { Open_Sans } from "next/font/google";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
   subsets: ["latin"],
   weight: ["300", "400", "600", "700"],
+  display: "swap",          // ✅ avoids render blocking
+  preload: true,            // ✅ preload critical font
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
+ 
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -31,9 +30,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
     
-    <div className={`${openSans.variable} ${jetbrainsMono.variable}`}>
+    <div className={`${openSans.variable}`}>
       <Providers>
-        <Meta />
+        {/* <Meta /> */}
         <Header />
         <div className="pt-[73px] md:pt-0">
         <Component {...pageProps} />

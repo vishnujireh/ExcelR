@@ -52,7 +52,7 @@ export default function Layout1({ data }: LayoutProps) {
 
   return (
     <div>
-     <CourseBreadcrumb courseName={data?.course_name ?? ""} />
+     <CourseBreadcrumb courseName={data?.course_name ?? ""}  category={data?.category} />
       <CourseBanner data={data} />
       <CourseBenefit data={data} />
       <CourseBatche courseName={data?.course_name ?? ""}   />

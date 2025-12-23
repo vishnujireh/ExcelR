@@ -7,6 +7,7 @@ import "swiper/css/navigation";
 import { Navigation, Autoplay } from "swiper/modules";
 import Image from "next/image";
 import { CourseData } from "@/redux/slices/courseSlice";
+import QuickEnquiry from "../QuickEnquiry";
 
 interface CourseWhyExcelrProps {
   data: CourseData;
@@ -48,6 +49,21 @@ export default function CourseWhyExcelr({ data }: CourseWhyExcelrProps) {
     }
   }, [data]);
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [variant, setVariant] = useState<"default" | "callback">("default");
+    const [formName, setFormName] = useState("");
+  
+    const openModal = (
+      type: "default" | "callback",
+      name: string
+    ) => {
+      setVariant(type);
+      setFormName(name);
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => setIsModalOpen(false);
+
   return (
     <>
       {/* Contact Section */}
@@ -59,12 +75,14 @@ export default function CourseWhyExcelr({ data }: CourseWhyExcelrProps) {
             </p>
           </div>
           <div className="col-span-1 lg:col-span-1 flex items-center md:justify-start justify-center">
-            <Link
-              href="/about"
-              className="text-black text-center font-semibold border border-solid border-white bg-white hover:bg-white hover:text-[#1f2227] text-sm h-10 px-4 rounded-lg flex items-center"
+            <button
+             onClick={() =>
+              openModal("default", "Drop a Query")
+            } 
+              className="text-black text-center cursor-pointer font-semibold border border-solid border-white bg-white hover:bg-white hover:text-[#1f2227] text-sm h-10 px-4 rounded-lg flex items-center"
             >
               Get in Touch
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -115,6 +133,14 @@ export default function CourseWhyExcelr({ data }: CourseWhyExcelrProps) {
           <p className="text-center text-gray-300">No points available</p>
         )}
       </div>
+       {/* MODAL */}
+              {isModalOpen && (
+                <QuickEnquiry
+                  closeModal={closeModal}
+                  variant={variant}     // ✅ UI logic
+                  formName={formName}   // ✅ API logic
+                />
+              )}
     </>
   );
 }

@@ -5,7 +5,6 @@ import React, { useEffect } from "react";
 import Head from "next/head";
 import { usePathname } from "next/navigation";
 import Script from "next/script";
-import { useRouter } from "next/router";
 
 interface MetaProps {
   title?: string;
@@ -188,6 +187,15 @@ const Meta: React.FC<MetaProps> = ({
     firstScript.parentNode?.insertBefore(script, firstScript);
   };
 
+  const [loadTrackingScripts, setLoadTrackingScripts] = React.useState(false);
+
+useEffect(() => {
+  const timer = setTimeout(() => {
+    setLoadTrackingScripts(true);
+  }, 10000); // ⏱ 10 seconds delay
+
+  return () => clearTimeout(timer);
+}, []);
   
   return (
     <>
@@ -278,7 +286,7 @@ const Meta: React.FC<MetaProps> = ({
       </Head>
 
       {/* Google Ads Scripts */}
-      {!shouldNoIndex && (
+      {loadTrackingScripts && !shouldNoIndex && (
         <>
           <Script
             src="https://www.googletagmanager.com/gtag/js?id=AW-979964421"
@@ -322,7 +330,7 @@ const Meta: React.FC<MetaProps> = ({
           )}
         </>
       )}
-
+{loadTrackingScripts && (
       <Script
         id="gtm-script"
         strategy="afterInteractive"
@@ -337,38 +345,39 @@ const Meta: React.FC<MetaProps> = ({
           `,
         }}
       />
+)}
 
-      {/* WebEngage */}
-      <Script id="webengage-init" strategy="afterInteractive">
-  {`
-    var webengage;
-    !function(w,e,b,n,g){
-      function o(e,t){e[t[t.length-1]]=function(){r.__queue.push([t.join("."),arguments])}}
-      var i,s,r=w[b],z=" ",l="init options track screen onReady".split(z),
-      a="feedback survey notification".split(z),c="options render clear abort".split(z),
-      p="Open Close Submit Complete View Click".split(z),u="identify login logout setAttribute".split(z);
-      if(!r || !r.__v){
-        for(w[b]=r={__queue:[],__v:"6.0",user:{}},i=0;i<l.length;i++)o(r,[l[i]]);
-        for(i=0;i<a.length;i++){
-          for(r[a[i]]={},s=0;s<c.length;s++)o(r[a[i]],[a[i],c[s]]);
-          for(s=0;s<p.length;s++)o(r[a[i]],[a[i],"on"+p[s]])
+{loadTrackingScripts && (
+  <Script id="webengage-init" strategy="afterInteractive">
+    {`
+      var webengage;
+      !function(w,e,b,n,g){
+        function o(e,t){e[t[t.length-1]]=function(){r.__queue.push([t.join("."),arguments])}}
+        var i,s,r=w[b],z=" ",l="init options track screen onReady".split(z),
+        a="feedback survey notification".split(z),c="options render clear abort".split(z),
+        p="Open Close Submit Complete View Click".split(z),
+        u="identify login logout setAttribute".split(z);
+        if(!r||!r.__v){
+          for(w[b]=r={__queue:[],__v:"6.0",user:{}},i=0;i<l.length;i++)o(r,[l[i]]);
+          for(i=0;i<a.length;i++){
+            for(r[a[i]]={},s=0;s<c.length;s++)o(r[a[i]],[a[i],c[s]]);
+            for(s=0;s<p.length;s++)o(r[a[i]],[a[i],"on"+p[s]])
+          }
+          for(i=0;i<u.length;i++)o(r.user,["user",u[i]]);
+          setTimeout(function(){
+            var f=e.createElement("script");
+            f.async=true;
+            f.src=(e.location.protocol==="https:"?
+              "https://ssl.widgets.webengage.com":
+              "http://cdn.widgets.webengage.com")+"/js/webengage-min-v-6.0.js";
+            (e.head||e.body).appendChild(f);
+          },1000)
         }
-        for(i=0;i<u.length;i++)o(r.user,["user",u[i]]);
-        setTimeout(function(){
-          var f = e.createElement("script");
-          f.type = "text/javascript";
-          f.async = true;
-          f.src = (e.location.protocol === "https:" 
-            ? "https://ssl.widgets.webengage.com" 
-            : "http://cdn.widgets.webengage.com") + "/js/webengage-min-v-6.0.js";
-          (e.head || e.body).appendChild(f);
-        }, 10000)
-      }
-    }(window,document,"webengage");
-    webengage.init('~15ba20116');
-  `}
-</Script>
-
+      }(window,document,"webengage");
+      webengage.init('~15ba20116');
+    `}
+  </Script>
+)}
 
 
     </>

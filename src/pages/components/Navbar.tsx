@@ -361,13 +361,13 @@ export default function Navbar() {
 
       {/* --- MOBILE MENU (Accordion) --- */}
       {isOpen && (
-        <div className="md:hidden w-full bg-white shadow-lg border-t border-gray-200 p-4 space-y-4 overflow-y-auto max-h-[80vh]">
+        <div className="md:hidden w-full bg-white shadow-lg border-t border-gray-200 p-4 md:space-y-4 overflow-y-auto max-h-[80vh]">
           {loading && <p className="text-sm text-gray-500">Loading courses...</p>}
           {!loading &&
             categories.map((cat, i) => (
               <div key={i}>
                 <button
-                  className="w-full flex justify-between items-center font-semibold text-left text-gray-800 py-2 border-b border-gray-100"
+                  className="w-full flex justify-between  text-sm items-center font-semibold text-left text-gray-800 py-2 border-b border-gray-100"
                   onClick={() =>
                     setActiveMobileCategory(
                       activeMobileCategory === i ? null : i
@@ -424,12 +424,12 @@ export default function Navbar() {
             <Link href="/careers" className="block">
               Work With Us
             </Link>
-            <Link
+            {/* <Link
               href="tel:18002122121"
               className="block text-white bg-[#0071BC] text-center py-2 rounded-lg font-medium"
             >
               Book a Call
-            </Link>
+            </Link> */}
           </div>
         </div>
       )}

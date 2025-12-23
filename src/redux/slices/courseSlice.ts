@@ -68,6 +68,7 @@ export interface CourseData {
   course_pmenu?: any[];
   status?: boolean;
   footer_course?: string;
+  category?: string;
   
   // ✅ These come from the root API response, not from course_details[0]
   sticky_section?: StickySection;
@@ -97,6 +98,7 @@ interface ApiResponse {
       course_image: string;
       brief_intro: string;
       duration: string;
+      category: string;
       students_enroll: string;
       template: string;
       [key: string]: any;

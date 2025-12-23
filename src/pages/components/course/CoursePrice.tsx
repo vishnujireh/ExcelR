@@ -112,7 +112,7 @@ const comboOfferData = batchData?.combo_offer
   return (
     <>
       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#000000]">
-        <div className="w-full flex justify-center">
+        <div className="w-full md:flex justify-center">
           <div className="flex flex-row justify-center flex-wrap gap-10">
             {batchData?.training_modes?.map((mode) => {
               const isSelfPaced =

@@ -7,6 +7,7 @@ import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { CourseData } from "@/redux/slices/courseSlice";
+import { FaStar } from "react-icons/fa";
 
 interface Props {
   data: CourseData;
@@ -40,7 +41,7 @@ export default function PopularCourse({ data }: Props) {
           <SwiperSlide key={item.id}>
             <Link
               href={item.url}
-              className="bg-white shadow hover:shadow-lg transition rounded-lg overflow-hidden block"
+              className="bg-white shadow hover:shadow-lg transition rounded-lg overflow-hidden block mb-3"
             >
               <div className="relative w-full aspect-[16/9]">
                 <Image
@@ -52,22 +53,31 @@ export default function PopularCourse({ data }: Props) {
               </div>
 
               <div className="p-5">
-                <h3 className="font-semibold line-clamp-2">{item.name}</h3>
-
-                {/* Optional rating */}
+                <div className="">
+                <h3 className="font-semibold line-clamp-2 max-h-14 min-h-14">{item.name}</h3>
+                  </div>
+                <div className="mt-3 flex justify-between">
+                  <div className="flex gap-3 items-center">
+                    {/* Optional rating */}
                 {item.rating_html && (
+                  <>
+                  <FaStar className="text-yellow-500" />
                   <div
-                    className="mt-3 text-yellow-500 text-sm"
+                    className="text-gray-600 text-sm"
                     dangerouslySetInnerHTML={{ __html: item.rating_html }}
-                  />
+                  ></div>
+                  </>
                 )}
-
-                {/* Optional enrolled */}
+                  </div>
+                  <div>
+                    {/* Optional enrolled */}
                 {item.enrolled_text && (
-                  <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-sm text-gray-600">
                     {item.enrolled_text}
                   </p>
                 )}
+                  </div>
+                </div>
               </div>
             </Link>
           </SwiperSlide>
