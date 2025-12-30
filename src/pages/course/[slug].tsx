@@ -1,9 +1,9 @@
 // app/course/[slug]/page.tsx
 import React from 'react';
-import Layout1 from '../layouts/Layout1';
-import Layout2 from '../layouts/Layout2';
-import { serverApiGet } from '../../../redux/api/apiClient';
-import { CourseData } from '../../../redux/slices/courseSlice';
+import Layout1 from './layouts/Layout1';
+import Layout2 from './layouts/Layout2';
+import { serverApiGet } from '../../redux/api/apiClient';
+import { CourseData } from '../../redux/slices/courseSlice';
 import Meta from '@/pages/components/Meta';
 import Footer from '@/pages/components/Footer';
  

@@ -88,7 +88,7 @@ const Meta: React.FC<MetaProps> = ({
     );
 
     if (!shouldShowWhatsApp) return;
-
+  
     const timer = setTimeout(() => {
       initializeWhatsAppWidget();
     }, 10000);
@@ -288,11 +288,16 @@ useEffect(() => {
       {/* Google Ads Scripts */}
       {loadTrackingScripts && !shouldNoIndex && (
         <>
-          <Script
+
+        <Script
+  src="https://www.googletagmanager.com/gtm.js?id=GTM-MNQJ78J"
+  strategy="lazyOnload"
+/> 
+          {/* <Script
             src="https://www.googletagmanager.com/gtag/js?id=AW-979964421"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
           />
-          <Script id="gtag-base" strategy="afterInteractive">
+          <Script id="gtag-base" strategy="lazyOnload">
             {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
@@ -301,12 +306,12 @@ useEffect(() => {
               gtag('config', 'AW-703011498');
               gtag('config', 'AW-705533570');
             `}
-          </Script>
+          </Script> */}
 
           {/* PMP Pune specific tracking */}
           {(pathname === "/pmp-training-in-pune" ||
             pathname === "/thank-you-pmp-pune") && (
-            <Script id="pmp-pune-tracking" strategy="afterInteractive">
+            <Script id="pmp-pune-tracking" strategy="lazyOnload">
               {`
                 gtag('config', 'AW-705533570');
                 ${
@@ -320,7 +325,7 @@ useEffect(() => {
 
           {/* Thank you page conversions */}
           {pathname === "/thank-you" && (
-            <Script id="thank-you-conversions" strategy="afterInteractive">
+            <Script id="thank-you-conversions" strategy="lazyOnload">
               {`
                 gtag('event', 'conversion', {'send_to': 'AW-979964421/_t-RCL7dp9QBEIWkpNMD'});
                 gtag('event', 'conversion', {'send_to': 'AW-703011498/ZU54CMSPudQBEKq1nM8C'});
@@ -333,7 +338,7 @@ useEffect(() => {
 {loadTrackingScripts && (
       <Script
         id="gtm-script"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -348,7 +353,7 @@ useEffect(() => {
 )}
 
 {loadTrackingScripts && (
-  <Script id="webengage-init" strategy="afterInteractive">
+  <Script id="webengage-init" strategy="lazyOnload">
     {`
       var webengage;
       !function(w,e,b,n,g){

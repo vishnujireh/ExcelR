@@ -21,17 +21,29 @@ export default function CourseBenefit({ data }: CourseBenefitProps) {
         const altText = alt || "course image";
 
         return (
+          // <Image
+          //   src={src}
+          //   alt={altText}
+          //   width={800} // default width
+          //   height={600} // default height
+          //   loading="lazy"
+          //   className="w-full h-auto mx-auto"
+          // />
           <Image
-            src={src}
-            alt={altText}
-            width={800} // default width
-            height={600} // default height
-            loading="lazy"
-            className="w-full h-auto mx-auto"
-          />
+  src={src}
+  alt={altText}
+  width={800}
+  height={600}
+  quality={50}
+  loading="lazy"
+  className="mx-auto"
+  sizes="(max-width: 640px) 100vw,
+         (max-width: 1024px) 50vw,
+         50vw"
+/>
         );
       }
-    },
+    },  
   });
 
   return <div>{htmlContent}</div>;

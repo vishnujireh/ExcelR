@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  swcMinify: true,
+  compiler: {
+    removeConsole: process.env.NODE_ENV === "production",
+  },
   images: {
       domains: [
       "demo.excelr.com",
@@ -23,7 +27,7 @@ const nextConfig = {
         destination: '/course/:slug',
       },
     ];
-  }, 
+  },
 };
 
 module.exports = nextConfig;

@@ -25,10 +25,10 @@ const LinesOfBusinessLinks = [
 ];
 
 const policyLinks = [
-  { name: "Terms And Conditions", href: "#" },
-  { name: "Privacy Policy", href: "#" },
-  { name: "Refund Policy", href: "#" },
-  { name: "Sitemap", href: "#" },
+  { name: "Terms And Conditions", href: "/terms-and-conditions" },
+  { name: "Privacy Policy", href: "/privacy-policy" },
+  { name: "Refund Policy", href: "/refund-policy" },
+  { name: "Sitemap", href: "/sitemap" },
 ];
 
 const socialLinks = [

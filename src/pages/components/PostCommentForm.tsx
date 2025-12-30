@@ -4,9 +4,9 @@ import React from "react"
 export default function PostComment () { 
     return(
         <>
-        <div className="mt-10">
+        <div className="mt-10 bg-white p-6 rounded-lg shadow">
         <h2 className="text-xl font-semibold mb-2">Post Comments</h2>
-    <div className="w-12 h-1 bg-orange-500 mb-4 rounded"></div>
+    <div className="w-12 h-1 bg-[#197b9f] mb-4"></div>
         <div className="bg-white">
         <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4">
 

@@ -14,6 +14,8 @@ import testimonialReducer from "./slices/testimonialSlice";
 import dropQuerySlice from "./slices/dropQuerySlice";
 import locationReducer from "@/redux/slices/locationSlice";
 import letUsKnowReducer from './slices/letUsKnowSlice';
+import galleryReducer from "./slices/gallerySlice";
+import pageDetailReducer from './slices/pageDetailSlice';
 
 
 export const store = configureStore({
@@ -33,6 +35,8 @@ export const store = configureStore({
     dropQuery: dropQuerySlice,
     location: locationReducer,
     letUsKnow: letUsKnowReducer,
+    gallery: galleryReducer,
+    pageDetail: pageDetailReducer,
   },
 });
 

@@ -42,15 +42,25 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
     : '';
 
   return (
-    <section
-      className="course-banner w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white coursebanner_mobile"
-      style={{
-        backgroundImage: `url(${bannerImageUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="grid md:grid-cols-3 gap-4">
+    // <section
+    //   className="course-banner w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white coursebanner_mobile"
+    //   style={{
+    //     backgroundImage: `url(${bannerImageUrl})`,
+    //     backgroundSize: "cover",
+    //     backgroundPosition: "center",
+    //   }}
+    // >
+    <section className="course-banner relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white overflow-hidden">
+<Image
+    src={bannerImageUrl}
+    alt="Artificial Intelligence (AI) Course Training in Thane"
+    fill
+    priority
+    fetchPriority="high"
+    sizes="100vw"
+    className="object-cover -z-10"
+  />
+      <div className="grid md:grid-cols-3 gap-4 relative z-10">
         <div className="col-span-3 lg:col-span-2">
           {/* ✅ Course Name from API */}
           <h1 className="text-2xl font-semibold">{data.course_name}</h1>

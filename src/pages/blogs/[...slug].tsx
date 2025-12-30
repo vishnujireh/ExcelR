@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchBlogDetail, fetchSidebarCategories } from "@/redux/slices/blogSlice";
+import PopularCourse from "../components/PopularCourse";
 import Breadcrumb from "../components/Breadcrumb";
 import Sidebar from "../components/Sidebar";
 import PostComment from "../components/PostCommentForm";
@@ -55,7 +56,8 @@ export default function BlogDetailPage() {
 
       <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid gap-6 md:grid-cols-4">
         {/* Content Section */}
-        <div className="col-span-3 bg-white shadow p-6 rounded-lg">
+        <div className="col-span-3 ">
+          <div className="bg-white shadow p-6 rounded-lg">
           {blogDetail.blog_image && (
             <div className="mb-6 w-full h-[350px] relative">
               <Image
@@ -88,11 +90,11 @@ export default function BlogDetailPage() {
               dangerouslySetInnerHTML={{ __html: blogDetail.blog_description }}
             />
           </div>
-
+            </div>
           {blogDetail.author && (
-            <div className="bg-white p-6 rounded-lg shadow mt-10">
+            <div className="mt-10">
               <h2 className="text-xl font-semibold mb-2">About the Author</h2>
-              <div className="w-12 h-1 bg-orange-500 mb-4 rounded"></div>
+              <div className="w-12 h-1 bg-[#197b9f] mb-4"></div>
               <div className="flex items-start gap-4">
                 <img
                   src={blogDetail.author.image}
@@ -104,7 +106,7 @@ export default function BlogDetailPage() {
                     href={blogDetail.author.linkedin_url || "javascript:void(0);"}
                     target="_blank"
                     rel="nofollow"
-                    className="text-lg font-medium text-gray-800 hover:text-orange-500"
+                    className="text-md font-semibold text-gray-800 hover:text-orange-500"
                   >
                     {blogDetail.author.name}
                   </a>
@@ -117,8 +119,9 @@ export default function BlogDetailPage() {
           )}
 
           {/* Share Buttons */}
-          <div className="bg-white p-6 rounded-lg shadow mt-10">
-            <h2 className="text-lg font-semibold mb-4">Found the Post Useful? Share It Now!</h2>
+          <div className="bg-white mt-10">
+            <h2 className="text-xl font-semibold mb-2">Found the Post Useful? Share It Now!</h2>
+              <div className="w-12 h-1 bg-[#197b9f] mb-4"></div>
             <div className="flex items-center gap-4 flex-wrap">
               <a
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(router.asPath)}`}
@@ -143,32 +146,19 @@ export default function BlogDetailPage() {
                 className="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800"
               >
                 LinkedIn
-              </a>
-              <a
-                href={`https://api.whatsapp.com/send?text=${encodeURIComponent(blogDetail.blog_title + " - " + router.asPath)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-              >
-                WhatsApp
-              </a>
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(window.location.href);
-                  alert("Link copied to clipboard!");
-                }}
-                className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800"
-              >
-                Copy Link
-              </button>
+              </a> 
             </div>
           </div>
 
           {/* Post Comment */}
+          <div>
+
           <PostComment />
+          </div>
 
           {/* Next Blog */}
           {blogDetail?.nextblog && (
+            <div>
             <a
               href={blogDetail.nextblog.url}
               className="relative block w-full mt-10 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition"
@@ -184,7 +174,10 @@ export default function BlogDetailPage() {
                 />
               </div>
             </a>
+            </div>
           )}
+
+          <PopularCourse heading="Popular Course" page_name="blog" />
         </div>
 
         {/* Sidebar */}

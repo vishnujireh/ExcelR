@@ -74,6 +74,48 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ courseName }) => {
     ];
   }
 
+  // =============================
+// BLOG DETAIL PAGE
+// /blogs/[category]/[slug]
+// /blogs/[category]/[subcategory]/[slug]
+// =============================
+else if (segments[0] === "blogs" && segments.length > 1) {
+  const categorySlug = segments[1];
+  const hasSubcategory = segments.length === 4;
+  const subcategorySlug = hasSubcategory ? segments[2] : null;
+  const blogSlug = segments[segments.length - 1];
+
+  const category = sidebarCategories.find(
+    (c: any) => c.baseurl === categorySlug
+  );
+
+  crumbs = [
+    { name: "Blog", href: "/blogs" },
+    {
+      name: category
+        ? category.name
+        : categorySlug?.replace(/-/g, " "),
+      href: `/blog-category/${categorySlug}`,
+    },
+  ];
+
+  if (subcategorySlug) {
+    crumbs.push({
+      name: subcategorySlug
+        .replace(/-/g, " ")
+        .replace(/\b\w/g, (l) => l.toUpperCase()),
+      href: `/blog-subcategory/${subcategorySlug}`,
+    });
+  }
+
+  crumbs.push({
+    name: blogSlug
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (l) => l.toUpperCase()),
+  });
+}
+
+
   /* =====================================================
      ✅ ✅ ✅ CASE 3: NEWS EVENT DETAIL PAGE (NEW LOGIC)
      URL → /news-event-detail/[slug]

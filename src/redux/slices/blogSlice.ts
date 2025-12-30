@@ -15,6 +15,8 @@ export interface Blog {
   blog_image: string;
   blog_description: string;
   created_at: string;
+  category_baseurl: string;
+  subcategory_baseurl: string;
 }
 export interface SidebarSubcategory {
   id: string;

@@ -9,7 +9,6 @@ import {
   RiMenuLine,
   RiArrowRightSLine,
 } from "react-icons/ri";
-import { FiSearch } from "react-icons/fi";
 import { LuPhoneCall } from "react-icons/lu";
 import logo from "/public/logo.png";
 

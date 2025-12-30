@@ -10,23 +10,10 @@ import { LuChevronsDown, LuChevronsUp } from "react-icons/lu";
 import Image from "next/image";
 import Link from "next/link";
 import { FiSearch } from "react-icons/fi";
-import { slugify } from "@/utils/slugify";
 
 function getBlogUrl(blog: any) {
-  const rawCategory =
-    blog.blog_category ||
-    blog.category ||
-    blog.category_name ||
-    blog.category_slug;
-
-  const rawSubcategory =
-    blog.blog_subcategory ||
-    blog.subcategory ||
-    blog.subcategory_name ||
-    blog.subcategory_slug;
-
-  const category = slugify(rawCategory || "");
-  const subcategory = slugify(rawSubcategory || "");
+  const category = blog.category_baseurl;
+  const subcategory = blog.subcategory_baseurl;
   const slug = blog.baseurl || blog.base_url || blog.slug || blog.id;
 
   if (subcategory && subcategory !== "0") {
@@ -69,7 +56,6 @@ export default function BlogList() {
   return (
     <>
       <Breadcrumb />
-
       <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad">
         <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center z-50 relative text-white">
           Blogs

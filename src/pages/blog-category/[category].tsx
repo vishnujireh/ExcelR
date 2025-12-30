@@ -18,8 +18,8 @@ function slugify(text: string) {
 }
 
 function getBlogUrl(blog: any) {
-  const category = slugify(blog.blog_category || "");
-  const subcategory = slugify(blog.blog_subcategory || "");
+  const category = slugify(blog.blog_category_url || "");
+  const subcategory = slugify(blog.blog_subcategory_url || "");
   const slug = blog.baseurl || blog.base_url || blog.id;
 
   if (
