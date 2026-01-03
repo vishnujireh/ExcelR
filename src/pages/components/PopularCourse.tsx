@@ -15,9 +15,10 @@ import { RootState, AppDispatch } from "@/redux/store";
 interface Props {
   heading: string;
   page_name: string; // "blog" | "home" | etc
+  variant?: "default" | "blog";
 }
 
-export default function PopularCarousel({ heading, page_name }: Props) {
+export default function PopularCarousel({ heading, page_name, variant="default"}: Props) {
   const dispatch = useDispatch<AppDispatch>();
 
   const { courses, loading } = useSelector(
@@ -31,10 +32,41 @@ export default function PopularCarousel({ heading, page_name }: Props) {
   if (loading) return <p className="text-center py-10">Loading...</p>;
   if (!courses?.length) return null;
 
+  const breakpoints =
+    variant === "blog"
+      ? {  320: { slidesPerView: 1 },
+          480: { slidesPerView: 1 },
+          640: { slidesPerView: 2 },
+          768: { slidesPerView: 3 },
+          1024: { slidesPerView: 3 },
+        }
+      :
+        {
+          320: { slidesPerView: 1 },
+          480: { slidesPerView: 1 },
+          640: { slidesPerView: 3 },
+          768: { slidesPerView: 4 },
+          1024: { slidesPerView: 4 },
+        }
+        const containerClasses =
+  variant === "blog"
+    ? "w-full py-6 slidervbp mt-6"
+    : "w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF] slidervbp";
+
+    const headingClasses =
+    variant === "blog"
+      ? "text-xl font-semibold mb-2 text-left"
+      : "text-2xl font-bold mb-1 text-center";
+    
+
   return (
-    <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF]">
+    <div className={containerClasses}>
       <div className="text-center mb-6">
-        <p className="text-2xl font-bold mb-1 text-center">{heading}</p>
+        <h6 className={headingClasses}>{heading}</h6>
+        {variant === "blog" &&
+        <div className="w-12 h-1 bg-[#197b9f] mb-4"></div>
+        }
+
       </div>
 
       <Swiper
@@ -43,13 +75,7 @@ export default function PopularCarousel({ heading, page_name }: Props) {
         autoplay={{ delay: 2500 }}
         spaceBetween={20}
         loop
-        breakpoints={{
-          320: { slidesPerView: 1 },
-          480: { slidesPerView: 2 },
-          640: { slidesPerView: 3 },
-          768: { slidesPerView: 4 },
-          1024: { slidesPerView: 4 },
-        }}
+        breakpoints={breakpoints}
       >
         {courses.map((course) => (
           <SwiperSlide key={course.id}>

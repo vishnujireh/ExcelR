@@ -10,7 +10,8 @@ import Breadcrumb from "../components/Breadcrumb";
 import Sidebar from "../components/Sidebar";
 import PostComment from "../components/PostCommentForm";
 import Image from "next/image";
-import { RiEyeFill } from "react-icons/ri";
+import { RiEyeFill, RiFacebookFill, RiTwitterXFill, RiLinkedinFill } from "react-icons/ri";
+import Link from "next/link"
 
 export default function BlogDetailPage() {
   const router = useRouter();
@@ -54,12 +55,12 @@ export default function BlogDetailPage() {
     <>
       <Breadcrumb />
 
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid gap-6 md:grid-cols-4">
+      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid md:gap-6 md:grid-cols-4 grid-cols-1 gap-0 bg-[#F4F7FF]">
         {/* Content Section */}
         <div className="col-span-3 ">
           <div className="bg-white shadow p-6 rounded-lg">
           {blogDetail.blog_image && (
-            <div className="mb-6 w-full h-[350px] relative">
+            <div className="mb-6 w-full aspect-[8/4] relative">
               <Image
                 src={blogDetail.blog_image}
                 alt={blogDetail.blog_title}
@@ -95,12 +96,16 @@ export default function BlogDetailPage() {
             <div className="mt-10">
               <h2 className="text-xl font-semibold mb-2">About the Author</h2>
               <div className="w-12 h-1 bg-[#197b9f] mb-4"></div>
-              <div className="flex items-start gap-4">
-                <img
+              <div className="flex items-start gap-4 ">
+                <div className="w-20 h-20 relative">
+<Image fill
+                
                   src={blogDetail.author.image}
                   alt={blogDetail.author.name}
-                  className="w-20 h-20 rounded-full object-cover shadow"
+                  className=" rounded-full object-cover shadow"
                 />
+                </div>
+                
                 <div className="flex-1">
                   <a
                     href={blogDetail.author.linkedin_url || "javascript:void(0);"}
@@ -127,25 +132,25 @@ export default function BlogDetailPage() {
                 href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(router.asPath)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-[#3b569d] text-white"
               >
-                Facebook
+                <RiFacebookFill/>
               </a>
               <a
                 href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(router.asPath)}&text=${encodeURIComponent(blogDetail.blog_title)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-sky-500 text-white rounded-lg hover:bg-sky-600"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-black text-white"
               >
-                Twitter
+                <RiTwitterXFill />
               </a>
               <a
                 href={`https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(router.asPath)}&title=${encodeURIComponent(blogDetail.blog_title)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800"
+                className="w-9 h-9 flex items-center justify-center rounded-full bg-[#0077b7] text-white"
               >
-                LinkedIn
+                <RiLinkedinFill />
               </a> 
             </div>
           </div>
@@ -159,25 +164,26 @@ export default function BlogDetailPage() {
           {/* Next Blog */}
           {blogDetail?.nextblog && (
             <div>
-            <a
+            <Link
               href={blogDetail.nextblog.url}
-              className="relative block w-full mt-10 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition"
+              className="relative block w-full mt-10 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition"
             >
               <span className="absolute left-0 top-0 bg-orange-500 text-white font-semibold text-sm px-4 py-2 z-10 rounded-br-lg">
                 READ NEXT
               </span>
-              <div className="w-full h-60 md:h-72 overflow-hidden">
-                <img
+              <div className="w-full aspect-[10/3] overflow-hidden">
+                <Image
+                fill
                   src={blogDetail.nextblog.Image}
                   alt={blogDetail.nextblog.title}
                   className="w-full h-full object-cover"
                 />
               </div>
-            </a>
+            </Link>
             </div>
           )}
 
-          <PopularCourse heading="Popular Course" page_name="blog" />
+          <PopularCourse heading="Popular Course" page_name="blog" variant="blog" />
         </div>
 
         {/* Sidebar */}

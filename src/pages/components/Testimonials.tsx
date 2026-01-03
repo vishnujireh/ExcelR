@@ -77,7 +77,7 @@ export default function Testimonials() {
                   <p className="text-sm text-black mt-2">{item.designation}</p>
                 </div>
                   {/* Description */}
-              <p className="text-[#666] text-sm leading-6 text-center mt-2 line-clamp-4">
+              <p className="text-[#666] text-sm leading-6 text-center mt-2 ">
                 {item.description}
               </p>
               </div>

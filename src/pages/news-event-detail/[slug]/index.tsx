@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
-
+import PostComment from "../../components/PostCommentForm";
 import Breadcrumb from "../../components/Breadcrumb";
 import Link from "next/link";
 import { RootState, AppDispatch } from "@/redux/store";
@@ -46,7 +46,7 @@ const IMAGE_BASE_URL = "https://demo3.excelr.com/";
       <Breadcrumb />
 
       {/* ✅ HEADER */}
-      <div className="w-full md:py-10 p-5 xl:px-20 career-bg_grad">
+      <div className="w-full md:py-14 p-5 xl:px-20 bg-[#4f4f4f]">
         <h1 className="text-3xl text-white text-center z-50 relative">
           {newsDetail.title}
         </h1>
@@ -74,6 +74,7 @@ const IMAGE_BASE_URL = "https://demo3.excelr.com/";
           />
           </div>
           </div>
+          <PostComment />
         </div>
 
         {/* ✅ RIGHT SIDEBAR */}

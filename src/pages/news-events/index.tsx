@@ -32,7 +32,7 @@ export default function NewsEvents() {
         <Breadcrumb />
       </div>
 
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad">
+      <div className="w-full md:mx-auto md:py-14 2xl:px-32 xl:px-20 lg:px-10 p-5 bg-[#4f4f4f]">
         <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center z-50 relative text-white">
           News & Events
         </h1>

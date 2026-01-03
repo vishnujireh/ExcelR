@@ -69,19 +69,19 @@ export default function CategoryBlogList() {
         </h1>
       </div>
     
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid gap-6 md:grid-cols-4">
+      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid md:gap-6 md:grid-cols-4 grid-cols-1">
         <div className="col-span-3">
            <div className="grid md:grid-cols-2 gap-6">
             {blogsByCategory.map((blog) => (
-        <div key={blog.id} className="flex shadow rounded p-4 bg-white">
-          <div className="w-1/3 relative min-h-[120px]">
+        <div key={blog.id} className="md:flex shadow rounded p-4 bg-white">
+          <div className="md:w-1/3 relative min-h-[120px]">
             <img
               src={blog.blog_image}
               alt={blog.blog_title}
               className="rounded object-cover w-full h-full"
             />
           </div>
-          <div className="w-2/3 pl-4 flex flex-col">
+          <div className="md:w-2/3 md:pl-4 pt-3 md:pt-0 flex flex-col">
           <div> 
             <h3 className="font-semibold text-md mb-2 hover:text-orange-500">
               <Link href={getBlogUrl(blog)}>
@@ -111,7 +111,7 @@ export default function CategoryBlogList() {
           
         </div>
 
-        <div className="col-span-1">
+        <div className="col-span-1 mt-5 md:mt-0">
           <Sidebar activeCategory={category} />
         </div>
       </div>

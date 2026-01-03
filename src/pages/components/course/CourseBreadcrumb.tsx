@@ -12,7 +12,7 @@ const CourseBreadcrumb: React.FC<CourseBreadcrumbProps> = ({ courseName, categor
   if (!courseName) return null;
 
   return (
-    <div className="w-full md:mx-auto md:py-3 2xl:px-25 xl:px-20 lg:px-10 p-5">
+    <div className="w-full md:mx-auto md:py-3 2xl:px-25 xl:px-20 lg:px-10 p-3">
       <nav aria-label="breadcrumb" className="text-sm">
         <ol className=" items-center space-x-1">
           <li className="inline-block">

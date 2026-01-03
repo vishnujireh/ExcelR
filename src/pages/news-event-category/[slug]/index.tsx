@@ -10,7 +10,6 @@ import { RootState, AppDispatch } from "@/redux/store";
 import { fetchNewsByCategory } from "@/redux/slices/newsEventsSlice";
 
 import Breadcrumb from "../../components/Breadcrumb";
-import OurClients from "../../components/OurClients";
 import readmore from "/public/log-in.png";
 
 export default function NewsByCategory() {
@@ -35,7 +34,7 @@ useEffect(() => {
     <>
       <Breadcrumb />
 
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad">
+      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad  bg-[#4f4f4f]">
         <h1 className="text-3xl font-medium text-center text-white z-50 relative">
           {/* {slug}  */}
           ExcelR Latest News, Videos and updates

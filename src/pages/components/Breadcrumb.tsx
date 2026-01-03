@@ -171,17 +171,17 @@ else if (segments[0] === "blogs" && segments.length > 1) {
   }
 
   return (
-    <div className="w-full md:mx-auto md:py-3 2xl:px-25 xl:px-20 lg:px-10 p-5">
+    <div className="w-full md:mx-auto md:py-3 2xl:px-25 xl:px-20 lg:px-10 p-3">
       <nav aria-label="breadcrumb" className="text-sm">
-        <ol className="flex items-center space-x-2">
-          <li>
+        <ol className="items-center space-x-2">
+          <li className="inline-block">
             <Link href="/" className="text-blue-600">
               Home
             </Link>
           </li>
 
           {crumbs.map((crumb, idx) => (
-            <li key={idx} className="flex items-center">
+            <li key={idx} className="inline-block items-center">
               <span className="mx-2">/</span>
               {crumb.href ? (
                 <Link href={crumb.href} className="text-blue-600">
