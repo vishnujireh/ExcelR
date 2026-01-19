@@ -1,7 +1,7 @@
-"use client";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import parse from "html-react-parser";
 
 // Static Links
 const OrganizationLinks = [
@@ -132,10 +132,9 @@ export default function Footer({ footerHtml }: FooterProps) {
 
         {/* ------------------- DYNAMIC FOOTER (Course Pages Only) ------------------- */}
         {footerHtml && (
-          <div
-            className="col-span-4"
-            dangerouslySetInnerHTML={{ __html: footerHtml }}
-          />
+          <div className="col-span-4">
+            {parse(footerHtml)}
+          </div>
         )}
 
         {/* ------------------- STATIC FOOTER (All Other Pages) ------------------- */}

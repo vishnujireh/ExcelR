@@ -9,6 +9,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import type { TrainingMode } from "@/redux/slices/upcomingBatchSlice";
 import QuickEnquiry from "../QuickEnquiry"
 import ComboOffer from "../ComboOffer";
+import parse from "html-react-parser";
 
 /*   THIS HELPER HERE */
 const formatDayWithSuffix = (rawDate: string) => {
@@ -224,11 +225,9 @@ const comboOfferData = batchData?.combo_offer
 
                   {mode.benefits_html && (
                     <div
-                      className="text-[#666666] text-sm mb-5 text-left"
-                      dangerouslySetInnerHTML={{
-                        __html: mode.benefits_html,
-                      }}
-                    />
+                      className="text-[#666666] text-sm mb-5 text-left">
+                      {parse(mode.benefits_html ?? "")}
+                    </div>
                   )}
 
                   <div className="mt-5">

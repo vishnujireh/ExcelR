@@ -1,5 +1,9 @@
 "use client";
+
 import React, { useEffect } from "react";
+import Image from "next/image";
+import parse from "html-react-parser";
+// import LazyLoad from "../../components/LazyLoadComponent";
 import CourseBanner from "../../components/course/CourseBanner";
 import CourseBenefit from "../../components/course/CourseBenefit";
 import CourseBatche from "../../components/course/CourseBatche";
@@ -14,12 +18,74 @@ import CourseLocation from "../../components/course/CourseLocation";
 import PopularCourse from "../../components/course/PopularCourse";
 import CourseWhyExcelr from "../../components/course/CourseWhyExcelr";
 import StickyHeader from "../../components/course/StickyHeader";
+import CourseBreadcrumb from "../../components/course/CourseBreadcrumb";
+
 import { CourseData } from "../../../redux/slices/courseSlice";
-import CourseBreadcrumb  from "../../components/course/CourseBreadcrumb";
 
 interface LayoutProps {
   data: CourseData;
 }
+
+/**
+ * Convert CMS <img> tags into Next.js <Image />
+ */
+function renderCMSContent(html: string) {
+  return parse(html, {
+    replace: (node: any) => {
+      if (node.name === "img" && node.attribs?.src) {
+        const {
+          src,
+          alt = "",
+          width,
+          height,
+          class: className = "",
+        } = node.attribs;
+
+        const w = width ? Number(width) : null;
+        const h = height ? Number(height) : null;
+
+        // 🔍 Detect icons / small images
+        const isIcon =
+          className.includes("icon") ||
+          src.includes("icon") ||
+          (w !== null && w <= 100) ||
+          (h !== null && h <= 100);
+
+        // 🧩 ICON → keep native size, no optimization
+        if (isIcon) {
+          return (
+            <img
+              src={src}
+              alt={alt}
+              width={w ?? undefined}
+              height={h ?? undefined}
+              loading="lazy"
+              className={className}
+              style={{ maxWidth: "100%", height: "auto" }}
+            />
+          );
+        }
+
+        // 🖼️ CONTENT IMAGE → Next.js optimization
+        return (
+          <Image
+            src={src}
+            alt={alt}
+            width={w ?? 650}
+            height={h ?? 350}
+            sizes="(max-width: 640px) 100vw,
+                   (max-width: 1024px) 50vw,
+                   650px"
+            quality={70}
+            loading="lazy"
+            className="mx-auto rounded-lg"
+          />
+        );
+      }
+    },
+  });
+}
+
 
 export default function Layout1({ data }: LayoutProps) {
   const stickySections = data?.sticky_section?.navigation || [];
@@ -27,15 +93,19 @@ export default function Layout1({ data }: LayoutProps) {
   const whyExcelr = data?.sticky_section?.why_excelr;
   const participants = data?.sticky_section?.participants;
   const testimonials = data?.sticky_section?.testimonials;
-  const courseFaq = data?.sticky_section?.faqs; // ✅ renamed
+  const courseFaq = data?.sticky_section?.faqs;
 
   useEffect(() => {
-    const accordions = document.querySelectorAll("#accordion13, #accordion14, #accordion4, #accordionfaq, #accordion5");
+    const accordions = document.querySelectorAll(
+      "#accordion13, #accordion14, #accordion4, #accordionfaq, #accordion5"
+    );
 
     accordions.forEach((accordion) => {
       accordion.addEventListener("click", (event) => {
         if ((event.target as HTMLElement).tagName.toLowerCase() === "summary") {
-          const details = (event.target as HTMLElement).parentNode as HTMLElement;
+          const details = (event.target as HTMLElement)
+            .parentNode as HTMLElement;
+
           accordion.querySelectorAll("details").forEach((el) => {
             if (el !== details) el.removeAttribute("open");
           });
@@ -49,25 +119,35 @@ export default function Layout1({ data }: LayoutProps) {
       });
     };
   }, [data]);
+  
 
   return (
-    <div>
-     <CourseBreadcrumb courseName={data?.course_name ?? ""}  category={data?.category} />
+    <>
+      <CourseBreadcrumb
+        courseName={data?.course_name ?? ""}
+        category={data?.category}
+      />
+
+      {/* 🔥 LCP Hero should stay OUTSIDE CMS */}
       <CourseBanner data={data} />
+
       <CourseBenefit data={data} />
-      <CourseBatche courseName={data?.course_name ?? ""}   />
+      <CourseBatche courseName={data?.course_name ?? ""} />
       <CoursePrice />
 
-      {stickySections.length > 0 && <StickyHeader sections={stickySections} />}
+      {stickySections.length > 0 && (
+        <StickyHeader sections={stickySections} />
+      )}
 
-      {/* Dynamic Sticky Sections */}
+      {/* ✅ Optimized CMS Content */}
       {contentSections.map((section) => (
         <div
           id={String(section.id)}
           key={section.id}
           className={`scroll-mt-10 mb-6 ${section.background_class || ""}`}
-          dangerouslySetInnerHTML={{ __html: section.content_html || "" }}
-        />
+        >
+          {renderCMSContent(section.content_html || "")}
+        </div>
       ))}
 
       {whyExcelr && (
@@ -89,17 +169,23 @@ export default function Layout1({ data }: LayoutProps) {
       )}
 
       {courseFaq && (
-  <div id={courseFaq.id} className="scroll-mt-10">
-    <CourseFaq data={data} />
-  </div>
-)}
+        <div id={courseFaq.id} className="scroll-mt-10">
+          <CourseFaq data={data} />
+        </div>
+      )}
 
       <CourseGlobal />
       <Accolades data={data} />
       <OurClients />
-      <CourseLocation data={data} />
-      <PopularCourse data={data} />
-    </div>
+      {/* <LazyLoad
+      delay={25000} // 15 seconds
+  placeholder={
+    <div className="w-full h-[400px] bg-gray-200 animate-pulse rounded-lg" />
+  }
+></LazyLoad> */}
+  <CourseLocation data={data} />
+    
+  <PopularCourse data={data} />
+    </>
   );
 }
- 

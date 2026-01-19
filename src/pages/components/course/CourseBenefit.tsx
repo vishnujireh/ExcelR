@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import parse from "html-react-parser";
 import Image from "next/image";
@@ -21,30 +20,23 @@ export default function CourseBenefit({ data }: CourseBenefitProps) {
         const altText = alt || "course image";
 
         return (
-          // <Image
-          //   src={src}
-          //   alt={altText}
-          //   width={800} // default width
-          //   height={600} // default height
-          //   loading="lazy"
-          //   className="w-full h-auto mx-auto"
-          // />
           <Image
   src={src}
   alt={altText}
-  width={800}
+  width={700}
   height={600}
-  quality={50}
-  loading="lazy"
+  quality={45}
+ priority
+  fetchPriority="high"
   className="mx-auto"
   sizes="(max-width: 640px) 100vw,
          (max-width: 1024px) 50vw,
-         50vw"
+         500px"
 />
         );
       }
-    },  
+    },
   });
 
-  return <div>{htmlContent}</div>;
+  return <>{htmlContent}</>;
 }

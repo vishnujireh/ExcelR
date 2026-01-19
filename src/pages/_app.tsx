@@ -2,14 +2,13 @@ import React from "react";
 import type { AppProps } from "next/app";
 import "./globals.css";
 import Providers from "./providers"; // ✅ no curly braces
-import 'react-photo-view/dist/react-photo-view.css';
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import FooterSticky from "./components/FooterSticky";
+import dynamic from "next/dynamic";
+// import 'react-photo-view/dist/react-photo-view.css';
+const Header = dynamic(() => import("./components/Header"), { ssr: true });
+const Footer = dynamic(() => import("./components/Footer"), { ssr: false });
+const FooterSticky = dynamic(() => import("./components/FooterSticky"), { ssr: false });
 // import Meta from "./components/Meta";
 import { useRouter } from "next/router";
-
-
 import { Open_Sans } from "next/font/google";
 
 const openSans = Open_Sans({
@@ -30,7 +29,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
     
-    <div className={`${openSans.variable}`}>
+    <div className={`${openSans.className}  `}>
       <Providers>
         {/* <Meta /> */}
         <Header />

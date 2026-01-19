@@ -1,9 +1,7 @@
-"use client";
 import React from "react";
 import Image from "next/image";
 import homeyoutube from "/public/worldmap.png"
 
- 
 export default function CourseGlobal() {
   return (
     <>

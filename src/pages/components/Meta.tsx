@@ -1,7 +1,6 @@
 // components/Meta.tsx
-"use client";
-
-import React, { useEffect } from "react";
+"use client"
+import React, { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { usePathname } from "next/navigation";
 import Script from "next/script";
@@ -66,35 +65,37 @@ const Meta: React.FC<MetaProps> = ({
   ];
 
   const shouldNoIndex = noIndex || noIndexRoutes.includes(pathname || "");
+  const whatsappLoadedRef = useRef(false);
 
   // Initialize WhatsApp widget after delay
   useEffect(() => {
-    // Check if route should exclude WhatsApp
-    const excludedPaths = [
-      "/webinar",
-      "/blog",
-      "/mock-interview",
-      "/excelr-free-courses-registration-form",
-      "/excelr-TASK-free-courses-registration-form",
-      "/excelr-APSSDC-free-courses-registration-form",
-      "/excelr-JNTU-K-free-courses-registration-form",
-      "/python-course-registration-form",
-      "/excelr-virtual-training-program-on-angular-registration-form",
-      "/business-whatsapp-opt-in-registration-form",
-    ];
+  // Routes where WhatsApp should NOT load
+  const excludedPaths = [
+    "/webinar",
+    "/blog",
+    "/mock-interview",
+    "/excelr-free-courses-registration-form",
+    "/excelr-TASK-free-courses-registration-form",
+    "/excelr-APSSDC-free-courses-registration-form",
+    "/excelr-JNTU-K-free-courses-registration-form",
+    "/python-course-registration-form",
+    "/excelr-virtual-training-program-on-angular-registration-form",
+    "/business-whatsapp-opt-in-registration-form",
+  ];
 
-    const shouldShowWhatsApp = !excludedPaths.some((path) =>
-      pathname?.includes(path)
-    );
+  if (excludedPaths.some(p => pathname?.includes(p))) return;
 
-    if (!shouldShowWhatsApp) return;
-  
-    const timer = setTimeout(() => {
-      initializeWhatsAppWidget();
-    }, 10000);
+  const load = () => {
+    if (whatsappLoadedRef.current) return;
+    whatsappLoadedRef.current = true;
+    initializeWhatsAppWidget();
+    window.removeEventListener("scroll", load);
+  };
 
-    return () => clearTimeout(timer);
-  }, [pathname]);
+  window.addEventListener("scroll", load, { once: true });
+  return () => window.removeEventListener("scroll", load);
+}, [pathname]);
+
 
   const initializeWhatsAppWidget = () => {
     const urlpath = window.location.origin + window.location.pathname;
@@ -196,7 +197,23 @@ useEffect(() => {
 
   return () => clearTimeout(timer);
 }, []);
-  
+
+const [loadGTM, setLoadGTM] = useState(false);
+const [loadWebEngage, setLoadWebEngage] = useState(false);
+
+useEffect(() => {
+  const id = setTimeout(() => setLoadGTM(true), 20000);
+  return () => clearTimeout(id);
+}, []);
+
+useEffect(() => {
+  const onScroll = () => {
+    setLoadWebEngage(true);
+    window.removeEventListener("scroll", onScroll);
+  };
+  window.addEventListener("scroll", onScroll);
+}, []);
+
   return (
     <>
       <Head>
@@ -289,10 +306,10 @@ useEffect(() => {
       {loadTrackingScripts && !shouldNoIndex && (
         <>
 
-        <Script
+        {/* <Script
   src="https://www.googletagmanager.com/gtm.js?id=GTM-MNQJ78J"
   strategy="lazyOnload"
-/> 
+/> */}
           {/* <Script
             src="https://www.googletagmanager.com/gtag/js?id=AW-979964421"
             strategy="lazyOnload"
@@ -335,7 +352,7 @@ useEffect(() => {
           )}
         </>
       )}
-{loadTrackingScripts && (
+{loadGTM && (
       <Script
         id="gtm-script"
         strategy="lazyOnload"
@@ -352,7 +369,7 @@ useEffect(() => {
       />
 )}
 
-{loadTrackingScripts && (
+{loadWebEngage && (
   <Script id="webengage-init" strategy="lazyOnload">
     {`
       var webengage;
@@ -376,7 +393,7 @@ useEffect(() => {
               "https://ssl.widgets.webengage.com":
               "http://cdn.widgets.webengage.com")+"/js/webengage-min-v-6.0.js";
             (e.head||e.body).appendChild(f);
-          },1000)
+          },12000)
         }
       }(window,document,"webengage");
       webengage.init('~15ba20116');

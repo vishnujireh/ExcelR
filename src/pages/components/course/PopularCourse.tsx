@@ -1,5 +1,6 @@
 "use client";
-import React from "react";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -7,6 +8,7 @@ import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { CourseData } from "@/redux/slices/courseSlice";
+import parse from "html-react-parser";
 import { FaStar } from "react-icons/fa";
 
 interface Props {
@@ -14,8 +16,14 @@ interface Props {
 }
 
 export default function PopularCourse({ data }: Props) {
+  const [mounted, setMounted] = useState(false);
   const courses = data?.popular_courses || [];
-  if (courses.length === 0) return null;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || courses.length === 0) return null;
 
   return (
     <div className="w-full md:py-10 p-5 xl:px-20 slidervbp">
@@ -26,9 +34,11 @@ export default function PopularCourse({ data }: Props) {
       <Swiper
         modules={[Navigation, Autoplay]}
         navigation
-        autoplay={{ delay: 2500 }}
+        autoplay={{ delay: 2500, disableOnInteraction: false }}
         spaceBetween={20}
         loop
+        observer
+        observeParents
         breakpoints={{
           320: { slidesPerView: 1 },
           480: { slidesPerView: 2 },
@@ -49,34 +59,31 @@ export default function PopularCourse({ data }: Props) {
                   alt={item.name}
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 25vw"
                 />
               </div>
 
               <div className="p-5">
-                <div className="">
-                <h3 className="font-semibold line-clamp-2 max-h-14 min-h-14">{item.name}</h3>
-                  </div>
-                <div className="mt-3 flex justify-between">
-                  <div className="flex gap-3 items-center">
-                    {/* Optional rating */}
-                {item.rating_html && (
-                  <>
-                  <FaStar className="text-yellow-500" />
-                  <div
-                    className="text-gray-600 text-sm"
-                    dangerouslySetInnerHTML={{ __html: item.rating_html }}
-                  ></div>
-                  </>
-                )}
-                  </div>
-                  <div>
-                    {/* Optional enrolled */}
-                {item.enrolled_text && (
-                  <p className="text-sm text-gray-600">
-                    {item.enrolled_text}
-                  </p>
-                )}
-                  </div>
+                <h3 className="font-semibold line-clamp-2 min-h-14">
+                  {item.name}
+                </h3>
+
+                <div className="mt-3 flex justify-between items-center">
+                  {item.rating_html && (
+                    <div className="flex gap-1 items-center">
+                      <FaStar className="text-yellow-500" />
+                      <div
+                        className="text-gray-600 text-sm">
+                        {parse(item.rating_html)}
+                      </div>
+                    </div>
+                  )}
+
+                  {item.enrolled_text && (
+                    <p className="text-sm text-gray-600">
+                      {item.enrolled_text}
+                    </p>
+                  )}
                 </div>
               </div>
             </Link>

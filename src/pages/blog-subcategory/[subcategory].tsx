@@ -76,7 +76,7 @@ useEffect(() => {
             {blogsBySubcategory.map((blog) => (
               <div key={blog.id} className="md:flex shadow rounded p-4 bg-white">
                 <div className="md:w-1/3">
-                  <img src={blog.blog_image} className="rounded w-full h-full" />
+                  <Image src={blog.blog_image} alt={blog.blog_title} className="rounded w-full h-full" />
                 </div>
                 <div className="md:w-2/3 md:pl-4 pt-3 mt:pt-0 flex flex-col">
                 <div>

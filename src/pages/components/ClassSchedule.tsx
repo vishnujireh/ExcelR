@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import parse from "html-react-parser";
 
 interface DateInfo {
   raw: string;
@@ -168,8 +169,10 @@ const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeDat
             {modeData?.benefits_html ? (
               <div
                 className="benfgtlist text-[#666666] text-sm"
-                dangerouslySetInnerHTML={{ __html: modeData.benefits_html }}
-              />
+              >
+                {parse(modeData.benefits_html)}
+              </div>
+
             ) : (
               <ul className="benfgtlist text-[#666666] text-sm mt-3.5">
                 <li>*As per Govt of India Covid regulations</li>

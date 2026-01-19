@@ -1,7 +1,6 @@
-"use client";
 import React from "react";
 import { CourseData } from "@/redux/slices/courseSlice";
-
+import parse from "html-react-parser";
 interface CourseFaqProps {
   data: CourseData;
 }
@@ -26,11 +25,8 @@ export default function CourseFaq({ data }: CourseFaqProps) {
       )}
 
       {/* Render HTML from API */}
-      <div
-        dangerouslySetInnerHTML={{
-          __html: faqData.content_html || "",
-        }}
-      />
+      <>{parse(faqData.content_html ?? "")}</>
+       
     </div>
   );
 }

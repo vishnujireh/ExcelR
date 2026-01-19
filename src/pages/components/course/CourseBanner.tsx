@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import StudentEnrolled from "/public/cour-stud.svg";
 import reviewic from "/public/google.png";
@@ -7,6 +5,7 @@ import Duration from "/public/duration.svg";
 import QuickEnquiry from "../QuickEnquiry";
 import { useState } from "react";
 import { CourseData } from "@/redux/slices/courseSlice";
+import parse from "html-react-parser";
 
 interface CourseBannerProps {
   data: CourseData;
@@ -39,6 +38,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
   // ✅ Build the banner image URL from course_image field
   const bannerImageUrl = data.course_image 
     ? `https://www.excelr.com/uploads/course/${data.course_image}`
+   // ? `https://demo3.excelr.com/uploads/course/${data.course_image}`
     : '';
 
   return (
@@ -50,16 +50,19 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
     //     backgroundPosition: "center",
     //   }}
     // >
-    <section className="course-banner relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white overflow-hidden">
+    <section className="course-banner  bg-[#05081b] md:bg-transparent relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white overflow-hidden  ">
+<div className="hidden md:block absolute inset-0 -z-10">
 <Image
     src={bannerImageUrl}
-    alt="Artificial Intelligence (AI) Course Training in Thane"
+    alt={data.course_name}
     fill
     priority
     fetchPriority="high"
     sizes="100vw"
     className="object-cover -z-10"
+    quality={55}
   />
+  </div>
       <div className="grid md:grid-cols-3 gap-4 relative z-10">
         <div className="col-span-3 lg:col-span-2">
           {/* ✅ Course Name from API */}
@@ -81,8 +84,8 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
           </div> */}
 
           {/* ✅ Short Description from API */}
-          <div className=" text-lg banerdec">
-            <div dangerouslySetInnerHTML={{ __html: data.brief_intro }} />
+          <div className="text-lg banerdec">
+           <>{parse(data.brief_intro ?? "")}</>
           </div>
 
           {/* ✅ Course Stats */}

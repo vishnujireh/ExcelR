@@ -1,7 +1,7 @@
 "use client";
-
 import React, { useEffect } from "react";
 import { CourseData } from "@/redux/slices/courseSlice";
+import parse from "html-react-parser";
 
 interface CourseDurationProps {
   data: CourseData;
@@ -45,13 +45,9 @@ export default function CourseDuration({ data }: CourseDurationProps) {
       {contentSections.map((section) => (
         <div key={section.id} className={`mb-6 ${section.background_class || ""}`}>
           {/* <h4 className="text-xl font-bold mb-1.5">{section.header}</h4> */}
-          <div>
-            <div
-              dangerouslySetInnerHTML={{
-                __html: section.content_html ?? "",
-              }}
-            />
-          </div>
+          <>
+          {parse(section.content_html ?? "")}
+          </>
         </div>
       ))}
     </div>
