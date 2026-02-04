@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import ClassSchedule from "../ClassSchedule";
-import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUpcomingBatch } from "@/redux/slices/upcomingBatchSlice";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -48,10 +48,13 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
   const [city, setCity] = useState("");
 
   const dispatch = useDispatch<AppDispatch>();
-  const params = useParams();
-  const courseSlug = Array.isArray(params?.slug)
-    ? params.slug[0]
-    : params?.slug || "";
+  const router = useRouter();
+  const slugParam = router.query.slug;
+  const courseSlug = Array.isArray(slugParam)
+    ? slugParam[0]
+    : typeof slugParam === "string"
+    ? slugParam
+    : "";
 
   const { batchData, loading, error } = useSelector(
     (state: RootState) => state.upcomingBatch
@@ -77,12 +80,12 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
 
   // Fetch Batches
   useEffect(() => {
-    if (!courseSlug || !city || !ipAddress) return;
+    if (!courseSlug || !ipAddress) return;
 
     dispatch(
       fetchUpcomingBatch({
         courseSlug,
-        city,
+        city: city || "",
         ip_address: ipAddress,
       })
     );
@@ -204,22 +207,55 @@ const comboOfferData = batchData?.combo_offer
                     {mode.mode}
                   </h5>
 
-                  <p className="text-sm font-semibold pb-2.5">
-                    Without IITM Pravartak Certification
-                  </p>
+                  {!mode.price_info ? (
+                    <p className="text-sm text-red-600">
+                      Pricing unavailable
+                    </p>
+                  ) : mode.price_info.iitm_certificate_amount ? (
+                    <>
+                      <p className="text-sm font-semibold pb-2.5">
+                        Without IITM Pravartak Certification
+                      </p>
 
-                  <div className="flex justify-around mb-6 relative">
-                    <h6 className="dis-amt font-bold text-xl">
-                     <span className='disam'></span> {mode.price_info.currency} {formatPrice(mode.price_info.amount)}
-                    </h6>
+                      <div className="flex justify-around mb-6 relative">
+                        <h6 className="dis-amt font-bold text-xl">
+                          <span className="disam"></span>{" "}
+                          {mode.price_info.currency}{" "}
+                          {formatPrice(mode.price_info.amount)}
+                        </h6>
 
-                    {mode.price_info.discount_amount && (
+                        {mode.price_info.discount_amount && (
+                          <h6 className="font-bold text-xl text-[#ea9b0a]">
+                            {mode.price_info.currency}{" "}
+                            {formatPrice(mode.price_info.discount_amount)}
+                          </h6>
+                        )}
+                      </div>
+
+                      <p className="text-sm font-semibold pb-2.5">
+                        With IITM Pravartak Certification
+                      </p>
                       <h6 className="font-bold text-xl text-[#ea9b0a]">
                         {mode.price_info.currency}{" "}
-                        {formatPrice(mode.price_info.discount_amount)}
+                        {formatPrice(mode.price_info.iitm_certificate_amount)}
                       </h6>
-                    )}
-                  </div>
+                    </>
+                  ) : (
+                    <div className="flex justify-around mb-6 relative">
+                      <h6 className="dis-amt font-bold text-xl">
+                        <span className="disam"></span>{" "}
+                        {mode.price_info.currency}{" "}
+                        {formatPrice(mode.price_info.amount)}
+                      </h6>
+
+                      {mode.price_info.discount_amount && (
+                        <h6 className="font-bold text-xl text-[#ea9b0a]">
+                          {mode.price_info.currency}{" "}
+                          {formatPrice(mode.price_info.discount_amount)}
+                        </h6>
+                      )}
+                    </div>
+                  )}
 
                   <hr className="border-gray-200 my-5" />
 

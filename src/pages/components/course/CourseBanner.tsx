@@ -2,10 +2,12 @@ import Image from "next/image";
 import StudentEnrolled from "/public/cour-stud.svg";
 import reviewic from "/public/google.png";
 import Duration from "/public/duration.svg";
+import testimonialGif from "/public/testimonial.gif";
 import QuickEnquiry from "../QuickEnquiry";
 import { useState } from "react";
 import { CourseData } from "@/redux/slices/courseSlice";
 import parse from "html-react-parser";
+import Link from "next/link";
 
 interface CourseBannerProps {
   data: CourseData;
@@ -103,17 +105,36 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
                 </div>
               </div>
               )}
-              {/* Reviews */}
-              {data.course_rating && (
-               <div className="md:flex items-center gap-4 text-center md:text-left">
-                <div className="relative w-8 h-8 mx-auto mb-1 md:ml-0 md:mr-0">
-                  <Image src={reviewic} alt="Students Enrolled" fill />
+              {/* Reviews / Testimonials */}
+              {data.course_rating ? (
+                <div className="md:flex items-center gap-4 text-center md:text-left">
+                  <div className="relative w-8 h-8 mx-auto mb-1 md:ml-0 md:mr-0">
+                    <Image src={reviewic} alt="Reviews" fill />
+                  </div>
+                  <div className="text-sm md:text-base text-center md:text-left">
+                    <p>Reviews</p>
+                    <p>{data.course_rating || "N/A"}</p>
+                  </div>
                 </div>
-                <div className="text-sm md:text-base text-center md:text-left">
-                  <p>Reviews</p>
-                  <p>{data.course_rating || 'N/A'}</p>
+              ) : (
+                 <div className="md:flex items-center gap-4 text-center md:text-left">
+                  <div className="relative w-8 h-8 mx-auto mb-1 md:ml-0 md:mr-0">
+                    <Image src={reviewic} alt="Reviews" fill />
+                  </div>
+                  <div className="text-sm md:text-base text-center md:text-center">
+                  <Link
+                    href="/testimonials"
+                    className="text-white block mb-2 mx-auto md:mx-0"
+                  >
+                    Testimonials
+                    <Image width={25} height={25}
+                    src={testimonialGif}
+                    alt="For testimonials click here"
+                    className="course-test-img mx-auto "
+                  />
+                  </Link>
+                  </div>
                 </div>
-              </div>
               )}
               {/* Duration */}
               {data.duration && (

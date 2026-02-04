@@ -1,7 +1,25 @@
 // redux/slices/blogSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { apiGet } from "../api/apiClient";
+import { apiGet, apiPost } from "../api/apiClient";
 
+export interface PostCommentPayload {
+  blog_id: string;
+  username: string;
+  useremail: string;
+  subject?: string;
+  message: string;
+}
+export interface PostReplyPayload {
+  comment_id: string;
+  username: string;
+  useremail: string;
+  subject: string;
+  message: string;
+}
+export interface PostCommentResponse {
+  status: boolean;
+  message: string;
+}
 export interface Blog {
   id: string;
   banner_title: string;
@@ -73,6 +91,19 @@ interface Author {
   description: string;
   linkedin_url: string;
 }
+interface Comments {
+  id: string;
+  username: string;
+  message: string;
+  created_at: string;
+  replies?: Reply[];
+}
+interface Reply {
+  id: string;
+  username: string;
+  message: string;
+  created_at: string;
+}
 interface NextBlog {
   id: string;
   title: string;
@@ -99,6 +130,7 @@ export interface BlogDetail {
   base_url: string;
   view_count: number;
   author?: Author | null;
+  comments?: Comments[];
   nextblog?: NextBlog | null;
   popular_courses?: PopularCourse[];
   // optional SEO fields (your API may return these)
@@ -125,6 +157,10 @@ searchError?: string;
 blogDetail: BlogDetail | null;
 loadingDetail: boolean;
 errorDetail?: string;
+postCommentLoading: boolean;
+postCommentError?: string | null;
+postCommentSuccess: boolean;
+postCommentMessage?: string;
 }
 
 const initialState: BlogState = {
@@ -145,6 +181,10 @@ const initialState: BlogState = {
   blogDetail: null,
 loadingDetail: false,
 errorDetail: undefined,
+postCommentLoading: false,
+postCommentError: "",
+postCommentSuccess: false,
+postCommentMessage: "",
 };
 
 
@@ -263,7 +303,8 @@ export const fetchBlogDetail = createAsyncThunk<BlogDetail, string>(
       // Map API response to your BlogDetail interface
       const data = response.blog || response.data;
       const author = response.author || null;
-      const nextblog = response.next_blog || null
+      const comments = response.comments || [];
+      const nextblog = response.next_blog || null;
       const popular_courses = response.popular_courses || [];
       return {
         id: data.id,
@@ -286,6 +327,24 @@ export const fetchBlogDetail = createAsyncThunk<BlogDetail, string>(
               linkedin_url: author.linkedin_url,
             }
           : null,
+        // ✔ add comments
+        comments: Array.isArray(comments)
+  ? comments.map((c: any) => ({
+      id: c.id,
+      username: c.username,
+      message: c.message,
+      created_at: c.created_at,
+      replies: Array.isArray(c.replies)
+        ? c.replies.map((r: any) => ({
+            id: r.id,
+            username: r.username,
+            message: r.message,
+            created_at: r.created_at,
+          }))
+        : [],
+    }))
+  : [],
+        // ✔ add nextblog
           nextblog: nextblog
           ? {
             id: nextblog.id,
@@ -293,6 +352,7 @@ export const fetchBlogDetail = createAsyncThunk<BlogDetail, string>(
             Image: nextblog.image,
              url: nextblog.url,
           } : null,
+
           // POPULAR COURSES (fixed array)
         popular_courses: Array.isArray(popular_courses)
           ? popular_courses.map((c: any) => ({
@@ -311,6 +371,64 @@ export const fetchBlogDetail = createAsyncThunk<BlogDetail, string>(
     }
   }
 );
+
+export const postBlogComment = createAsyncThunk<
+  PostCommentResponse,
+  PostCommentPayload,
+  { rejectValue: string }
+>("blog/postComment", async (payload, { rejectWithValue }) => {
+  try {
+    const formData = new URLSearchParams();
+
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, String(value));
+      }
+    });
+
+    return await apiPost<PostCommentResponse>(
+      "/post_reply",
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+  } catch (error: any) {
+    return rejectWithValue(error.message || "Failed to post comment");
+  }
+});
+
+export const postBlogReply = createAsyncThunk<
+  PostCommentResponse,
+  PostReplyPayload,
+  { rejectValue: string }
+>("blog/postReply", async (payload, { rejectWithValue }) => {
+  try {
+    const formData = new URLSearchParams();
+
+    Object.entries(payload).forEach(([key, value]) => {
+      formData.append(key, String(value));
+    });
+
+    return await apiPost<PostCommentResponse>(
+      "/save_reply",
+      formData,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      }
+    );
+  } catch (error: any) {
+    return rejectWithValue(error.message || "Failed to post reply");
+  }
+});
+
+
+
+
 
 const blogSlice = createSlice({
   name: "blogs",
@@ -382,7 +500,26 @@ const blogSlice = createSlice({
         state.loadingSubcategory = false;
         state.errorSubcategory = action.payload as string;
       })
-       
+       // Post blog comment
+.addCase(postBlogComment.pending, (state) => {
+  state.postCommentLoading = true;
+  state.postCommentSuccess = false;
+  state.postCommentError = undefined;
+  state.postCommentMessage = undefined;
+})
+.addCase(
+  postBlogComment.fulfilled,
+  (state, action: PayloadAction<PostCommentResponse>) => {
+    state.postCommentLoading = false;
+    state.postCommentSuccess = action.payload.status;
+    state.postCommentMessage = action.payload.message;
+  }
+)
+.addCase(postBlogComment.rejected, (state, action) => {
+  state.postCommentLoading = false;
+  state.postCommentSuccess = false;
+  state.postCommentError = action.payload as string;
+})
 .addCase(fetchSearchSuggestions.pending, (state) => {
     state.searchLoading = true;
     state.searchError = undefined;
@@ -411,8 +548,9 @@ const blogSlice = createSlice({
     state.loadingDetail = false;
     state.errorDetail = action.payload as string;
   })
-      ;
+  ;
   },
 });
+
 
 export default blogSlice.reducer;

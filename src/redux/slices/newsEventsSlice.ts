@@ -1,9 +1,45 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { apiGet } from "../api/apiClient";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { apiGet, apiPost } from "../api/apiClient";
 
 /* ============================
 ✅ TYPES
 ============================ */
+
+export interface PostEventCommentPayload {
+  news_events_id: string;
+  username: string;
+  useremail: string;
+  subject?: string;
+  message: string;
+}
+
+export interface PostEventReplyPayload {
+  comment_id: string;
+  username: string;
+  useremail: string;
+  subject: string;
+  message: string;
+}
+
+export interface PostCommentResponse {
+  status: boolean;
+  message: string;
+}
+
+export interface CommentReply {
+  id: string;
+  username: string;
+  message: string;
+  created: string;
+}
+
+export interface Comment {
+  id: string;
+  username: string;
+  message: string;
+  created: string;
+  replies: CommentReply[];
+}
 
 export interface NewsEvent {
   id: string;
@@ -11,19 +47,9 @@ export interface NewsEvent {
   description_short?: string;
   description_full?: string;
   event_date: string;
-  event_day?: string;
-  event_month?: string;
-  baseurl?: string;
   image: string;
+  baseurl?: string;
   detail_url?: string;
-}
-
-interface Comment {
-  id: string;
-  username: string;
-  message: string;
-  created: string;
-  reply: any[];
 }
 
 interface NewsCategory {
@@ -32,28 +58,44 @@ interface NewsCategory {
   baseurl: string;
   url: string;
 }
-
+interface Comments {
+  id: string;
+  username: string;
+  message: string;
+  created: string;
+  replies?: Reply[];
+}
+interface Reply {
+  id: string;
+  username: string;
+  message: string;
+  created: string;
+}
 interface LatestPost {
   id: string;
   title: string;
   event_date: string;
   image: string;
   detail_url: string;
+  description_short?: string;
 }
 
 interface NewsEventState {
   newsEvents: NewsEvent[];
   newsDetail: NewsEvent | null;
+  comments?: Comments[];
 
-  listLatestPosts: LatestPost[];     // ✅ from LIST API
-  detailLatestPosts: NewsEvent[];    // ✅ from DETAIL API
-
-  popularNews: NewsEvent[];
   categories: NewsCategory[];
-  comments: Comment[];
+  listLatestPosts: LatestPost[];
+  popularNews: NewsEvent[];
 
   loading: boolean;
   error: string | null;
+
+  postCommentLoading: boolean;
+  postCommentSuccess: boolean;
+  postCommentMessage?: string;
+  postCommentError?: string;
 }
 
 /* ============================
@@ -63,89 +105,123 @@ interface NewsEventState {
 const initialState: NewsEventState = {
   newsEvents: [],
   newsDetail: null,
-
-  listLatestPosts: [],
-  detailLatestPosts: [],
-
-  popularNews: [],
-  categories: [],
   comments: [],
+
+  categories: [],
+  listLatestPosts: [],
+  popularNews: [],
 
   loading: false,
   error: null,
+
+  postCommentLoading: false,
+  postCommentSuccess: false,
+  postCommentMessage: "",
+  postCommentError: "",
 };
 
 /* ============================
-✅ LIST PAGE API
+✅ LIST PAGE
 ============================ */
 
-export const fetchNewsEvents = createAsyncThunk<
-  {
-    news_events: NewsEvent[];
-    categories: NewsCategory[];
-    latest_posts: LatestPost[];
-  },
-  void,
-  { rejectValue: string }
->("newsEvents/fetchNewsEvents", async (_, { rejectWithValue }) => {
-  try {
-    const data = await apiGet<{
-      status: boolean;
-      news_events: NewsEvent[];
-      categories: NewsCategory[];
-      latest_posts: LatestPost[];
-    }>("/get_news_events"); // ✅ api_key auto added
+export const fetchNewsEvents = createAsyncThunk(
+  "newsEvents/fetchList",
+  async (_, { rejectWithValue }) => {
+    try {
+      return await apiGet("/get_news_events");
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
 
-    return {
-      news_events: data.news_events,
-      categories: data.categories,
-      latest_posts: data.latest_posts,
-    };
-  } catch (error: any) {
-    return rejectWithValue(error.message || "Failed to load news");
+/* ============================
+✅ DETAIL PAGE
+============================ */
+
+export const fetchNewsEventDetail = createAsyncThunk(
+  "newsEvents/fetchDetail",
+  async (baseurl: string, { rejectWithValue }) => {
+    try {
+      const response = await apiGet("/get_news_event_detail", { baseurl });
+      const comments = response?.comments ?? response?.event?.comments ?? [];
+      return {
+        ...response,
+        // ✔ add comments
+        comments: Array.isArray(comments)
+          ? comments.map((c: any) => {
+              const replies = c?.replies ?? c?.reply ?? c?.replys ?? c?.children ?? [];
+              return {
+                id: c.id,
+                username: c.username,
+                message: c.message,
+                created: c.created,
+                replies: Array.isArray(replies)
+                  ? replies.map((r: any) => ({
+                      id: r.id,
+                      username: r.username,
+                      message: r.message,
+                      created: r.created,
+                    }))
+                  : [],
+              };
+            })
+          : [],
+      };
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+
+    }
+  }
+);
+
+/* ============================
+✅ POST COMMENT
+============================ */
+
+export const postEventComment = createAsyncThunk<
+  PostCommentResponse,
+  PostEventCommentPayload,
+  { rejectValue: string }
+>("newsEvents/postComment", async (payload, { rejectWithValue }) => {
+  try {
+    const formData = new URLSearchParams();
+
+    Object.entries(payload).forEach(([k, v]) => {
+      if (v) formData.append(k, String(v));
+    });
+
+    return await apiPost("/event_post_reply", formData, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+  } catch (err: any) {
+    return rejectWithValue(err.message);
   }
 });
 
 /* ============================
-✅ DETAIL PAGE API
+✅ POST REPLY
 ============================ */
 
-export const fetchNewsEventDetail = createAsyncThunk<
-  {
-    event: NewsEvent;
-    comments: Comment[];
-    latest_post: NewsEvent[];
-    popular_news: NewsEvent[];
-  },
-  string,
+export const postEventReply = createAsyncThunk<
+  PostCommentResponse,
+  PostEventReplyPayload,
   { rejectValue: string }
->("newsEvents/fetchNewsEventDetail", async (baseurl, { rejectWithValue }) => {
+>("newsEvents/postReply", async (payload, { rejectWithValue }) => {
   try {
-    const data = await apiGet<{
-      status: boolean;
-      event: NewsEvent;
-      comments: Comment[];
-      latest_post: NewsEvent[];
-      popular_news: NewsEvent[];
-    }>("/get_news_event_detail", { baseurl }); // ✅ CORRECT PARAM
+    const formData = new URLSearchParams();
 
-    return data;
-  } catch (error: any) {
-    return rejectWithValue(error.message || "Failed to load detail");
+    Object.entries(payload).forEach(([k, v]) => {
+      formData.append(k, String(v));
+    });
+
+    return await apiPost("/save_event_reply", formData, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+  } catch (err: any) {
+    return rejectWithValue(err.message);
   }
 });
-
-// ✅ NEW CATEGORY API THUNK (SAFE ADDITION)
-export const fetchNewsByCategory = createAsyncThunk(
-  "newsEvents/fetchByCategory",
-  async (category: string) => {
-    const res = await apiGet(
-      `/get_news_event_category`,
-      { category }
-    );
-    return res;
-  }
-);
 
 /* ============================
 ✅ SLICE
@@ -155,22 +231,19 @@ const newsEventsSlice = createSlice({
   name: "newsEvents",
   initialState,
   reducers: {
-    clearNewsDetail: (state) => {
+    clearNewsDetail(state) {
       state.newsDetail = null;
       state.comments = [];
-      state.detailLatestPosts = [];
-      state.popularNews = [];
     },
   },
   extraReducers: (builder) => {
     builder
 
-      /* ✅ LIST */
+      // LIST
       .addCase(fetchNewsEvents.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
-      .addCase(fetchNewsEvents.fulfilled, (state, action) => {
+      .addCase(fetchNewsEvents.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.newsEvents = action.payload.news_events;
         state.categories = action.payload.categories;
@@ -178,37 +251,44 @@ const newsEventsSlice = createSlice({
       })
       .addCase(fetchNewsEvents.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Error loading news";
+        state.error = action.payload as string;
       })
 
-      /* ✅ DETAIL */
-      .addCase(fetchNewsEventDetail.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(fetchNewsEventDetail.fulfilled, (state, action) => {
+      // DETAIL
+      .addCase(fetchNewsEventDetail.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         state.newsDetail = action.payload.event;
         state.comments = action.payload.comments;
-        state.detailLatestPosts = action.payload.latest_post;
         state.popularNews = action.payload.popular_news;
       })
-      .addCase(fetchNewsEventDetail.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "Error loading detail";
+
+      // COMMENT
+      .addCase(postEventComment.pending, (state) => {
+        state.postCommentLoading = true;
       })
-      .addCase(fetchNewsByCategory.pending, (state) => {
-    state.loading = true;
-  })
-  .addCase(fetchNewsByCategory.fulfilled, (state, action) => {
-    state.loading = false;
-    state.newsEvents = action.payload.news_events;
-    state.categories = action.payload.categories;
-    state.listLatestPosts = action.payload.latest_posts;
-  })
-  .addCase(fetchNewsByCategory.rejected, (state, action) => {
-    state.loading = false;
-    state.error = action.error.message || "Category fetch failed";
-  });
+      .addCase(postEventComment.fulfilled, (state, action) => {
+        state.postCommentLoading = false;
+        state.postCommentSuccess = action.payload.status;
+        state.postCommentMessage = action.payload.message;
+      })
+      .addCase(postEventComment.rejected, (state, action) => {
+        state.postCommentLoading = false;
+        state.postCommentError = action.payload as string;
+      })
+
+      // REPLY
+      .addCase(postEventReply.pending, (state) => {
+        state.postCommentLoading = true;
+      })
+      .addCase(postEventReply.fulfilled, (state, action) => {
+        state.postCommentLoading = false;
+        state.postCommentSuccess = action.payload.status;
+        state.postCommentMessage = action.payload.message;
+      })
+      .addCase(postEventReply.rejected, (state, action) => {
+        state.postCommentLoading = false;
+        state.postCommentError = action.payload as string;
+      });
   },
 });
 

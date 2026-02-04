@@ -86,14 +86,19 @@ const disclaimerList = [
   { name: "MongoDB®, Mongo are the registered trademarks of MongoDB, Inc." },
 ];
 
+
 interface FooterProps {
   footerHtml?: string | null;
 }
 
 export default function Footer({ footerHtml }: FooterProps) {
   return (
+    <>
+    
+
     <footer>
       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#1A1A1A] text-white">
+        
          <div className="grid md:grid-cols-4 grid-cols-2 gap-4">
               <div className="col-span-1 lg:col-span-1">
                 <p className="text-md font-semibold">Organization</p>
@@ -199,5 +204,6 @@ export default function Footer({ footerHtml }: FooterProps) {
         <p className="text-sm text-white">© 2025 ExcelR Solutions. All rights reserved.</p>
       </div>
     </footer>
+    </>
   );
 }

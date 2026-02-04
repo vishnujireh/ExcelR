@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchBlogDetail, fetchSidebarCategories } from "@/redux/slices/blogSlice";
@@ -13,7 +13,13 @@ import Image from "next/image";
 import { RiEyeFill, RiFacebookFill, RiTwitterXFill, RiLinkedinFill } from "react-icons/ri";
 import Link from "next/link"
 
+ 
+
 export default function BlogDetailPage() {
+    const [replyTo, setReplyTo] = useState<{
+  commentId: string;
+  username: string;
+} | null>(null);
   const router = useRouter();
   const slugArray = router.query.slug as string[] | undefined;
 
@@ -50,6 +56,8 @@ export default function BlogDetailPage() {
   if (loadingDetail) return <p>Loading blog...</p>;
   if (errorDetail) return <p>Error: {errorDetail}</p>;
   if (!blogDetail) return <p>No blog found.</p>;
+
+
 
   return (
     <>
@@ -124,7 +132,7 @@ export default function BlogDetailPage() {
           )}
 
           {/* Share Buttons */}
-          <div className="bg-white mt-10">
+          <div className="mt-10">
             <h2 className="text-xl font-semibold mb-2">Found the Post Useful? Share It Now!</h2>
               <div className="w-12 h-1 bg-[#197b9f] mb-4"></div>
             <div className="flex items-center gap-4 flex-wrap">
@@ -157,8 +165,63 @@ export default function BlogDetailPage() {
 
           {/* Post Comment */}
           <div>
+            
+           {blogDetail.comments && blogDetail.comments.length > 0 && (
+            <div className="mt-10">
+            <h2 className="text-xl font-semibold mb-2">Latest Comments</h2>
+            <div className="w-12 h-1 bg-[#197b9f] mb-4"></div>
+  <div className="space-y-6">
+    {blogDetail.comments.map((comment) => (
+      <div key={comment.id} className="space-y-4">
+        
+        {/* 🔹 Comment Box */}
+        <div className="bg-white p-4 rounded-lg shadow">
+          <p className="font-semibold capitalize">{comment.username}</p>
+          <p className="text-gray-600 text-xs mb-3">{comment.created_at}</p>
+          <p className="text-gray-700 text-sm">{comment.message}</p>
 
-          <PostComment />
+          {/* Reply Button */}
+          <button
+            className="text-sm text-blue-500 mt-2 cursor-pointer ml-auto block"
+            onClick={() =>
+              setReplyTo({
+                commentId: comment.id,
+                username: comment.username,
+              })
+            }
+          >
+            Reply
+          </button>
+        </div>
+
+        {/* 🔹 Replies Container (separate div) */}
+        {comment.replies && comment.replies.length > 0 && (
+          <div className="ml-8 space-y-3">
+            {comment.replies.map((reply) => (
+              <div
+                key={reply.id}
+                className="bg-white p-3 rounded-lg shadow"
+              >
+                <p className="font-semibold capitalize">{reply.username}</p>
+                <p className="text-gray-600 text-xs mb-3">{reply.created_at}</p>
+                <p className="text-gray-600 text-sm">{reply.message}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+      </div>
+    ))}
+  </div>
+    </div>
+)}
+
+
+        
+          <PostComment  blogId={blogDetail?.id}
+          parentCommentId={replyTo?.commentId}
+    isReply={Boolean(replyTo)}
+    onSuccess={() => setReplyTo(null)} />
           </div>
 
           {/* Next Blog */}

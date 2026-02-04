@@ -16,6 +16,7 @@ import locationReducer from "@/redux/slices/locationSlice";
 import letUsKnowReducer from './slices/letUsKnowSlice';
 import galleryReducer from "./slices/gallerySlice";
 import pageDetailReducer from './slices/pageDetailSlice';
+import corporateTrainingReducer from "./slices/corporateTrainingSlice";
 
 
 export const store = configureStore({
@@ -37,6 +38,7 @@ export const store = configureStore({
     letUsKnow: letUsKnowReducer,
     gallery: galleryReducer,
     pageDetail: pageDetailReducer,
+    corporateTraining: corporateTrainingReducer,
   },
 });
 
