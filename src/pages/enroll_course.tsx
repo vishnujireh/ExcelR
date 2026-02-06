@@ -1,10 +1,33 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from "react";
 import Breadcrumb from "@/pages/components/Breadcrumb";
-import Image from 'next/image';
+import Image from "next/image";
 import { RiCheckFill } from "react-icons/ri";
+import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUpcomingBatch } from "@/redux/slices/upcomingBatchSlice";
+import type { AppDispatch, RootState } from "@/redux/store";
+import bannerImageUrl from "/public/banerdc.webp";
 
 export default function EnrollCourse() {
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const { batchData, loading, error } = useSelector(
+    (state: RootState) => state.upcomingBatch
+  );
+
+  const batchIdParam = router.query.batch_id;
+  const comboIdParam = router.query.combo_id;
+  const comboItemParam = router.query.item_id;
+  const courseParam = router.query.course;
+  const batchId =
+    typeof batchIdParam === "string" ? Number(batchIdParam) : null;
+  const comboId = typeof comboIdParam === "string" ? comboIdParam : "";
+  const comboItemId = typeof comboItemParam === "string" ? comboItemParam : "";
+  const isCombo = Boolean(comboId && comboItemId);
+  const courseSlug = typeof courseParam === "string" ? courseParam : "";
+
+  const [ipAddress, setIpAddress] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     userName: '',
@@ -17,8 +40,80 @@ export default function EnrollCourse() {
   });
   const [discount, setDiscount] = useState(0);
 
-  const basePrice = 60000;
-  const grandTotal = basePrice - discount;
+  useEffect(() => {
+    fetch("https://api.ipify.org?format=json")
+      .then((res) => res.json())
+      .then((data) => setIpAddress(data.ip))
+      .catch(() => setIpAddress("0.0.0.0"));
+  }, []);
+
+  useEffect(() => {
+    if (!courseSlug || !ipAddress) return;
+
+    dispatch(
+      fetchUpcomingBatch({
+        courseSlug,
+        city: "",
+        ip_address: ipAddress,
+      })
+    );
+  }, [dispatch, courseSlug, ipAddress]);
+
+  const selectedBatch = useMemo(() => {
+    if (!batchData || !batchId) return null;
+
+    for (const mode of batchData.training_modes || []) {
+      for (const batch of mode.upcoming_dates_preview || []) {
+        if (batch.batch_id === batchId) {
+          return { batch, mode: mode.mode };
+        }
+      }
+
+      for (const batches of Object.values(mode.upcoming_dates_all || {})) {
+        for (const batch of batches || []) {
+          if (batch.batch_id === batchId) {
+            return { batch, mode: mode.mode };
+          }
+        }
+      }
+    }
+
+    return null;
+  }, [batchData, batchId]);
+
+  const selectedComboItem = useMemo(() => {
+    if (!batchData?.combo_offer?.items || !comboItemId) return null;
+    const idx = Number(comboItemId) - 1;
+    const byIndex = batchData.combo_offer.items[idx];
+    if (byIndex) return byIndex;
+
+    const matchUrlPart = `enroll_combo_course/${comboId}/${comboItemId}`;
+    return (
+      batchData.combo_offer.items.find((item) =>
+        item.enroll_url?.includes(matchUrlPart)
+      ) || null
+    );
+  }, [batchData, comboId, comboItemId]);
+
+  const basePrice = Number(
+    isCombo
+      ? selectedComboItem?.discount_price || selectedComboItem?.mrp || 0
+      : selectedBatch?.batch?.discount_amount ||
+        selectedBatch?.batch?.amount ||
+        0
+  );
+  const iitmPrice = isCombo
+    ? 0
+    : Number(selectedBatch?.batch?.iitm_certificate_amount || 0);
+  const effectivePrice =
+    formData.iitmCert && iitmPrice > 0 ? iitmPrice : basePrice;
+  const grandTotal = effectivePrice - discount;
+  const summaryTitle = isCombo
+    ? selectedComboItem?.name || "Combo Offer"
+    : batchData?.course_name || "Course Details";
+  const summaryDateTime = selectedBatch?.batch
+    ? `${selectedBatch.batch.date.display} ${selectedBatch.batch.time}`
+    : "";
 
   const steps = [
     { num: 1, title: 'Course Summary' },
@@ -34,7 +129,7 @@ export default function EnrollCourse() {
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -62,43 +157,64 @@ export default function EnrollCourse() {
         <Breadcrumb />
       </div>
       
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad">
-        <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center z-50 relative text-white">Cart</h1>
+      <div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 lg:px-10 p-5 relative">
+        <div className="md:block absolute inset-0 -z-10">
+        <Image
+            src={bannerImageUrl}
+            alt="Enroll Course Banner"
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+            className="object-cover -z-10"
+            quality={55}
+          />
+          </div>
+        <div className="hidden md:block absolute inset-0 bg-black/60 z-0" />
+        <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center z-10 relative text-white">Cart</h1>
       </div> 
-<section className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#f4f7ff] lg:pb-0">
+ <section className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#f4f7ff] lg:pb-0">
     
     {/* Enrollment Form Section */}
     <div className="grid grid-cols-1 gap-4">
   <div className="col-span-1">
-     <div className="grid grid-cols-3 lg:gap-24 gap-8">
-            <div className="col-span-2">
-              <div className="flex justify-between items-start max-w-xl mx-auto mb-5">
+     <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-24 gap-8">
+            <div className="col-span-1 lg:col-span-2">
+              <div className="flex flex-col md:flex-row items-start max-w-3xl mx-auto mb-5 gap-4 md:gap-0">
                 {steps.map((step, index) => (
-                  <div key={index} className="flex flex-col items-center flex-1">
-                    <div className="flex items-center w-full">
+                  <div key={index} className="w-full md:flex-1 flex flex-col items-center">
+                    <div className="relative w-full flex items-center justify-center">
                       {index > 0 && (
-                        <div className={`h-[1px] flex-1 ${
-                          currentStep > index ? 'bg-black' : 'bg-gray-300'
-                        }`} />
+                        <span
+                          className={`hidden md:block absolute left-0 right-1/2 top-1/2 h-[1px] ${
+                            currentStep > index ? "bg-black" : "bg-gray-300"
+                          }`}
+                        />
                       )}
-                      <div className={`w-15 h-15 rounded-full flex items-center justify-center text-base mx-2 shadow-lg ${
-                        currentStep === step.num 
-                          ? 'bg-black text-white' 
-                          : currentStep > step.num
-                          ? 'bg-black text-white'
-                          : 'bg-white  text-gray-800'
-                      }`}>
+                      {index < steps.length - 1 && (
+                        <span
+                          className={`hidden md:block absolute left-1/2 right-0 top-1/2 h-[1px] ${
+                            currentStep > step.num ? "bg-black" : "bg-gray-300"
+                          }`}
+                        />
+                      )}
+                      <div
+                        className={`w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center text-base shadow-lg z-10 ${
+                          currentStep === step.num
+                            ? "bg-black text-white"
+                            : currentStep > step.num
+                            ? "bg-black text-white"
+                            : "bg-white text-gray-800"
+                        }`}
+                      >
                         {step.num}
                       </div>
-                      {index < steps.length - 1 && (
-                        <div className={`h-[1px] flex-1 ${
-                          currentStep > step.num ? 'bg-black' : 'bg-gray-300'
-                        }`} />
-                      )}
                     </div>
-                    <span className={`mt-3 text-sm font-semibold text-center ${
-                      currentStep === step.num ? 'text-gray-900' : 'text-gray-800'
-                    }`}>
+                    <span
+                      className={`mt-3 text-sm font-semibold text-center leading-snug max-w-full md:max-w-[200px] min-h-0 md:min-h-[44px] ${
+                        currentStep === step.num ? "text-gray-900" : "text-gray-800"
+                      }`}
+                    >
                       {step.title}
                     </span>
                   </div>
@@ -108,9 +224,19 @@ export default function EnrollCourse() {
                 {/* Step 1: Course Summary */}
                 {currentStep === 1 && (
                   <div className="space-y-6 bg-white rounded-lg shadow overflow-hidden p-5">
+                    {loading && (
+                      <p className="text-sm text-gray-500 mb-3">
+                        Loading batch details...
+                      </p>
+                    )}
+                    {error && (
+                      <p className="text-sm text-red-600 mb-3">
+                        {error}
+                      </p>
+                    )}
                     {/* Course Table */}
-                    <div className="overflow-hidden">
-                      <table className="w-full">
+                    <div className="overflow-x-auto">
+                      <table className="w-full min-w-[640px]">
                         <thead>
                           <tr className="bg-black text-white">
                             <th className="text-left text-sm px-3 py-2 font-semibold  max-w-xs">Course</th>
@@ -123,25 +249,34 @@ export default function EnrollCourse() {
                           <tr className="border-t border-gray-200">
                             <td className="px-3 py-2 max-w-xs">
                               <p className="font-medium text-gray-900 mb-2  text-sm">
-                                Data Science Certification Course in Bangalore with Placement Assistance
+                                {summaryTitle}
                               </p>
-                              <p className="text-sm text-gray-700">
-                                <strong>Batch Date:</strong> 05-Jan-2026 12:00 PM-2:00 PM
-                              </p>
-                              <label className="flex items-center mt-3 text-sm cursor-pointer">
-                                <input
-                                  type="checkbox"
-                                  name="iitmCert"
-                                  checked={formData.iitmCert}
-                                  onChange={handleInputChange}
-                                  className="mr-2 w-4 h-4 text-blue-600"
-                                />
-                                <span className="text-blue-600 font-medium">With IITM Pravartak Certification</span>
-                              </label>
+                              {!isCombo && (
+                                <p className="text-sm text-gray-700">
+                                  <strong>Batch Date:</strong>{" "}
+                                  {summaryDateTime || "TBA"}
+                                </p>
+                              )}
+                              {!isCombo && iitmPrice > 0 && (
+                                <label className="flex items-center mt-3 text-sm cursor-pointer">
+                                  <input
+                                    type="checkbox"
+                                    name="iitmCert"
+                                    checked={formData.iitmCert}
+                                    onChange={handleInputChange}
+                                    className="mr-2 w-4 h-4 text-blue-600"
+                                  />
+                                  <span className="text-blue-600 font-medium">
+                                    With IITM Pravartak Certification
+                                  </span>
+                                </label>
+                              )}
                             </td>
-                            <td className="px-3 py-2 text-gray-900 text-sm text-center">Live Virtual</td>
+                            <td className="px-3 py-2 text-gray-900 text-sm text-center">
+                              {isCombo ? "Combo Offer" : selectedBatch?.mode || "Training"}
+                            </td>
                             <td className="px-3 py-2 text-gray-900 text-sm text-center">1</td>
-                            <td className="px-3 py-2 text-gray-900 font-semibold text-sm text-center">₹ {basePrice.toLocaleString()}</td>
+                            <td className="px-3 py-2 text-gray-900 font-semibold text-sm text-center">₹ {effectivePrice.toLocaleString()}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -168,18 +303,18 @@ export default function EnrollCourse() {
                         </div>
                       </div>
 
-                      <div className="text-right space-y-2">
+                      <div className="w-full md:w-auto text-right md:text-right space-y-2">
                         {discount > 0 && (
                           <>
                             <p className="text-gray-700">Discount: <span className="font-semibold text-green-600">- ₹ {discount.toLocaleString()}</span></p>
-                            <p className="text-gray-700">Total: <span className="font-semibold">₹ {basePrice.toLocaleString()}</span></p>
+                            <p className="text-gray-700">Total: <span className="font-semibold">₹ {effectivePrice.toLocaleString()}</span></p>
                           </>
                         )}
                         {!discount && (
-                          <p className="text-gray-700 text-sm">Total: <span>₹ {basePrice.toLocaleString()}</span></p>
+                          <p className="text-gray-700 text-sm">Total: <span>₹ {effectivePrice.toLocaleString()}</span></p>
                         )}
-                        <p className=" text-sm text-gray-700">
-                          Grand Total: <span>₹ {grandTotal.toLocaleString()}</span>
+                        <p className="text-sm text-gray-700">
+                          Grand Total: <span className="font-semibold">₹ {grandTotal.toLocaleString()}</span>
                         </p>
                       </div>
                     </div>

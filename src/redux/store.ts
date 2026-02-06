@@ -17,6 +17,8 @@ import letUsKnowReducer from './slices/letUsKnowSlice';
 import galleryReducer from "./slices/gallerySlice";
 import pageDetailReducer from './slices/pageDetailSlice';
 import corporateTrainingReducer from "./slices/corporateTrainingSlice";
+import everyDayLearningReducer from "./slices/everyDayLearningSlice";
+import careerFormReducer from "./slices/careerFormSlice";
 
 
 export const store = configureStore({
@@ -39,6 +41,8 @@ export const store = configureStore({
     gallery: galleryReducer,
     pageDetail: pageDetailReducer,
     corporateTraining: corporateTrainingReducer,
+    everyDayLearning: everyDayLearningReducer,
+    careerForm: careerFormReducer,
   },
 });
 

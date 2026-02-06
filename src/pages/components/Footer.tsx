@@ -78,7 +78,7 @@ const courses = [
 ];
 
 const disclaimerList = [
-  { name: "PMI®, PMBOK® Guide, PMP®, PgMP®, CAPM®, PMI-RMP®, PMI-ACP® are registered marks of the Project Management Institute (PMI)®" },
+  { name: "PMI®, PMBOK® Guide, PMP®, PgMP®, CAPM®, PMI-RMP®, PMI-ACP® are registered marks of the Project Management Institute (PMI)®"},
   { name: '"ITIL®" is registered trademark of AXELOS, United Kingdom' },
   { name: "The Swirl logo TM is a Trade Mark of AXELOS" },
   { name: "PRINCE2® is a Registered Trade Mark of AXELOS, United Kingdom" },
@@ -201,7 +201,7 @@ export default function Footer({ footerHtml }: FooterProps) {
       </div>
 
       <div className="text-center bg-black py-5 md:mb-10">
-        <p className="text-sm text-white">© 2025 ExcelR Solutions. All rights reserved.</p>
+        <p className="text-sm text-white">© {new Date().getFullYear()} ExcelR Solutions. All rights reserved.</p>
       </div>
     </footer>
     </>

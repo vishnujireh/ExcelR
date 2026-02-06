@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Breadcrumb from "../../components/Breadcrumb";
 import OurClients from "../../components/OurClients";
 import { RootState, AppDispatch } from "@/redux/store";
+import CareerApplyForm from "../../components/CareerForm";
 import {
   fetchCareerDetail,
   clearCareerDetail,
@@ -112,82 +113,12 @@ export default function CareerDetailPage() {
                 <p className="text-lg mb-4 font-medium text-[#4593d0]">
                   Apply for this position
                 </p>
-
-                <form className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Name *"
-                    className="border border-gray-200 text-sm rounded-lg w-full p-3"
-                    required
-                  />
-
-                  <input
-                    type="tel"
-                    placeholder="Mobile No. *"
-                    className="border border-gray-200 text-sm rounded-lg w-full p-3"
-                    required
-                  />
-
-                  <input
-                    type="email"
-                    placeholder="Email *"
-                    className="border border-gray-200 text-sm rounded-lg w-full p-3"
-                    required
-                  />
-
-                  <input
-                    type="text"
-                    placeholder="EMP Name / Code *"
-                    className="border border-gray-200 text-sm rounded-lg w-full p-3"
-                    required
-                  />
-
-                  <small className="text-gray-400 block">
-                    *Applicable for ExcelR employees referral only
-                  </small>
-
-                  <textarea
-                    placeholder="Cover Letter *"
-                    className="border border-gray-200 text-sm rounded-lg w-full p-3"
-                    required
-                  />
-
-                  <label className="text-sm block">Upload CV *</label>
-                  <input
-                    type="file"
-                    className="border border-gray-200 text-sm rounded-lg w-full p-3"
-                    required
-                  />
-
-                  <div className="flex items-start gap-2 text-sm">
-                    <input type="checkbox" required />
-                    <label className="text-gray-500">
-                      I agree to the{" "}
-                      <a
-                        href="/terms"
-                        className="text-blue-600 underline"
-                        target="_blank"
-                      >
-                        Terms and Conditions
-                      </a>{" "}
-                      and{" "}
-                      <a
-                        href="/privacy-policy"
-                        className="text-blue-600 underline"
-                        target="_blank"
-                      >
-                        Privacy Policy
-                      </a>
-                    </label>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className=" border border-[#0071BC] bg-[#0071BC] text-white hover:bg-[#4ba7de] font-medium text-sm py-2.5 px-5 rounded-lg"
-                  >
-                    Submit
-                  </button>
-                </form>
+                <CareerApplyForm
+                  title={job.title}
+                  location={job.location}
+                  category={job.category}
+                  industry={job.industry}
+                />
               </div>
             </div>
           </div>

@@ -15,6 +15,7 @@ export interface BatchDate {
   currency: string;
   amount: string;
   discount_amount: string;
+  iitm_certificate_amount?: string;
   discount_validity: string;
   enroll_url: string;
   filling_fast: boolean;
@@ -24,6 +25,7 @@ export interface PriceInfo {
   currency: string;
   amount: string;
   discount_amount: string;
+  iitm_certificate_amount?: string;
 }
 
 export interface TrainingMode {
@@ -52,6 +54,7 @@ export interface ComboOffer {
 
 export interface UpcomingBatchData {
   course_id: number;
+  course_name?: string;
   city: string;
   training_modes: TrainingMode[];
   combo_offer?: ComboOffer | null;

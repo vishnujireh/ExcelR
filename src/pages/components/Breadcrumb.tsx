@@ -135,7 +135,7 @@ else if (segments[0] === "blogs" && segments.length > 1) {
     ];
   }
 
-   /* =====================================================
+  /* =====================================================
      ✅ ✅ ✅ CASE 3: NEWS EVENT DETAIL PAGE (NEW LOGIC)
      URL → /news-event-detail/[slug]
      REQUIRED:
@@ -152,6 +152,26 @@ else if (segments[0] === "blogs" && segments.length > 1) {
           .replace(/\b\w/g, (l) => l.toUpperCase()),
       },
     ];
+  }
+
+  /* =====================================================
+     ✅ ENROLL COURSE PAGE
+     URL → /enroll_course or /enroll_course/[id]
+     REQUIRED:
+     Home > Enroll Course
+  ===================================================== */
+  else if (segments[0] === "enroll_course") {
+    crumbs = [{ name: "Enroll Course" }];
+  }
+
+  /* =====================================================
+     ✅ ENROLL COMBO COURSE PAGE
+     URL → /enroll_combo_course/[combo_id]/[item_id]
+     REQUIRED:
+     Home > Enroll Course
+  ===================================================== */
+  else if (segments[0] === "enroll_combo_course") {
+    crumbs = [{ name: "Enroll Course" }];
   }
 
   // -------------------------

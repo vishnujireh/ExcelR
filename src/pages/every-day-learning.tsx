@@ -11,6 +11,8 @@ import OurClients from "./components/OurClients";
 import AcademicPartners from "./components/AcademicPartners";
 import Collaborated from "./components/Collaborated";
 import PopularCourse from "./components/PopularCourse"
+import EveryDayLearningForm from "./components/EveryDayLearningForm";
+import bannerImageUrl from "/public/edl_ban.webp";
 
 
 export default function CorporateTraining(){
@@ -19,7 +21,20 @@ export default function CorporateTraining(){
         <div>
         <Breadcrumb />
       </div>
-        <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad">
+        <div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 lg:px-10 p-5 relative">
+                        <div className="hidden md:block absolute inset-0 -z-10">
+                              <Image
+                                  src={bannerImageUrl}
+                                  alt="Enroll Course Banner"
+                                  fill
+                                  priority
+                                  fetchPriority="high"
+                                  sizes="100vw"
+                                  className="object-cover -z-10"
+                                  quality={55}
+                                />
+                                </div>
+                                <div className="hidden md:block absolute inset-0 bg-black/60 z-0" />
            <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center z-50 relative text-white">Every Day Learning Program For Faculty, Students & Colleges</h1>
            <div className="w-10 bg-amber-500 h-1 mb-3 text-center mx-auto z-50 relative"></div>
            <p className="z-50 relative text-white text-center italic text-shadow-black">Helping colleges to fulfil your NAAC/NBA accreditations</p>
@@ -51,108 +66,7 @@ export default function CorporateTraining(){
                Every Day Learning Program
               </p>
       
-             <form className="space-y-4">
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    
-    {/* Name */}
-    <input
-      type="text"
-      name="name"
-      placeholder="Name *"
-      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-      required
-    />
-
-    {/* College Name */}
-    <input
-      type="text"
-      name="company_name"
-      placeholder="College Name"
-      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-      required
-    />
-
-    {/* Email */}
-    <input
-      type="email"
-      name="email"
-      placeholder="Email *"
-      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-      required
-    />
-
-    {/* Mobile */}
-    <input
-      type="tel"
-      name="mobile"
-      placeholder="Mobile No. *"
-      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-      required
-    />
-
-    {/* Location */}
-    <input
-      type="text"
-      name="location"
-      placeholder="Location"
-      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-      required
-    />
-
-    {/* Country */}
-    <input
-      type="text"
-      name="country"
-      placeholder="Country"
-      className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-      required
-    />
-
-    {/* Course — full width */}
-    <div className="sm:col-span-2">
-      <input
-        type="text"
-        name="course"
-        placeholder="Course"
-        className="rounded-3xl border border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-        required
-      />
-    </div>
-
-    {/* Terms & Conditions — full width */}
-    <div className="sm:col-span-2">
-      <div className="flex items-start space-x-2 text-sm">
-        <input
-          type="checkbox"
-          id="terms"
-          className="w-4 h-4 rounded border-gray-300 focus:ring-blue-500"
-          required
-        />
-        <label htmlFor="terms" className="text-gray-500">
-          I hereby agree to the{" "}
-          <a href="/terms" target="_blank" className="text-blue-600 underline">
-            Terms and Conditions
-          </a>{" "}
-          and{" "}
-          <a href="/privacy-policy" target="_blank" className="text-blue-600 underline">
-            Privacy Policy
-          </a>{" "}
-          of Excelr Solutions.
-        </label>
-      </div>
-
-      <div className="text-center mt-5">
-        <button
-          type="submit"
-          className="border cursor-pointer border-[#0071BC] bg-[#0071BC] hover:bg-[#4ba7de] text-white font-medium text-sm py-2.5 px-5 rounded-lg"
-        >
-          Submit
-        </button>
-      </div>
-    </div>
-
-  </div>
-</form>
+             <EveryDayLearningForm />
 
     </div>
           </div>

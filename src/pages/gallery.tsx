@@ -9,6 +9,7 @@ import Image from "next/image";
 import "react-photo-view/dist/react-photo-view.css";
 import Breadcrumb from "./components/Breadcrumb";
 import { FiSearch } from "react-icons/fi";
+import bannerImageUrl from "/public/blog_page.webp";
 
 export default function GalleryPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,8 +28,21 @@ export default function GalleryPage() {
         <div>
         <Breadcrumb />
       </div>
-        <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad">
-           <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center uppercase z-50 relative text-white">Gallery</h1>
+       <div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 lg:px-10 p-5 relative">
+                <div className="hidden md:block absolute inset-0 -z-10">
+               <Image
+                   src={bannerImageUrl}
+                   alt="Enroll Course Banner"
+                   fill
+                   priority
+                   fetchPriority="high"
+                   sizes="100vw"
+                   className="object-cover -z-10"
+                   quality={55}
+                 />
+                 </div>
+                 <div className="hidden md:block absolute inset-0 bg-black/60 z-0" />
+         <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center uppercase z-50 relative text-white">Gallery</h1>
          </div>
       <section className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
        <PhotoProvider

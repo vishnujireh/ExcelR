@@ -41,8 +41,19 @@ export async function apiPost<T = any>(
   config?: AxiosRequestConfig
 ): Promise<T> {
   try {
+    const isFormData =
+      typeof FormData !== "undefined" && body instanceof FormData;
+    const headers: Record<string, any> = { ...(config?.headers || {}) };
+
+    if (isFormData) {
+      // Let the browser set the boundary for multipart/form-data
+      headers["Content-Type"] = undefined;
+      headers["content-type"] = undefined;
+    }
+
     const res = await api.post<T>(endpoint, body, {
       ...config,
+      headers,
       params: {
         api_key: API_KEY,
         ...(config?.params || {}),

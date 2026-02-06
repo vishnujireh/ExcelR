@@ -8,6 +8,7 @@ import corporate_usp from "../../public/corporate_usp_v1.webp"
 import PopularCourse from "./components/PopularCourse"
 import Testimonials from "./components/Testimonials";
 import CorporateTrainingForm from "./components/CorporateTrainingForm";
+import bannerImageUrl from "/public/corporatetraining_page.webp";
 
 
 export default function CorporateTraining(){
@@ -16,7 +17,20 @@ export default function CorporateTraining(){
         <div>
         <Breadcrumb />
       </div>
-        <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad">
+        <div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 lg:px-10 p-5 relative">
+                <div className="hidden md:block absolute inset-0 -z-10">
+                      <Image
+                          src={bannerImageUrl}
+                          alt="Enroll Course Banner"
+                          fill
+                          priority
+                          fetchPriority="high"
+                          sizes="100vw"
+                          className="object-cover -z-10"
+                          quality={55}
+                        />
+                        </div>
+                        <div className="hidden md:block absolute inset-0 bg-black/60 z-0" />
            <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center uppercase z-50 relative text-white">Corporate Training</h1>
            <div className="w-10 bg-amber-500 h-1 mb-3 text-center mx-auto z-50 relative"></div>
            <p className="z-50 relative text-white text-center italic text-shadow-black">Raising Excellence Then, Now and Forever</p>

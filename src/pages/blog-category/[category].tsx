@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchBlogsByCategory, fetchSidebarCategories } from "@/redux/slices/blogSlice";
 import Link from "next/link";
+import bannerImageUrl from "/public/blog_page.webp";
+import Image from "next/image";
 
  
 function slugify(text: string) {
@@ -63,8 +65,21 @@ export default function CategoryBlogList() {
     <>
       <Breadcrumb />
 
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad">
-        <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center z-50 relative text-white capitalize">
+      <div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 lg:px-10 p-5 relative">
+        <div className="hidden md:block absolute inset-0 -z-10">
+              <Image
+                  src={bannerImageUrl}
+                  alt="Enroll Course Banner"
+                  fill
+                  priority
+                  fetchPriority="high"
+                  sizes="100vw"
+                  className="object-cover -z-10"
+                  quality={55}
+                />
+                </div>
+                <div className="hidden md:block absolute inset-0 bg-black/60 z-0" />
+                <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center z-50 relative text-white capitalize">
            {formatTitle(category)}
         </h1>
       </div>

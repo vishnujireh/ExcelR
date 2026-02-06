@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 
 interface ComboItem {
   name: string;
@@ -16,11 +17,21 @@ interface ComboOfferData {
 
 interface ComboOfferProps {
   closeModal: () => void;
-  data?: ComboOfferData | null;   // ← optional + nullable
+  data?: ComboOfferData | null;   // ÃƒÂ¢Ã¢â‚¬Â Ã‚Â optional + nullable
+  courseSlug?: string;
 }
 
-const ComboOffer: React.FC<ComboOfferProps> = ({ closeModal, data }) => {
+const ComboOffer: React.FC<ComboOfferProps> = ({ closeModal, data, courseSlug }) => {
   if (!data) return null;
+
+  const getInternalComboHref = (enrollUrl?: string) => {
+    if (!enrollUrl) return null;
+    const match = enrollUrl.match(/enroll_combo_course\/(\d+)\/(\d+)/);
+    if (!match) return null;
+    const [, comboId, itemId] = match;
+    const query = courseSlug ? "?course=" + encodeURIComponent(courseSlug) : "";
+    return "/enroll_combo_course/" + comboId + "/" + itemId + query;
+  };
 
   return (
     <div
@@ -37,7 +48,7 @@ const ComboOffer: React.FC<ComboOfferProps> = ({ closeModal, data }) => {
             className="text-2xl cursor-pointer absolute w-10 h-10 -top-8 -end-8 bg-[#171717] text-white rounded-full flex items-center justify-center hover:bg-[#2a2a2a] transition"
             onClick={closeModal}
           >
-            ×
+             ×
           </button>
         </div>
 
@@ -69,14 +80,23 @@ const ComboOffer: React.FC<ComboOfferProps> = ({ closeModal, data }) => {
               </div>
 
               {/* Enroll Button */}
-              <a
-                href={item.enroll_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-[#0071BC] hover:bg-[#005f8c] text-white text-sm font-semibold rounded-md px-4 py-2 transition"
-              >
-                Enroll Now
-              </a>
+              {getInternalComboHref(item.enroll_url) ? (
+                <Link
+                  href={getInternalComboHref(item.enroll_url)!}
+                  className="bg-[#0071BC] hover:bg-[#005f8c] text-white text-sm font-semibold rounded-md px-4 py-2 transition"
+                >
+                  Enroll Now
+                </Link>
+              ) : (
+                <a
+                  href={item.enroll_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-[#0071BC] hover:bg-[#005f8c] text-white text-sm font-semibold rounded-md px-4 py-2 transition"
+                >
+                  Enroll Now
+                </a>
+              )}
             </div>
           ))}
         </div>

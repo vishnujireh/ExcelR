@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import parse from "html-react-parser";
+import Link from "next/link";
 
 interface DateInfo {
   raw: string;
@@ -14,6 +15,7 @@ interface BatchDate {
   currency: string;
   amount: string;
   discount_amount: string;
+  iitm_certificate_amount?: string;
   discount_validity: string;
   enroll_url: string;
   filling_fast: boolean;
@@ -34,9 +36,10 @@ interface ClassScheduleProps {
   type: string; // "Classroom" or "Live Virtual"
   closeModal: () => void;
   modeData: TrainingMode | null;
+  courseSlug?: string;
 }
 
-const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeData }) => {
+const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeData, courseSlug }) => {
   const isClassroom = type === "Classroom";
 
   // Get available months from the API data
@@ -135,14 +138,23 @@ const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeDat
 
                     {/* Enroll button */}
                     <div className="flex flex-col items-center">
-                      <a
-                        href={batch.enroll_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-[#0071BC] hover:bg-[#005f8c] text-white text-sm font-semibold rounded-md px-4 py-1.5 transition"
-                      >
-                        Enroll Now
-                      </a>
+                      {batch.batch_id ? (
+                        <Link
+                          href={`/enroll_course/${batch.batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
+                          className="bg-[#0071BC] hover:bg-[#005f8c] text-white text-sm font-semibold rounded-md px-4 py-1.5 transition"
+                        >
+                          Enroll Now
+                        </Link>
+                      ) : (
+                        <a
+                          href={batch.enroll_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="bg-[#0071BC] hover:bg-[#005f8c] text-white text-sm font-semibold rounded-md px-4 py-1.5 transition"
+                        >
+                          Enroll Now
+                        </a>
+                      )}
                       {batch.filling_fast && (
                         <p className="text-xs text-orange-600 font-medium mt-1">
                           Filling Fast

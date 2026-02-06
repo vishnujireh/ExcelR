@@ -25,7 +25,7 @@ const formatDayWithSuffix = (rawDate: string) => {
 };
 /* ⭐️ END HELPER */
 
-const formatPrice = (amount: number | string) => {
+const formatPrice = (amount?: number | string | null) => {
   if (!amount) return "";
   return Number(amount).toLocaleString("en-IN"); // Adds commas for Indian numbering style
 };
@@ -293,10 +293,9 @@ const comboOfferData = batchData?.combo_offer
                       Show All Batches
                     </button>
 
-                    {mode.upcoming_dates_preview?.[0]?.enroll_url && (
+                    {mode.upcoming_dates_preview?.[0]?.batch_id && (
                       <Link
-                        href={mode.upcoming_dates_preview[0].enroll_url}
-                        target="_blank"
+                        href={`/enroll_course/${mode.upcoming_dates_preview[0].batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
                         className="flex items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
                       >
                         Enroll Now
@@ -314,6 +313,7 @@ const comboOfferData = batchData?.combo_offer
             type={selectedType}
             closeModal={closeModal}
             modeData={selectedModeData}
+            courseSlug={courseSlug}
           />
         )}
 
@@ -321,6 +321,7 @@ const comboOfferData = batchData?.combo_offer
         <ComboOffer
           closeModal={() => setIsComboModalOpen(false)}
           data={comboOfferData}
+          courseSlug={courseSlug}
         />
       )}
 
