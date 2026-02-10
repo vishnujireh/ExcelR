@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import Breadcrumb from "@/pages/components/Breadcrumb";
 import Image from "next/image";
 import { RiCheckFill } from "react-icons/ri";
@@ -7,7 +7,9 @@ import { useRouter } from "next/router";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUpcomingBatch } from "@/redux/slices/upcomingBatchSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
+import { apiPost } from "@/redux/api/apiClient";
 import bannerImageUrl from "/public/banerdc.webp";
+import intlTelInput from "intl-tel-input";
 
 export default function EnrollCourse() {
   const router = useRouter();
@@ -35,10 +37,19 @@ export default function EnrollCourse() {
     mobile: '',
     address: '',
     coupon: '',
+    website: '',
     iitmCert: false,
     paymentMethod: 'ccavenue'
   });
   const [discount, setDiscount] = useState(0);
+  const [formError, setFormError] = useState('');
+  const [submitError, setSubmitError] = useState('');
+  const [submitSuccess, setSubmitSuccess] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const phoneInputRef = useRef<HTMLInputElement | null>(null);
+  const itiRef = useRef<ReturnType<typeof intlTelInput> | null>(null);
+  const formStartRef = useRef<number | null>(null);
 
   useEffect(() => {
     fetch("https://api.ipify.org?format=json")
@@ -46,6 +57,31 @@ export default function EnrollCourse() {
       .then((data) => setIpAddress(data.ip))
       .catch(() => setIpAddress("0.0.0.0"));
   }, []);
+  useEffect(() => {
+    if (currentStep !== 2 || !phoneInputRef.current || itiRef.current) return;
+
+    itiRef.current = intlTelInput(phoneInputRef.current, {
+      initialCountry: "in",
+      separateDialCode: true,
+      nationalMode: true,
+      formatOnDisplay: true,
+      autoPlaceholder: "polite",
+      containerClass: "w-full",
+    });
+
+    return () => {
+      if (itiRef.current) {
+        itiRef.current.destroy();
+        itiRef.current = null;
+      }
+    };
+  }, [currentStep]);
+
+  useEffect(() => {
+    if (currentStep === 2 && formStartRef.current === null) {
+      formStartRef.current = Date.now();
+    }
+  }, [currentStep]);
 
   useEffect(() => {
     if (!courseSlug || !ipAddress) return;
@@ -122,10 +158,19 @@ export default function EnrollCourse() {
   ];
 
   const handleNext = () => {
+    if (currentStep === 2) {
+      const validationError = validateForm();
+      if (validationError) {
+        setFormError(validationError);
+        return;
+      }
+    }
+    setFormError('');
     setCurrentStep(prev => Math.min(prev + 1, 3));
   };
 
   const handlePrevious = () => {
+    setFormError('');
     setCurrentStep(prev => Math.max(prev - 1, 1));
   };
 
@@ -137,6 +182,27 @@ export default function EnrollCourse() {
     }));
   };
 
+  const validateForm = () => {
+    if (formData.website.trim()) return 'Spam detected.';
+    if (!formData.userName.trim()) return 'Name is required.';
+    if (!formData.email.trim()) return 'Email is required.';
+    const emailOk = /^\S+@\S+\.\S+$/.test(formData.email);
+    if (!emailOk) return 'Enter a valid email.';
+    const mobileValue = itiRef.current?.getNumber() || formData.mobile.trim();
+    const mobileDigits = mobileValue.replace(/\D/g, '');
+    const isValidMobile =
+      (itiRef.current?.isValidNumber && itiRef.current.isValidNumber()) ||
+      mobileDigits.length >= 10;
+    if (!isValidMobile) return 'Enter a valid mobile number.';
+    if (!formData.address.trim()) return 'Address is required.';
+    return '';
+  };
+
+  const getQueryValue = (key: string) => {
+    const val = router.query[key];
+    return typeof val === 'string' ? val : '';
+  };
+
   const applyCoupon = () => {
     if (formData.coupon.toLowerCase() === 'save10') {
       setDiscount(6000);
@@ -146,9 +212,63 @@ export default function EnrollCourse() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-    alert('Payment processing... (Demo only)');
+  const handleSubmit = async () => {
+    setSubmitError('');
+    setSubmitSuccess('');
+
+    const validationError = validateForm();
+    if (validationError) {
+      setSubmitError(validationError);
+      return;
+    }
+
+    if (formStartRef.current && Date.now() - formStartRef.current < 1500) {
+      setSubmitError('Please take a moment and try again.');
+      return;
+    }
+
+    if (isSubmitting) return;
+
+    const mobileValue = itiRef.current?.getNumber() || formData.mobile.trim();
+    const payload = {
+      user_name: formData.userName.trim(),
+      email: formData.email.trim(),
+      mobile_no: mobileValue,
+      address: formData.address.trim(),
+      payment_type: formData.paymentMethod,
+      amount: grandTotal,
+      item_number: batchId ? String(batchId) : comboItemId || '',
+      purpose: summaryTitle,
+      combo_id: comboId,
+      tid: '',
+      payment_total: grandTotal,
+      coupon_id: formData.coupon.trim(),
+      discount_value: discount,
+      iitm_certificate: formData.iitmCert ? 1 : 0,
+      utm_source: getQueryValue('utm_source'),
+      utm_medium: getQueryValue('utm_medium'),
+      utm_term: getQueryValue('utm_term'),
+      utm_content: getQueryValue('utm_content'),
+      utm_campaign: getQueryValue('utm_campaign'),
+      utm_device: getQueryValue('utm_device'),
+      utm_adgroup: getQueryValue('utm_adgroup'),
+      gclid: getQueryValue('gclid'),
+      utm_channel: getQueryValue('utm_channel'),
+      utm_type: getQueryValue('utm_type'),
+      utm_variety: getQueryValue('utm_variety'),
+      utm_experiment: getQueryValue('utm_experiment'),
+    };
+
+    try {
+      setIsSubmitting(true);
+      await apiPost("/enrollment_and_payment", payload);
+      setSubmitSuccess('Enrollment submitted successfully.');
+    } catch (err: any) {
+      const message = err?.message || 'Failed to submit enrollment.';
+      setSubmitError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -334,6 +454,7 @@ export default function EnrollCourse() {
                 {/* Step 2: Learner Details */}
                 {currentStep === 2 && (
                   <div className="space-y-6 bg-white shadow p-5 rounded-lg">
+                    <form className="cormobiln"> 
                     <div className="grid md:grid-cols-2 gap-x-8 gap-y-6">
                       <div>
                         <input
@@ -341,7 +462,7 @@ export default function EnrollCourse() {
                           name="userName"
                           value={formData.userName}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-3 border-b-2 bg-transparent focus:outline-none border-gray-300 focus:border-gray-600"
+                          className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
                           placeholder="Name *"
                         />
                       </div>
@@ -352,26 +473,21 @@ export default function EnrollCourse() {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-3 border-b-2 bg-transparent focus:outline-none border-gray-300 focus:border-gray-600"
+                          className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
                           placeholder="E-mail *"
                         />
                       </div>
 
                       <div>
-                        <div className="flex gap-2 border-b-2 border-gray-300 focus-within:border-gray-600">
-                          <div className="flex items-center px-2">
-                            <span className="text-2xl">🇮🇳</span>
-                          </div>
-                          <input
+                        <input
+                            ref={phoneInputRef}
                             type="tel"
                             name="mobile"
                             value={formData.mobile}
                             onChange={handleInputChange}
-                            maxLength={10}
-                            className="flex-1 px-2 py-3 bg-transparent focus:outline-none"
+                            className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
                             placeholder="Mobile No *"
                           />
-                        </div>
                       </div>
 
                       <div>
@@ -380,12 +496,27 @@ export default function EnrollCourse() {
                           name="address"
                           value={formData.address}
                           onChange={handleInputChange}
-                          className="w-full px-4 py-3 border-b-2 bg-transparent focus:outline-none border-gray-300 focus:border-gray-600"
+                          className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
                           placeholder="Full Address"
                         />
                       </div>
+                      <div className="sr-only">
+                        <label htmlFor="website">Website</label>
+                        <input
+                          id="website"
+                          type="text"
+                          name="website"
+                          value={formData.website}
+                          onChange={handleInputChange}
+                          tabIndex={-1}
+                          autoComplete="off"
+                        />
+                      </div>
                     </div>
-
+</form>
+                    {formError && (
+                      <p className="text-sm text-red-600">{formError}</p>
+                    )}
                     {/* Navigation Buttons */}
                     <div className="flex justify-end gap-4 pt-6">
                       <button
@@ -422,6 +553,13 @@ export default function EnrollCourse() {
                       </div>
                     </div>
 
+                    {submitError && (
+                      <p className="text-sm text-red-600">{submitError}</p>
+                    )}
+                    {submitSuccess && (
+                      <p className="text-sm text-green-600">{submitSuccess}</p>
+                    )}
+
                     {/* Navigation Buttons */}
                     <div className="flex justify-end gap-4 pt-6">
                       <button
@@ -432,9 +570,10 @@ export default function EnrollCourse() {
                       </button>
                       <button
                         onClick={handleSubmit}
-                        className="uppercase px-6 py-2.5 cursor-pointer bg-black text-sm text-white rounded hover:bg-gray-800 transition-colors font-medium"
+                        disabled={isSubmitting}
+                        className="uppercase px-6 py-2.5 cursor-pointer bg-black text-sm text-white rounded hover:bg-gray-800 transition-colors font-medium disabled:opacity-60 disabled:cursor-not-allowed"
                       >
-                        Submit
+                        {isSubmitting ? "Submitting..." : "Submit"}
                       </button>
                     </div>
                   </div>
@@ -516,3 +655,5 @@ export default function EnrollCourse() {
     </>
   );
 }
+
+
