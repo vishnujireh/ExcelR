@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-const RESERVED = ['api', '_next', 'admin', 'favicon.ico'];
+const RESERVED = ['api', '_next', 'admin' ];
+const PUBLIC_FILE = /\.(.*)$/;
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -9,7 +10,8 @@ export async function middleware(req: NextRequest) {
   // Ignore system & root routes
   if (
     pathname === '/' ||
-    RESERVED.some(p => pathname.startsWith(`/${p}`))
+    RESERVED.some(p => pathname.startsWith(`/${p}`)) ||
+    PUBLIC_FILE.test(pathname)
   ) {
     return NextResponse.next();
   }
@@ -60,5 +62,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next|admin|favicon.ico).*)'],
+  matcher: ['/((?!api|_next|admin|.*\\..*).*)'],
 };

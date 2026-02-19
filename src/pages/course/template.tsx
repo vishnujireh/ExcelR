@@ -1909,8 +1909,8 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
         <div className="max-w-5xl mx-auto">
           {faqData[activeTab].map((question, index) => (
              <div className="space-y-4 accordion-group coursetm2" id="accordionfaq" key={index}>
-<details className="border-b border-gray-300"><summary className="w-full flex justify-between gap-3 cursor-pointer items-center text-left text-base px-5 py-4 font-semibold text-[#3F3F3F] dark:text-gray-100"> {question}</summary>
-<div className="p-5 text-[#666] text-sm leading-6 dark:text-gray-300 pt-2">
+<details className="border-b border-gray-300"><summary className="w-full flex justify-between gap-3 cursor-pointer items-center text-left text-base px-5 py-4 font-semibold text-[#3F3F3F]"> {question}</summary>
+<div className="p-5 text-[#666] text-sm leading-6 pt-2">
 <ul className="list-disc ml-5">
 	<li>The all new and exclusive JUMBO PASS is the latest initiative taken by ExcelR to offer you access to attend unlimited batches over the duration of 365 days. You will be able to attend unlimited number of classes for the course of your choice.</li>
 </ul>

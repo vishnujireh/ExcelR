@@ -32,14 +32,14 @@ export default function EnrollCourse() {
   const [ipAddress, setIpAddress] = useState("");
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    userName: '',
+    user_name: '',
     email: '',
     mobile: '',
     address: '',
     coupon: '',
     website: '',
     iitmCert: false,
-    paymentMethod: 'ccavenue'
+    paymentMethod: ''
   });
   const [discount, setDiscount] = useState(0);
   const [formError, setFormError] = useState('');
@@ -184,7 +184,7 @@ export default function EnrollCourse() {
 
   const validateForm = () => {
     if (formData.website.trim()) return 'Spam detected.';
-    if (!formData.userName.trim()) return 'Name is required.';
+    if (!formData.user_name.trim()) return 'Name is required.';
     if (!formData.email.trim()) return 'Email is required.';
     const emailOk = /^\S+@\S+\.\S+$/.test(formData.email);
     if (!emailOk) return 'Enter a valid email.';
@@ -229,12 +229,20 @@ export default function EnrollCourse() {
 
     if (isSubmitting) return;
 
+    if (!formData.paymentMethod) {
+      setSubmitError('Please select a payment gateway.');
+      return;
+    }
+
+    const user_nameValue = formData.user_name.trim();
+    const emailValue = formData.email.trim();
+    const addressValue = formData.address.trim();
     const mobileValue = itiRef.current?.getNumber() || formData.mobile.trim();
     const payload = {
-      user_name: formData.userName.trim(),
-      email: formData.email.trim(),
+      user_name: user_nameValue,
+      email: emailValue,
       mobile_no: mobileValue,
-      address: formData.address.trim(),
+      address: addressValue,
       payment_type: formData.paymentMethod,
       amount: grandTotal,
       item_number: batchId ? String(batchId) : comboItemId || '',
@@ -261,8 +269,58 @@ export default function EnrollCourse() {
 
     try {
       setIsSubmitting(true);
-      await apiPost("/enrollment_and_payment", payload);
-      setSubmitSuccess('Enrollment submitted successfully.');
+      const formBody = new FormData();
+      Object.entries(payload).forEach(([key, value]) => {
+        formBody.append(
+          key,
+          value === undefined || value === null ? "" : String(value)
+        );
+      });
+
+      const response = await apiPost<{
+        status?: boolean;
+        payment_gateway?: string;
+        data?: {
+          encRequest?: string;
+          access_code?: string;
+          action_url?: string;
+        };
+        message?: string;
+      }>("/enrollment_and_payment", formBody);
+
+      if (!response?.status) {
+        setSubmitError(response?.message || 'Failed to submit enrollment.');
+        return;
+      }
+
+      const actionUrl = response?.data?.action_url;
+      const encRequest = response?.data?.encRequest;
+      const accessCode = response?.data?.access_code;
+
+      if (!actionUrl || !encRequest || !accessCode) {
+        setSubmitError('Payment gateway response incomplete.');
+        return;
+      }
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = actionUrl;
+      form.style.display = 'none';
+
+      const encInput = document.createElement('input');
+      encInput.type = 'hidden';
+      encInput.name = 'encRequest';
+      encInput.value = encRequest;
+      form.appendChild(encInput);
+
+      const accessInput = document.createElement('input');
+      accessInput.type = 'hidden';
+      accessInput.name = 'access_code';
+      accessInput.value = accessCode;
+      form.appendChild(accessInput);
+
+      document.body.appendChild(form);
+      form.submit();
     } catch (err: any) {
       const message = err?.message || 'Failed to submit enrollment.';
       setSubmitError(message);
@@ -459,9 +517,10 @@ export default function EnrollCourse() {
                       <div>
                         <input
                           type="text"
-                          name="userName"
-                          value={formData.userName}
+                          name="user_name"
+                          value={formData.user_name}
                           onChange={handleInputChange}
+                          required
                           className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
                           placeholder="Name *"
                         />
@@ -473,6 +532,7 @@ export default function EnrollCourse() {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
+                          required
                           className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
                           placeholder="E-mail *"
                         />
@@ -485,6 +545,7 @@ export default function EnrollCourse() {
                             name="mobile"
                             value={formData.mobile}
                             onChange={handleInputChange}
+                            required
                             className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
                             placeholder="Mobile No *"
                           />
@@ -496,6 +557,7 @@ export default function EnrollCourse() {
                           name="address"
                           value={formData.address}
                           onChange={handleInputChange}
+                          required
                           className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
                           placeholder="Full Address"
                         />
@@ -538,19 +600,42 @@ export default function EnrollCourse() {
                 {/* Step 3: Payment */}
                 {currentStep === 3 && (
                   <div className="space-y-6 bg-white shadow p-5 rounded-lg">
+                    {/* <div className="space-y-3">
+                      <p className="text-sm font-semibold text-gray-900">Select payment gateway</p>
+                      <label className="flex items-center gap-3 rounded-lg border border-gray-200 p-3 text-sm font-medium text-gray-800">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="ccavenue"
+                          checked={formData.paymentMethod === "ccavenue"}
+                          onChange={handleInputChange}
+                        />
+                        CCAvenue
+                      </label>
+                    </div> */}
                     <div className="flex justify-center py-12">
-                      <div className="relative">
-                        <div className="border-2 border-green-500 rounded-lg p-12 bg-white">
+                      <label className="relative cursor-pointer">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          value="ccavenue"
+                          checked={formData.paymentMethod === "ccavenue"}
+                          onChange={handleInputChange}
+                          className="absolute opacity-0"
+                        />
+                        <div className={`border-2 rounded-lg p-12 bg-white ${formData.paymentMethod === "ccavenue" ? "border-green-500" : "border-gray-300"}`}>
                           <div className="text-center">
                             <span className="text-blue-500 font-bold text-4xl">CC</span>
                             <span className="text-gray-800 font-normal text-3xl">Avenue</span>
                             <sup className="text-gray-500 text-sm">®</sup>
                           </div>
                         </div>
-                        <div className="absolute -top-3 -right-3 bg-green-500 rounded-full w-10 h-10 flex items-center justify-center">
-                          <RiCheckFill className="text-white" size={24} strokeWidth={3} />
-                        </div>
-                      </div>
+                        {formData.paymentMethod === "ccavenue" && (
+                          <div className="absolute -top-3 -right-3 bg-green-500 rounded-full w-10 h-10 flex items-center justify-center">
+                            <RiCheckFill className="text-white" size={24} strokeWidth={3} />
+                          </div>
+                        )}
+                      </label>
                     </div>
 
                     {submitError && (
@@ -655,5 +740,6 @@ export default function EnrollCourse() {
     </>
   );
 }
+
 
 

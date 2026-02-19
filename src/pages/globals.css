@@ -14,7 +14,11 @@
 
 .recourse li:last-child a::after,
 .slidervbp .swiper-button-next svg,
-.slidervbp .swiper-button-prev svg, .sliderdmd .swiper-button-next svg, .sliderdmd .swiper-button-prev svg {
+.slidervbp .swiper-button-prev svg,
+.sliderdmd .swiper-button-next svg,
+.sliderdmd .swiper-button-prev svg,
+.whyexcelr-swiper .swiper-button-next svg,
+.whyexcelr-swiper .swiper-button-prev svg {
     display: none
 }
 
@@ -31,6 +35,23 @@ body {
     margin: 0;
     padding: 0;
     box-sizing: border-box
+}
+
+html {
+    color-scheme: light;
+}
+
+.course-faq-content * {
+    color: #0b0b0b !important;
+}
+
+.course-faq-content p,
+.course-faq-content li {
+    color: #4b5563 !important;
+}
+
+.course-faq-content details {
+    background: #fff;
 }
 
 h1,
@@ -200,7 +221,18 @@ pre {
     background: #fff;
     box-shadow: 0 4px 20px 2px rgb(16 30 87 / 7%);
     border-radius: 50%;
-    font-size: 14px
+    font-size: 14px;
+    width: 36px;
+    height: 36px
+}
+.whyexcelr-swiper .swiper-button-next,
+.whyexcelr-swiper .swiper-button-prev {
+    background: #fff;
+    box-shadow: 0 4px 20px 2px rgb(16 30 87 / 7%);
+    border-radius: 50%;
+    font-size: 14px;
+    width: 36px;
+    height: 36px
 }
 .sliderdmd .swiper-button-next,
 .sliderdmd .swiper-button-prev {
@@ -231,11 +263,23 @@ pre {
 }
 
 .slidervbp .swiper-button-prev {
-    left: 0 !important
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 0 !important;
+    transform: translateX(-120%)
 }
 
 .slidervbp .swiper-button-next {
-    right: 0 !important
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 0 !important;
+    transform: translateX(20%)
+}
+
+.slidervbp .swiper {
+    padding-bottom: 48px;
 }
 .sliderdmd .swiper-button-prev {
     left: 0 !important;
@@ -271,6 +315,22 @@ pre {
     height: 16px;
     display: inline-block
 }
+.whyexcelr-swiper .swiper-button-prev::after {
+    font-size: 16px !important;
+    content: '';
+    background: url('../../icons/left-arrow.svg') center/contain no-repeat;
+    width: 16px;
+    height: 16px;
+    display: inline-block
+}
+.whyexcelr-swiper .swiper-button-next::after {
+    font-size: 16px !important;
+    content: '';
+    background: url('../../icons/right-arrow.svg') center/contain no-repeat;
+    width: 16px;
+    height: 16px;
+    display: inline-block
+}
 .sliderdmd .swiper-button-prev::after {
     font-size: 16px !important;
     content: '';
@@ -286,6 +346,26 @@ pre {
     width: 13px;
     height: 13px;
     display: inline-block
+}
+
+.whyexcelr-swiper .swiper-button-prev {
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 0px !important;
+    transform: translateX(-120%)
+}
+
+.whyexcelr-swiper .swiper-button-next {
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: 0px !important;
+    transform: translateX(20%)
+}
+
+.whyexcelr-swiper {
+    padding-bottom: 96px;
 }
 
 .line-clamp-3 {
@@ -436,6 +516,20 @@ details[open] summary::before {
     rotate: 315deg
 }
 
+details {
+    background: #fff;
+    color: #0b0b0b;
+}
+
+summary {
+    color: #0b0b0b;
+    background: #fff;
+}
+
+details > * {
+    color: #0b0b0b;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -530,6 +624,12 @@ details[open] summary::before {
 }
 
 @media(max-width:767px) {
+    .slidervbp .swiper {
+        padding-bottom: 40px;
+    }
+    .whyexcelr-swiper {
+        padding-bottom: 72px;
+    }
     .coursebanner_mobile {
         background: #000 !important
     }
@@ -558,9 +658,3 @@ details[open] summary::before {
     }
 }
 
-@media (prefers-color-scheme:dark) {
-    body {
-        background: #0a0a0a;
-        color: #ededed
-    }
-}

@@ -164,7 +164,7 @@ export default function CourseBatche({
                       <RiMapPin2Line className="text-white" />
                     </div>
                     <select
-                      className="bg-[#12aaeb] text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-[#12aaeb] text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
                       onChange={handleCountryChange}
                       value={selectedCountry?.ID || ""}
                       disabled={countryLoading || redirectLoading}
@@ -188,7 +188,7 @@ export default function CourseBatche({
                       <RiMapPin2Line className="text-white font-bold" />
                     </div>
                     <select
-                      className="bg-[#12aaeb] text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="bg-[#12aaeb] text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 disabled:opacity-50 disabled:cursor-not-allowed"
                       onChange={handleCityChange}
                       value={currentSelectedCityId}
                       disabled={

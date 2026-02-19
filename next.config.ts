@@ -74,9 +74,9 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/:slug',
-        destination: '/course/:slug',
-      },
+      source: '/:slug((?!_next/|api/|favicon.ico|favicon.png|images/)[^/]+)',
+      destination: '/course/:slug',
+    },
     ];
   },
 };

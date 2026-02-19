@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import quickenquiry_icon from "/public/quickenquiry_icon.png";
+import drop_query_icon from "/public/drop-query.png";
 import {
   RiUserFill,
   RiMailOpenFill,
@@ -26,6 +27,7 @@ import {
 } from "@/redux/slices/dropQuerySlice";
 import intlTelInput from "intl-tel-input";
 import "intl-tel-input/build/css/intlTelInput.css";
+import logo from "/public/logo.png";
 
 interface QuickEnquiryProps {
   closeModal: () => void;
@@ -46,6 +48,9 @@ export default function QuickEnquiry({
   formName,
 }: QuickEnquiryProps) {
   const searchParams = useSearchParams();
+  const isDropQuery = formName?.toLowerCase().includes("drop a query");
+  const headerIcon = isDropQuery ? drop_query_icon : quickenquiry_icon;
+  const headerAlt = isDropQuery ? "Drop a Query" : "Quick Enquiry";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -237,7 +242,7 @@ const pathname =
 
         {/* LEFT SECTION */}
         <div
-          className={`p-6 ${variant === "default" ? "pb-32 quickenbg" : " p-10"}`}
+          className={`p-6 ${variant === "default" ? "pb-22 pt-3 quickenbg" : " p-6"}`}
           style={
             variant === "default"
               ? {
@@ -249,25 +254,28 @@ const pathname =
           }
         >
           {variant === "default" && (
+            <>
+            <Image src={logo} alt="Logo" width={110} height={40} className="mx-auto mb-2" />
             <Image
-              src={quickenquiry_icon}
-              width={120}
-              alt="Quick Enquiry"
-              className="mx-auto mb-5"
+              src={headerIcon}
+              width={100}
+              alt={headerAlt}
+              className="mx-auto mb-1"
             />
+            </>
           )}
 
           {variant === "callback" && (
             <>
-              <h2 className="text-2xl font-semibold mb-2">Request a Call back</h2>
-              <p className="text-red-500 text-sm mb-6">
+              <h2 className="text-xl font-semibold">Request a Call back</h2>
+              <p className="text-red-500 text-sm mb-3">
                 Please leave your details here, we would love to call you
               </p>
             </>
           )}
 
           {variant === "callback" ? (
-  <div className="bg-gray-200 rounded-xl  px-0 py-8 mx-auto">
+  <div className="bg-gray-200 rounded-xl  px-0 py-4 mx-auto">
     <ReusableForm
       formData={formData}
       handleChange={handleChange}
@@ -326,7 +334,7 @@ function ReusableForm({
   phoneInputRef,
 }: any) {
   return (
-    <form onSubmit={handleSubmit} className="space-y-2 px-8 text-gray-600" >
+    <form onSubmit={handleSubmit} className="space-y-2 px-4 text-gray-600" >
       <Input icon={<RiUserFill />} name="name" value={formData.name} onChange={handleChange} placeholder="Name *" />
       <Input icon={<RiMailOpenFill />} name="email" value={formData.email} onChange={handleChange} placeholder="Email *" type="email" />
 

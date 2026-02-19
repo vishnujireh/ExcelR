@@ -112,12 +112,13 @@ export default function CourseWhyExcelr({ data }: CourseWhyExcelrProps) {
             navigation
             autoplay={{ delay: 2500, disableOnInteraction: false }}
             loop
+            className="whyexcelr-swiper"
             breakpoints={{
               320: { slidesPerView: 1 },
               480: { slidesPerView: 2 },
               640: { slidesPerView: 3 },
               768: { slidesPerView: 4 },
-              1280: { slidesPerView: 5 },
+              1280: { slidesPerView: 4 },
             }}
           >
             {points.map((point, index) => (
@@ -132,7 +133,7 @@ export default function CourseWhyExcelr({ data }: CourseWhyExcelrProps) {
                       className="object-contain"
                     />
                   )}
-                  <p className="text-sm text-center mt-2">
+                  <p className="text-sm text-center mt-2 mb-12">
                     {point.description}
                   </p>
                 </div>

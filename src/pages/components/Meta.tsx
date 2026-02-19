@@ -227,6 +227,8 @@ useEffect(() => {
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
         />
+        <meta name="color-scheme" content="light" />
+        <meta name="supported-color-schemes" content="light" />
         <meta content="telephone=no" name="format-detection" />
         <meta name="HandheldFriendly" content="true" />
 

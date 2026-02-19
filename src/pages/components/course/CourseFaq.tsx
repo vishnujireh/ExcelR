@@ -17,7 +17,8 @@ export default function CourseFaq({ data }: CourseFaqProps) {
   return (
     <div
       id={faqData.id || "faqs"}
-      className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF]"
+      className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF] text-gray-900"
+      style={{ colorScheme: "light" }}
     >
       {/* Title */}
       {faqData.title && (
@@ -25,7 +26,9 @@ export default function CourseFaq({ data }: CourseFaqProps) {
       )}
 
       {/* Render HTML from API */}
-      <>{parse(faqData.content_html ?? "")}</>
+      <div className="course-faq-content">
+        {parse(faqData.content_html ?? "")}
+      </div>
        
     </div>
   );

@@ -47,6 +47,8 @@ export interface NewsEvent {
   description_short?: string;
   description_full?: string;
   event_date: string;
+  event_month?: string;
+  event_day?: string;
   image: string;
   baseurl?: string;
   detail_url?: string;
@@ -129,6 +131,27 @@ export const fetchNewsEvents = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       return await apiGet("/get_news_events");
+    } catch (err: any) {
+      return rejectWithValue(err.message);
+    }
+  }
+);
+
+/* ============================
+✅ CATEGORY LIST
+============================ */
+
+export const fetchNewsByCategory = createAsyncThunk(
+  "newsEvents/fetchByCategory",
+  async (categorySlug: string, { rejectWithValue }) => {
+    try {
+      // Try filtering on backend; API typically ignores unknown params safely.
+      const response = await apiGet("/get_news_events", {
+        category: categorySlug,
+        baseurl: categorySlug,
+        slug: categorySlug,
+      });
+      return response;
     } catch (err: any) {
       return rejectWithValue(err.message);
     }
@@ -260,6 +283,23 @@ const newsEventsSlice = createSlice({
         state.newsDetail = action.payload.event;
         state.comments = action.payload.comments;
         state.popularNews = action.payload.popular_news;
+      })
+
+      // CATEGORY LIST
+      .addCase(fetchNewsByCategory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchNewsByCategory.fulfilled, (state, action: PayloadAction<any>) => {
+        state.loading = false;
+        const payload = action.payload?.data ?? action.payload;
+        state.newsEvents = payload?.news_events ?? payload?.events ?? [];
+        state.categories = payload?.categories ?? state.categories;
+        state.listLatestPosts = payload?.latest_posts ?? state.listLatestPosts;
+      })
+      .addCase(fetchNewsByCategory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
 
       // COMMENT
