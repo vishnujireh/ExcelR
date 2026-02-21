@@ -72,12 +72,15 @@ const nextConfig = {
   },
   
   async rewrites() {
-    return [
-      {
-      source: '/:slug((?!_next/|api/|favicon.ico|favicon.png|images/)[^/]+)',
-      destination: '/course/:slug',
-    },
-    ];
+    return {
+      fallback: [
+        {
+          source:
+            '/:slug((?!_next/|api/|favicon.ico|favicon.png|images/|thank-you|contact|corporate-training|every-day-learning|gallery|aboutv|terms-and-conditions1|careers|blogs|blog-category|blog-subcategory|news-events|news-event-detail|news-event-category|course|enroll_course|enroll_combo_course|page|Home)[^/]+)',
+          destination: '/course/:slug',
+        },
+      ],
+    };
   },
 };
 

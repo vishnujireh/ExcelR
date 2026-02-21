@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 import quickenquiry_icon from "/public/quickenquiry_icon.png";
 import drop_query_icon from "/public/drop-query.png";
 import {
@@ -21,6 +23,7 @@ import {
   resetStatesAndLocations,
   resetLocations,
 } from "@/redux/slices/locationSlice";
+import { apiGet } from "@/redux/api/apiClient";
 import {
   submitDropQuery,
   resetDropQueryState,
@@ -46,26 +49,86 @@ export default function QuickEnquiry({
   course = "",
   variant = "default",
   formName,
+  country = "",
+  state = "",
+  city = "",
 }: QuickEnquiryProps) {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const isDropQuery = formName?.toLowerCase().includes("drop a query");
   const headerIcon = isDropQuery ? drop_query_icon : quickenquiry_icon;
   const headerAlt = isDropQuery ? "Drop a Query" : "Quick Enquiry";
+
+  const resolveSlug = () => {
+    const pathname =
+      typeof window !== "undefined" ? window.location.pathname : "";
+    const parts = pathname.split("?")[0].split("/").filter(Boolean);
+    const slugFromPath = parts[0] === "course" ? parts[1] : "";
+    const slugFromQuery = Array.isArray(router.query.slug)
+      ? router.query.slug[0]
+      : typeof router.query.slug === "string"
+      ? router.query.slug
+      : "";
+    return slugFromQuery || slugFromPath;
+  };
+
+  const normalizeValue = (value?: string) => value?.trim() || "";
+  const propPrefill = {
+    course: normalizeValue(course),
+    country: normalizeValue(country),
+    state: normalizeValue(state),
+    location: normalizeValue(city),
+  };
+
+  const [apiPrefill, setApiPrefill] = useState({
+    course: "",
+    country: "",
+    state: "",
+    location: "",
+  });
+
+  const [prefillReady, setPrefillReady] = useState(() => {
+    const slug = resolveSlug();
+    if (!slug) return true;
+    if (
+      propPrefill.course &&
+      propPrefill.country &&
+      propPrefill.state &&
+      propPrefill.location
+    ) {
+      return true;
+    }
+    return false;
+  });
+
+  const prefill = {
+    course: propPrefill.course || apiPrefill.course,
+    country: propPrefill.country || apiPrefill.country,
+    state: propPrefill.state || apiPrefill.state,
+    location: propPrefill.location || apiPrefill.location,
+  };
+
+  const hasPrefillCourse = Boolean(prefill.course);
+  const hasPrefillCountry = Boolean(prefill.country);
+  const hasPrefillState = Boolean(prefill.state);
+  const hasPrefillLocation = Boolean(prefill.location);
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     mobile: "",
     enquiry: "",
-    course: course || "",
-    country: "",
-    state: "",
-    location: "",
+    course: prefill.course,
+    country: prefill.country,
+    state: prefill.state,
+    location: prefill.location,
     countryCode:"",
     agree: false,
   });
 
   const dispatch = useDispatch<AppDispatch>();
+  const [mappedCountryId, setMappedCountryId] = useState<string | null>(null);
+  const [mappedStateId, setMappedStateId] = useState<string | null>(null);
 
   const {
     countries,
@@ -83,6 +146,174 @@ export default function QuickEnquiry({
   useEffect(() => {
     dispatch(fetchCountries());
   }, [dispatch]);
+
+  useEffect(() => {
+    const slug = resolveSlug();
+    if (!slug) return;
+    if (
+      propPrefill.course &&
+      propPrefill.country &&
+      propPrefill.state &&
+      propPrefill.location
+    ) {
+      setPrefillReady(true);
+      return;
+    }
+
+    let cancelled = false;
+
+    const fetchCoursePrefill = async () => {
+      try {
+        const response: any = await apiGet(`/course_details/${slug}`);
+        const detail = response?.data?.course_details?.[0];
+        if (!detail || cancelled) return;
+
+        setApiPrefill((prev) => ({
+          course:
+            prev.course ||
+            detail.course ||
+            detail.course_name ||
+            "",
+          country: prev.country || detail.country || "",
+          state: prev.state || detail.state || "",
+          location: prev.location || detail.city || "",
+        }));
+      } catch (err) {
+        // Ignore fetch errors; fall back to manual entry
+      } finally {
+        if (!cancelled) {
+          setPrefillReady(true);
+        }
+      }
+    };
+
+    fetchCoursePrefill();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    propPrefill.course,
+    propPrefill.country,
+    propPrefill.state,
+    propPrefill.location,
+    router.query.slug,
+  ]);
+
+  useEffect(() => {
+    if (
+      !prefill.course &&
+      !prefill.country &&
+      !prefill.state &&
+      !prefill.location
+    ) {
+      return;
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      course: prev.course || prefill.course,
+      country: prev.country || prefill.country,
+      state: prev.state || prefill.state,
+      location: prev.location || prefill.location,
+    }));
+  }, [prefill.course, prefill.country, prefill.state, prefill.location]);
+
+  useEffect(() => {
+    if (!prefill.country || countries.length === 0) {
+      setMappedCountryId(null);
+      return;
+    }
+
+    const normalizedPrefill = prefill.country.toLowerCase();
+    const match = countries.find(
+      (c) =>
+        c.ID === prefill.country ||
+        c.name.toLowerCase() === normalizedPrefill ||
+        c.code?.toLowerCase() === normalizedPrefill
+    );
+
+    if (!match) {
+      setMappedCountryId(null);
+      return;
+    }
+
+    setMappedCountryId(match.ID);
+    setFormData((prev) => {
+      if (
+        prev.country &&
+        prev.country !== prefill.country &&
+        prev.country !== match.ID
+      ) {
+        return prev;
+      }
+      if (prev.country === match.ID) return prev;
+      return { ...prev, country: match.ID };
+    });
+
+    dispatch(fetchStates({ country_id: match.ID }));
+  }, [countries, dispatch, prefill.country]);
+
+  useEffect(() => {
+    if (!prefill.state || states.length === 0) {
+      setMappedStateId(null);
+      return;
+    }
+
+    const normalizedPrefill = prefill.state.toLowerCase();
+    const match = states.find(
+      (s) =>
+        s.ID === prefill.state || s.name.toLowerCase() === normalizedPrefill
+    );
+
+    if (!match) {
+      setMappedStateId(null);
+      return;
+    }
+
+    setMappedStateId(match.ID);
+    setFormData((prev) => {
+      if (
+        prev.state &&
+        prev.state !== prefill.state &&
+        prev.state !== match.ID
+      ) {
+        return prev;
+      }
+      if (prev.state === match.ID) return prev;
+      return { ...prev, state: match.ID };
+    });
+
+    dispatch(fetchLocations({ state_id: match.ID }));
+  }, [dispatch, prefill.state, states]);
+
+  useEffect(() => {
+    if (!prefill.location || locations.length === 0) {
+      return;
+    }
+
+    const normalizedPrefill = prefill.location.toLowerCase();
+    const match = locations.find(
+      (l) =>
+        l.ID === prefill.location || l.name.toLowerCase() === normalizedPrefill
+    );
+
+    if (!match) {
+      return;
+    }
+
+    setFormData((prev) => {
+      if (
+        prev.location &&
+        prev.location !== prefill.location &&
+        prev.location !== match.ID
+      ) {
+        return prev;
+      }
+      if (prev.location === match.ID) return prev;
+      return { ...prev, location: match.ID };
+    });
+  }, [locations, prefill.location]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -158,7 +389,7 @@ const pathname =
     };
 
     try {
-      await dispatch(submitDropQuery(payload)).unwrap();
+      const result = await dispatch(submitDropQuery(payload)).unwrap();
 
       // Reset form
       setFormData({
@@ -166,16 +397,19 @@ const pathname =
         email: "",
         mobile: "",
         enquiry: "",
-        course: "",
-        country: "",
-        state: "",
-        location: "",
+        course: hasPrefillCourse ? formData.course : "",
+        country: hasPrefillCountry ? formData.country : "",
+        state: hasPrefillState ? formData.state : "",
+        location: hasPrefillLocation ? formData.location : "",
         countryCode:"",
         agree: false,
       });
 
       // Redirect to Thank You page
-     // window.location.href = "https://www.excelr.com/thank-you";
+      if (result?.status) {
+        closeModal();
+        router.push("/thank-you");
+      }
 
       // Reset Redux state
       dispatch(resetDropQueryState());
@@ -273,6 +507,7 @@ const pathname =
               </p>
             </>
           )}
+          
 
           {variant === "callback" ? (
   <div className="bg-gray-200 rounded-xl  px-0 py-4 mx-auto">
@@ -289,6 +524,20 @@ const pathname =
       submitting={submitting}
       error={error}
       phoneInputRef={phoneInputRef}
+      showCourse={prefillReady && !hasPrefillCourse}
+      showCountry={
+        prefillReady &&
+        (!hasPrefillCountry ||
+          ((!hasPrefillState || !hasPrefillLocation) &&
+            countries.length > 0 &&
+            !mappedCountryId))
+      }
+      showState={
+        prefillReady &&
+        (!hasPrefillState ||
+          (!hasPrefillLocation && states.length > 0 && !mappedStateId))
+      }
+      showLocation={prefillReady && !hasPrefillLocation}
     />
   </div>
 ) : (
@@ -305,6 +554,20 @@ const pathname =
     submitting={submitting}
     error={error}
     phoneInputRef={phoneInputRef}
+    showCourse={prefillReady && !hasPrefillCourse}
+    showCountry={
+      prefillReady &&
+      (!hasPrefillCountry ||
+        ((!hasPrefillState || !hasPrefillLocation) &&
+          countries.length > 0 &&
+          !mappedCountryId))
+    }
+    showState={
+      prefillReady &&
+      (!hasPrefillState ||
+        (!hasPrefillLocation && states.length > 0 && !mappedStateId))
+    }
+    showLocation={prefillReady && !hasPrefillLocation}
   />
 )}
 
@@ -332,6 +595,10 @@ function ReusableForm({
   submitting,
   error,
   phoneInputRef,
+  showCourse = true,
+  showCountry = true,
+  showState = true,
+  showLocation = true,
 }: any) {
   return (
     <form onSubmit={handleSubmit} className="space-y-2 px-4 text-gray-600" >
@@ -351,45 +618,60 @@ function ReusableForm({
         />
       </div>
 
-      <Input icon={<RiArtboardFill />} name="course" value={formData.course} onChange={handleChange} placeholder="Course" type="text" />
+      {showCourse && (
+        <Input
+          icon={<RiArtboardFill />}
+          name="course"
+          value={formData.course}
+          onChange={handleChange}
+          placeholder="Course"
+          type="text"
+        />
+      )}
 
       {/* COUNTRY */}
-      <Select
-        icon={<RiMapPin2Fill />}
-        name="country"
-        value={formData.country}
-        onChange={handleChange}
-        required
-        options={countries}
-        loading={loadingCountries}
-        placeholder="Country"
-      />
+      {showCountry && (
+        <Select
+          icon={<RiMapPin2Fill />}
+          name="country"
+          value={formData.country}
+          onChange={handleChange}
+          required
+          options={countries}
+          loading={loadingCountries}
+          placeholder="Country"
+        />
+      )}
 
       {/* STATE */}
-      <Select
-        icon={<RiMapPin2Fill />}
-        name="state"
-        value={formData.state}
-        onChange={handleChange}
-        required
-        disabled={!formData.country}
-        options={states}
-        loading={loadingStates}
-        placeholder="State"
-      />
+      {showState && (
+        <Select
+          icon={<RiMapPin2Fill />}
+          name="state"
+          value={formData.state}
+          onChange={handleChange}
+          required
+          disabled={!formData.country}
+          options={states}
+          loading={loadingStates}
+          placeholder="State"
+        />
+      )}
 
       {/* LOCATION */}
-      <Select
-        icon={<RiMapPin2Fill />}
-        name="location"
-        value={formData.location}
-        onChange={handleChange}
-        required
-        disabled={!formData.state}
-        options={locations}
-        loading={loadingLocations}
-        placeholder="Location"
-      />
+      {showLocation && (
+        <Select
+          icon={<RiMapPin2Fill />}
+          name="location"
+          value={formData.location}
+          onChange={handleChange}
+          required
+          disabled={!formData.state}
+          options={locations}
+          loading={loadingLocations}
+          placeholder="Location"
+        />
+      )}
 
       {/* ENQUIRY */}
       <Select
@@ -409,9 +691,9 @@ function ReusableForm({
         <input type="checkbox" name="agree" checked={formData.agree} onChange={handleChange} required className="mt-1" />
         <span>
           I hereby agree to the{" "}
-          <a href="/terms" className="text-blue-600 underline">Terms and Conditions</a>{" "}
+          <Link href="/terms-and-conditions" target="_blank" className="text-blue-600 underline">Terms and Conditions</Link>{" "}
           and{" "}
-          <a href="/privacy-policy" className="text-blue-600 underline">Privacy Policy</a>{" "}
+          <Link href="/privacy-policy" target="_blank" className="text-blue-600 underline">Privacy Policy</Link>{" "}
           of Excelr Solutions.
         </span>
       </div>
@@ -421,7 +703,7 @@ function ReusableForm({
         <button
           type="submit"
           disabled={submitting}
-          className={`rounded-lg border px-5 py-2.5 text-sm font-medium text-white ${
+          className={`rounded-lg border px-5 py-2.5 text-sm font-medium text-white cursor-pointer ${
             submitting ? "bg-gray-400 cursor-not-allowed" : "bg-[#0071BC] hover:bg-[#4ba7de]"
           }`}
         >

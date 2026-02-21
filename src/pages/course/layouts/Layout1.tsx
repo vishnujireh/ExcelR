@@ -133,7 +133,7 @@ export default function Layout1({ data }: LayoutProps) {
 
       <CourseBenefit data={data} />
       <CourseBatche courseName={data?.course_name ?? ""} />
-      <CoursePrice />
+      <CoursePrice data={data} />
 
       {stickySections.length > 0 && (
         <StickyHeader sections={stickySections} />

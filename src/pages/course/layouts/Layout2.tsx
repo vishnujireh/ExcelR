@@ -13,7 +13,7 @@ export default function Layout2({ data }: LayoutProps) {
     <div>
       {/* ✅ Pass course data properly */}
       <CourseBanner data={data} />
-      <CoursePrice />
+      <CoursePrice data={data} />
       <CourseBenefit data={data} />
        
     </div>

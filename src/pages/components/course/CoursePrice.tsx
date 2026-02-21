@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUpcomingBatch } from "@/redux/slices/upcomingBatchSlice";
 import { AppDispatch, RootState } from "@/redux/store";
 import type { TrainingMode } from "@/redux/slices/upcomingBatchSlice";
+import type { CourseData } from "@/redux/slices/courseSlice";
 import QuickEnquiry from "../QuickEnquiry"
 import ComboOffer from "../ComboOffer";
 import parse from "html-react-parser";
@@ -30,7 +31,11 @@ const formatPrice = (amount?: number | string | null) => {
   return Number(amount).toLocaleString("en-IN"); // Adds commas for Indian numbering style
 };
 
-export default function CoursePrice() {
+interface CoursePriceProps {
+  data?: CourseData;
+}
+
+export default function CoursePrice({ data }: CoursePriceProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isQuickModalOpen, setIsQuickModalOpen] = useState(false);
 const [formName, setFormName] = useState("");
@@ -330,6 +335,10 @@ const comboOfferData = batchData?.combo_offer
     closeModal={() => setIsQuickModalOpen(false)}
     formName={formName}   // ✅ dynamic form name
     variant={variant}     // ✅ UI variant
+    course={data?.course || data?.course_name}
+    city={data?.city}
+    state={data?.state}
+    country={data?.country}
   />
 )}
       </div>

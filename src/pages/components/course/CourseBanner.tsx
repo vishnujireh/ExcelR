@@ -70,20 +70,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
           {/* ✅ Course Name from API */}
           <h1 className="text-2xl font-semibold">{data.course_name}</h1>
 
-          {/* ✅ Association Info */}
-          {/* <div className="md:flex items-start gap-4 md:mt-6 mt-2">
-            <p className="text-lg">In association with :</p>
-            {associationIcon && (
-              <div className="relative w-32 h-16">
-                <Image 
-                  src={associationIcon} 
-                  alt="Association Logo" 
-                  fill
-                  style={{ objectFit: 'contain' }}
-                />
-              </div>
-            )}
-          </div> */}
+          
 
           {/* ✅ Short Description from API */}
           <div className="text-lg banerdec">
@@ -171,7 +158,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
     closeModal={closeModal}
     variant={variant}     // controls UI
     formName={formName}   // controls API field
-    course={data.course_name}
+    course={data.course || data.course_name}
     city={data.city}
     state={data.state}
     country={data.country}

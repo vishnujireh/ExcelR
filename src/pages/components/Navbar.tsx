@@ -11,6 +11,7 @@ import {
 } from "react-icons/ri";
 import { LuPhoneCall } from "react-icons/lu";
 import logo from "/public/logo.png";
+import QuickEnquiry from "./QuickEnquiry";
 
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fetchCourseMenu } from "@/redux/slices/courseMenuSlice";
@@ -38,6 +39,8 @@ export default function Navbar() {
   >(null);
   // searchOpen value is currently unused; only the setter is used to open search UI
   const [, setSearchOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formName, setFormName] = useState("");
 
   // Fetch course menu with IP address
   useEffect(() => {
@@ -68,6 +71,13 @@ export default function Navbar() {
     setSelectedCategory(null);
     setHoveredSubcategory(null);
   };
+  
+  const openDropQuery = () => {
+    setFormName("Drop a Query");
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <nav className="w-full flex flex-col md:flex-row items-center justify-between relative z-50 bg-white">
@@ -93,7 +103,7 @@ export default function Navbar() {
           </button> */}
           <Link
             href="tel:18002122121"
-            className="flex items-center justify-center gap-3 border border-solid border-[#0071BC] bg-[#0071BC] text-white font-medium text-sm w-10 h-10 rounded-full"
+            className="flex items-center cursor-pointer justify-center gap-3 border border-solid border-[#0071BC] bg-[#0071BC] text-white font-medium text-sm w-10 h-10 rounded-full"
           >
             <LuPhoneCall />
           </Link>
@@ -348,12 +358,13 @@ export default function Navbar() {
           <Link href="/careers">Work With Us</Link>
         </li>
         <li>
-          <Link
-            href="tel:18002122121"
-            className="flex items-center gap-3 border border-solid border-[#0071BC] bg-[#0071BC] text-white hover:bg-[#4ba7de] font-medium text-sm py-2.5 px-4 rounded-lg"
+          <button
+            type="button"
+            onClick={openDropQuery}
+            className="flex items-center cursor-pointer gap-3 border border-solid border-[#0071BC] bg-[#0071BC] text-white hover:bg-[#4ba7de] font-medium text-sm py-2.5 px-4 rounded-lg"
           >
             <LuPhoneCall /> <span>Book a Call</span>
-          </Link>
+          </button>
         </li>
       </ul>
              </div>
@@ -433,6 +444,13 @@ export default function Navbar() {
         </div>
       )}
       {/* <p>IP: {userIP}</p> */}
+      {isModalOpen && (
+        <QuickEnquiry
+          closeModal={closeModal}
+          variant="default"
+          formName={formName}
+        />
+      )}
     </nav>
   );
 }

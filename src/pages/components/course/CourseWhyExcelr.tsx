@@ -148,6 +148,10 @@ export default function CourseWhyExcelr({ data }: CourseWhyExcelrProps) {
           closeModal={() => setIsModalOpen(false)}
           variant={variant}
           formName={formName}
+          course={data?.course || data?.course_name}
+          city={data?.city}
+          state={data?.state}
+          country={data?.country}
         />
       )}
     </>
