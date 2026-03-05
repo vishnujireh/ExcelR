@@ -32,6 +32,94 @@ type PageProps = {
   error?: string | null;
 };
 
+const normalizeIp = (raw?: string) => {
+  const value = (raw || "").trim();
+  if (!value) return "";
+
+  const bracketMatch = value.match(/^\[([^\]]+)\](?::\d+)?$/);
+  if (bracketMatch?.[1]) return bracketMatch[1];
+
+  if (value.includes(".") && value.includes(":")) {
+    const idx = value.lastIndexOf(":");
+    const maybeIp = value.slice(0, idx);
+    const maybePort = value.slice(idx + 1);
+    if (/^\d+$/.test(maybePort)) {
+      return maybeIp;
+    }
+  }
+
+  if (value.toLowerCase().startsWith("::ffff:")) {
+    return value.slice(7);
+  }
+
+  return value;
+};
+
+const isPrivateOrLocalIp = (ip: string) => {
+  const v = ip.toLowerCase();
+  if (!v) return true;
+
+  if (v === "::1" || v === "::" || v === "0.0.0.0") return true;
+  if (v.startsWith("127.") || v.startsWith("10.") || v.startsWith("192.168.")) {
+    return true;
+  }
+  if (v.startsWith("172.")) {
+    const second = Number(v.split(".")[1] || "-1");
+    if (second >= 16 && second <= 31) return true;
+  }
+  if (v.startsWith("fc") || v.startsWith("fd") || v.startsWith("fe80")) {
+    return true;
+  }
+
+  return false;
+};
+
+const resolveRequestIp = async (context: any) => {
+  const req = context?.req;
+
+  const xClientIpHeader = req?.headers?.["x-client-ip"];
+  const xClientIp = normalizeIp(
+    typeof xClientIpHeader === "string" ? xClientIpHeader : ""
+  );
+
+  const forwardedHeader = req?.headers?.["x-forwarded-for"];
+  const forwardedRaw =
+    typeof forwardedHeader === "string"
+      ? forwardedHeader
+      : Array.isArray(forwardedHeader)
+      ? forwardedHeader[0]
+      : "";
+  const forwardedIp = normalizeIp(forwardedRaw.split(",")[0] || "");
+
+  const xRealIpHeader = req?.headers?.["x-real-ip"];
+  const xRealIp = normalizeIp(
+    typeof xRealIpHeader === "string" ? xRealIpHeader : ""
+  );
+
+  const remoteIp = normalizeIp(req?.socket?.remoteAddress || "");
+
+  let ipAddress = xClientIp || forwardedIp || xRealIp || remoteIp;
+
+  if (!ipAddress || isPrivateOrLocalIp(ipAddress)) {
+    try {
+      const ipRes = await fetch("https://api64.ipify.org?format=json", {
+        cache: "no-store",
+      });
+      if (ipRes.ok) {
+        const ipData = await ipRes.json();
+        const resolvedPublicIp = normalizeIp(ipData?.ip || "");
+        if (resolvedPublicIp) {
+          ipAddress = resolvedPublicIp;
+        }
+      }
+    } catch {
+      // fallback below
+    }
+  }
+
+  return ipAddress || "8.8.8.8";
+};
+
 export default function CoursePage({ courseData, error }: PageProps) {
   if (error) {
     return (
@@ -85,7 +173,10 @@ export async function getServerSideProps(context: any) {
   }
 
   try {
-    const response = await serverApiGet<ApiResponse>(`/course_details/${slug}`);
+    const ipAddress = await resolveRequestIp(context);
+    const response = await serverApiGet<ApiResponse>(`/course_details/${slug}`, {
+      ip_address: ipAddress,
+    });
 
     if (
       !response?.status ||

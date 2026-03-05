@@ -12,6 +12,63 @@ import QuickEnquiry from "../QuickEnquiry"
 import ComboOffer from "../ComboOffer";
 import parse from "html-react-parser";
 
+const isPrivateOrLocalIp = (ip: string) => {
+  const v = (ip || "").trim().toLowerCase();
+  if (!v) return true;
+
+  if (v === "::1" || v === "::" || v === "0.0.0.0") return true;
+  if (v.startsWith("127.") || v.startsWith("10.") || v.startsWith("192.168.")) {
+    return true;
+  }
+  if (v.startsWith("172.")) {
+    const second = Number(v.split(".")[1] || "-1");
+    if (second >= 16 && second <= 31) return true;
+  }
+  if (v.startsWith("fc") || v.startsWith("fd") || v.startsWith("fe80")) {
+    return true;
+  }
+
+  return false;
+};
+
+const resolveClientIp = async () => {
+  const fallbackIp = "8.8.8.8";
+
+  try {
+    const localIpRes = await fetch("/api/client-ip", {
+      method: "GET",
+      cache: "no-store",
+    });
+    if (localIpRes.ok) {
+      const localIpData = await localIpRes.json();
+      const localIp = (localIpData?.ip || "").trim();
+      if (localIp && !isPrivateOrLocalIp(localIp)) {
+        return localIp;
+      }
+    }
+  } catch {
+    // fallback to third-party resolver
+  }
+
+  try {
+    const ipRes = await fetch("https://api64.ipify.org?format=json", {
+      method: "GET",
+      cache: "no-store",
+    });
+    if (ipRes.ok) {
+      const ipData = await ipRes.json();
+      const externalIp = (ipData?.ip || "").trim();
+      if (externalIp && !isPrivateOrLocalIp(externalIp)) {
+        return externalIp;
+      }
+    }
+  } catch {
+    // keep hard fallback
+  }
+
+  return fallbackIp;
+};
+
 /*   THIS HELPER HERE */
 const formatDayWithSuffix = (rawDate: string) => {
   const date = new Date(rawDate);
@@ -67,10 +124,20 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
 
   // Fetch IP
   useEffect(() => {
-    fetch("https://api.ipify.org?format=json")
-      .then((res) => res.json())
-      .then((data) => setIpAddress(data.ip))
-      .catch(() => setIpAddress("0.0.0.0"));
+    let cancelled = false;
+
+    const loadIp = async () => {
+      const resolvedIp = await resolveClientIp();
+      if (!cancelled) {
+        setIpAddress(resolvedIp);
+      }
+    };
+
+    loadIp();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Fetch City
@@ -108,7 +175,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
     setSelectedModeData(null);
   };
 
-const comboOfferData = batchData?.combo_offer
+  const comboOfferData = batchData?.combo_offer
   ? {
       title: "Combo Offer", // default title
       items: batchData.combo_offer.items || [], // fallback to empty array
@@ -117,6 +184,10 @@ const comboOfferData = batchData?.combo_offer
 
   if (loading) return <p className="text-center py-10">Loading...</p>;
   if (error) return <p className="text-center text-red-600 py-10">{error}</p>;
+
+  const shouldHideBatchSection =
+    Array.isArray(batchData?.training_modes) && batchData.training_modes.length === 0;
+  if (shouldHideBatchSection) return null;
 
   return (
     <>
@@ -345,3 +416,4 @@ const comboOfferData = batchData?.combo_offer
     </>
   );
 }
+

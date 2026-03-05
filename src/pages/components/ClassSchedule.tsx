@@ -1,7 +1,6 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import parse from "html-react-parser";
-import Link from "next/link";
 
 interface DateInfo {
   raw: string;
@@ -39,8 +38,25 @@ interface ClassScheduleProps {
   courseSlug?: string;
 }
 
-const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeData, courseSlug }) => {
+const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeData }) => {
   const isClassroom = type === "Classroom";
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const { style } = document.body;
+    const prevOverflow = style.overflow;
+    const prevPaddingRight = style.paddingRight;
+    const scrollBarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+    style.overflow = "hidden";
+    if (scrollBarWidth > 0) {
+      style.paddingRight = `${scrollBarWidth}px`;
+    }
+    return () => {
+      style.overflow = prevOverflow;
+      style.paddingRight = prevPaddingRight;
+    };
+  }, []);
 
   // Get available months from the API data
   const availableMonths = modeData?.upcoming_dates_all 
@@ -67,27 +83,28 @@ const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeDat
 
   return (
     <div
-      className="fixed inset-0 bg-[#000000cc] flex justify-center items-center z-50"
+      className="fixed inset-0 bg-[#000000cc] flex justify-center items-start md:items-center z-50 overflow-y-auto py-6"
       onClick={closeModal}
     >
       <div
-        className="bg-white rounded-lg shadow-lg p-6 w-full max-w-5xl"
+        className="bg-white rounded-lg shadow-lg w-full max-w-5xl mx-4 md:mx-6 max-h-[90vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
-        <div className="relative flex justify-end">
+        <div className="relative h-0">
           <button
-            className="text-2xl cursor-pointer absolute w-10 h-10 -top-8 -end-8 bg-[#171717] text-white rounded-full flex items-center justify-center hover:bg-[#2a2a2a] transition"
+            className="text-2xl cursor-pointer absolute top-3 right-3 w-10 h-10 bg-[#171717] text-white rounded-full flex items-center justify-center hover:bg-[#2a2a2a] transition z-10"
             onClick={closeModal}
+            aria-label="Close"
           >
             ×
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 pt-14 md:pt-6">
           {/* Left: Schedule */}
           <div className="col-span-1">
-            <h4 className="text-md font-semibold mb-4">
+            <h4 className="text-md font-semibold mb-4 text-center md:text-left">
               {isClassroom
                 ? "Classroom Schedule"
                 : "Live Virtual Class Schedule"}
@@ -95,7 +112,7 @@ const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeDat
 
             {/* Tabs */}
             {availableMonths.length > 0 && (
-              <div className="flex justify-center flex-wrap gap-4 mt-8 mb-8">
+              <div className="flex justify-center flex-wrap gap-4 md:mt-8 mb-8">
                 {availableMonths.map((tab) => (
                   <button
                     key={tab}
@@ -138,14 +155,7 @@ const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeDat
 
                     {/* Enroll button */}
                     <div className="flex flex-col items-center">
-                      {batch.batch_id ? (
-                        <Link
-                          href={`/enroll_course/${batch.batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
-                          className="bg-[#0071BC] hover:bg-[#005f8c] text-white text-sm font-semibold rounded-md px-4 py-1.5 transition"
-                        >
-                          Enroll Now
-                        </Link>
-                      ) : (
+                      {batch.enroll_url && (
                         <a
                           href={batch.enroll_url}
                           target="_blank"

@@ -56,6 +56,7 @@ export default function CourseBatche({
     loading: redirectLoading, 
     shouldRedirect 
   } = useAppSelector((state) => state.redirect);
+  const { batchData } = useAppSelector((state) => state.upcomingBatch);
 
   // Get dynamic slug from pathname or use prop
   const currentSlug = React.useMemo(() => {
@@ -140,6 +141,13 @@ export default function CourseBatche({
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const shouldHideBatchSection =
+    Array.isArray(batchData?.training_modes) && batchData.training_modes.length === 0;
+
+  if (shouldHideBatchSection) {
+    return null;
+  }
 
   return (
     <>

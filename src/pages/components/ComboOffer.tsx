@@ -1,6 +1,5 @@
 "use client";
-import React from "react";
-import Link from "next/link";
+import React, { useEffect } from "react";
 
 interface ComboItem {
   name: string;
@@ -21,17 +20,25 @@ interface ComboOfferProps {
   courseSlug?: string;
 }
 
-const ComboOffer: React.FC<ComboOfferProps> = ({ closeModal, data, courseSlug }) => {
+const ComboOffer: React.FC<ComboOfferProps> = ({ closeModal, data }) => {
   if (!data) return null;
 
-  const getInternalComboHref = (enrollUrl?: string) => {
-    if (!enrollUrl) return null;
-    const match = enrollUrl.match(/enroll_combo_course\/(\d+)\/(\d+)/);
-    if (!match) return null;
-    const [, comboId, itemId] = match;
-    const query = courseSlug ? "?course=" + encodeURIComponent(courseSlug) : "";
-    return "/enroll_combo_course/" + comboId + "/" + itemId + query;
-  };
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const { style } = document.body;
+    const prevOverflow = style.overflow;
+    const prevPaddingRight = style.paddingRight;
+    const scrollBarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+    style.overflow = "hidden";
+    if (scrollBarWidth > 0) {
+      style.paddingRight = `${scrollBarWidth}px`;
+    }
+    return () => {
+      style.overflow = prevOverflow;
+      style.paddingRight = prevPaddingRight;
+    };
+  }, []);
 
   return (
     <div
@@ -80,14 +87,7 @@ const ComboOffer: React.FC<ComboOfferProps> = ({ closeModal, data, courseSlug })
               </div>
 
               {/* Enroll Button */}
-              {getInternalComboHref(item.enroll_url) ? (
-                <Link
-                  href={getInternalComboHref(item.enroll_url)!}
-                  className="bg-[#0071BC] hover:bg-[#005f8c] text-white text-sm font-semibold rounded-md px-4 py-2 transition"
-                >
-                  Enroll Now
-                </Link>
-              ) : (
+              {item.enroll_url && (
                 <a
                   href={item.enroll_url}
                   target="_blank"

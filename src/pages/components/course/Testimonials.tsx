@@ -86,12 +86,12 @@ export default function Testimonials({ data }: TestimonialsProps) {
         </div>
 
         <div className="md:text-end text-center md:mt-10 mt-3 block">
-          <Link
-            href="#"
+          <a
+            href="https://www.excelr.com/testimonials"
             className="bg-[#ff9600] text-white text-sm inline-block items-center py-2.5 px-5 font-semibold rounded-lg"
           >
             Read more
-          </Link>
+          </a>
         </div>
       </div>
     </div>

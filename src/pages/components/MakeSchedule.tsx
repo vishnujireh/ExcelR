@@ -57,6 +57,24 @@ export default function MakeSchedule({
 }: Props) {
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const { style } = document.body;
+    const prevOverflow = style.overflow;
+    const prevPaddingRight = style.paddingRight;
+    const scrollBarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+    style.overflow = "hidden";
+    if (scrollBarWidth > 0) {
+      style.paddingRight = `${scrollBarWidth}px`;
+    }
+    return () => {
+      style.overflow = prevOverflow;
+      style.paddingRight = prevPaddingRight;
+    };
+  }, []);
 
   
   /* ---------------- FORM STATE ---------------- */
@@ -96,12 +114,58 @@ console.log("Sending preferred_date:", formData.preferredDate);
   const phoneInputRef = useRef<HTMLInputElement | null>(null);
   const itiRef = useRef<any>(null);
 
+  const syncPhoneField = () => {
+    const iti = itiRef.current;
+    const input = phoneInputRef.current;
+    if (!iti || !input) return { normalized: "", isValid: true };
+
+    const countryData = iti.getSelectedCountryData();
+    const isIndia = countryData?.iso2 === "in" || countryData?.dialCode === "91";
+    const rawNumber = input.value || "";
+    const digitsOnly = rawNumber.replace(/\D/g, "");
+    let normalized = digitsOnly;
+
+    if (isIndia) {
+      normalized = digitsOnly.slice(0, 10);
+      if (input.value !== normalized) {
+        input.value = normalized;
+      }
+      if (normalized.length > 0 && normalized.length !== 10) {
+        input.setCustomValidity("Please enter a 10-digit mobile number.");
+      } else {
+        input.setCustomValidity("");
+      }
+    } else {
+      if (digitsOnly.length > 12) {
+        normalized = digitsOnly.slice(0, 12);
+        if (input.value !== normalized) {
+          input.value = normalized;
+        }
+      }
+      if (normalized.length > 0) {
+        const lengthOk = normalized.length === 12;
+        const isValid =
+          typeof iti.isValidNumber === "function"
+            ? iti.isValidNumber() && lengthOk
+            : lengthOk;
+        input.setCustomValidity(
+          isValid ? "" : "Please enter a 12-digit mobile number."
+        );
+      } else {
+        input.setCustomValidity("");
+      }
+    }
+
+    return { normalized, isValid: input.checkValidity() };
+  };
+
   useEffect(() => {
     if (!phoneInputRef.current) return;
 
     itiRef.current = intlTelInput(phoneInputRef.current, {
       initialCountry: "in",
       separateDialCode: true,
+      loadUtils: () => import("intl-tel-input/utils"),
     });
 
     const handlePhoneChange = () => {
@@ -110,11 +174,11 @@ console.log("Sending preferred_date:", formData.preferredDate);
 
   const countryData = iti.getSelectedCountryData();
   const dialCode = countryData?.dialCode || "";
-  const rawNumber = phoneInputRef.current.value || "";
+  const { normalized } = syncPhoneField();
 
   setFormData((prev) => ({
     ...prev,
-    mobile: rawNumber.replace(/\D/g, ""), // ONLY number
+    mobile: normalized,
     countryCode: dialCode,
   }));
 };
@@ -147,6 +211,11 @@ console.log("Sending preferred_date:", formData.preferredDate);
     const { name, value } = e.target;
 
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[name];
+      return next;
+    });
 
     if (name === "country") {
       dispatch(resetStatesAndLocations());
@@ -162,6 +231,49 @@ console.log("Sending preferred_date:", formData.preferredDate);
   /* ---------------- SUBMIT (SAME AS QUICKENQUIRY) ---------------- */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const nextErrors: Record<string, string> = {};
+    const emailOk = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(
+      formData.email.trim()
+    );
+
+    if (!formData.name.trim()) {
+      nextErrors.name = "Name is required.";
+    }
+    if (!formData.email.trim()) {
+      nextErrors.email = "Email is required.";
+    } else if (!emailOk) {
+      nextErrors.email = "Enter a valid email.";
+    }
+
+    const phoneCheck = syncPhoneField();
+    const countryData = itiRef.current?.getSelectedCountryData?.();
+    const isIndia =
+      countryData?.iso2 === "in" || countryData?.dialCode === "91" || !countryData;
+    if (!formData.mobile || !phoneCheck.isValid) {
+      nextErrors.mobile = isIndia
+        ? "Please enter a 10-digit mobile number."
+        : "Please enter a 12-digit mobile number.";
+    }
+    if (!formData.country) {
+      nextErrors.country = "Country is required.";
+    }
+    if (!formData.state) {
+      nextErrors.state = "State is required.";
+    }
+    if (!formData.location) {
+      nextErrors.location = "Location is required.";
+    }
+    if (!formData.enquiry) {
+      nextErrors.enquiry = "Please select an option.";
+    }
+
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) {
+      if (nextErrors.mobile) {
+        phoneInputRef.current?.focus();
+      }
+      return;
+    }
 const pathname =
   typeof window !== "undefined"
     ? window.location.pathname.replace(/^\/+/, "")
@@ -216,6 +328,7 @@ const pathname =
         location: "",
         countryCode: "",
       }); 
+      setErrors({});
 
       // ✅ Redirect (same as QuickEnquiry)
       window.location.href = "https://www.excelr.com/thank-you";
@@ -230,25 +343,26 @@ const pathname =
   /* ---------------- UI ---------------- */
   return (
     <div
-      className="fixed inset-0 bg-black/70 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/70 flex items-start md:items-center justify-center z-50 overflow-y-auto py-6"
       onClick={closeModal}
     >
       <div
-        className="bg-[#171717] rounded-lg p-6 w-full max-w-sm relative"
+        className="bg-[#171717] rounded-lg w-full max-w-sm mx-4 md:mx-6 max-h-[90vh] overflow-y-auto relative md:p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={closeModal}
-          className="absolute -top-4 -right-4 w-10 h-10 bg-white text-black rounded-full text-2xl"
+          className="absolute top-3 right-3 w-10 h-10 bg-white text-black rounded-full text-2xl z-10"
+          aria-label="Close"
         >
           ×
         </button>
 
-        <p className="text-white text-lg font-semibold text-center mb-4">
+        <p className="text-white text-lg font-semibold text-center  md:mb-4 pt-14 md:pt-8">
           Let us know your convenient schedule
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} noValidate className="space-y-3 p-4 md:p-0">
           <Input
             icon={<RiUserFill />}
             name="name"
@@ -256,6 +370,7 @@ const pathname =
             onChange={handleChange}
             placeholder="Name *"
           />
+          {errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
 
           <Input
             icon={<RiMailOpenFill />}
@@ -265,6 +380,7 @@ const pathname =
             placeholder="Email *"
             type="email"
           />
+          {errors.email && <p className="text-red-500 text-xs">{errors.email}</p>}
 
           {/* PHONE */}
           <div className="relative">
@@ -277,17 +393,12 @@ const pathname =
               placeholder="Mobile No. *"
               type="tel"
               required
+              inputMode="numeric"
+              autoComplete="tel"
               className="border bg-white text-sm rounded-lg block w-full ps-10 p-2.5 moblig"
             />
           </div>
-
-          <Input
-            icon={<RiCalendarFill />}
-            name="preferredDate"
-            value={formData.preferredDate}
-            onChange={handleChange}
-            placeholder="Preferred Date (DD/MM/YYYY) *"
-          />
+          {errors.mobile && <p className="text-red-500 text-xs">{errors.mobile}</p>}
 
           <Select
             icon={<RiMapPin2Fill />}
@@ -297,7 +408,9 @@ const pathname =
             options={countries}
             loading={loadingCountries}
             placeholder="Country"
+            required
           />
+          {errors.country && <p className="text-red-500 text-xs">{errors.country}</p>}
 
           <Select
             icon={<RiMapPin2Fill />}
@@ -308,7 +421,9 @@ const pathname =
             loading={loadingStates}
             disabled={!formData.country}
             placeholder="State"
+            required
           />
+          {errors.state && <p className="text-red-500 text-xs">{errors.state}</p>}
 
           <Select
             icon={<RiMapPin2Fill />}
@@ -319,7 +434,9 @@ const pathname =
             loading={loadingLocations}
             disabled={!formData.state}
             placeholder="Location"
+            required
           />
+          {errors.location && <p className="text-red-500 text-xs">{errors.location}</p>}
 
           <Select
             icon={<RiUserFill />}
@@ -333,6 +450,7 @@ const pathname =
             ]}
             placeholder="Looking for?"
           />
+          {errors.enquiry && <p className="text-red-500 text-xs">{errors.enquiry}</p>}
 
           {error && (
             <p className="text-red-500 text-xs text-center">{error}</p>

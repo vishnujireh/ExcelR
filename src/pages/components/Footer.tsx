@@ -105,7 +105,7 @@ export default function Footer({ footerHtml }: FooterProps) {
                 <ul>
                   {OrganizationLinks.map((l) => (
                     <li key={l.name} className="my-2">
-                      <Link href={l.href} className="text-sm text-white">{l.name}</Link>
+                      <a href={l.href} className="text-sm text-white">{l.name}</a>
                     </li>
                   ))}
                 </ul>
@@ -116,7 +116,7 @@ export default function Footer({ footerHtml }: FooterProps) {
                 <ul>
                   {ResourcesLinks.map((l) => (
                     <li key={l.name} className="my-2">
-                      <Link href={l.href} className="text-sm text-white">{l.name}</Link>
+                      <a href={l.href} className="text-sm text-white">{l.name}</a>
                     </li>
                   ))}
                 </ul>
@@ -127,7 +127,7 @@ export default function Footer({ footerHtml }: FooterProps) {
                 <ul>
                   {LinesOfBusinessLinks.map((l) => (
                     <li key={l.name} className="my-2">
-                      <Link href={l.href} className="text-sm text-white">{l.name}</Link>
+                      <a href={l.href} className="text-sm text-white">{l.name}</a>
                     </li>
                   ))}
                 </ul>
@@ -152,7 +152,7 @@ export default function Footer({ footerHtml }: FooterProps) {
                 <ul className="fotrlink">
                   {policyLinks.map((l) => (
                     <li key={l.name} className="inline-block">
-                      <Link href={l.href} className="text-sm font-semibold text-white">{l.name}</Link>
+                      <a href={l.href} className="text-sm font-semibold text-white">{l.name}</a>
                     </li>
                   ))}
                 </ul>
@@ -161,9 +161,9 @@ export default function Footer({ footerHtml }: FooterProps) {
                 <ul className="md:mb-0 mb-3">
                   {socialLinks.map((l) => (
                     <li key={l.name} className="inline-block mr-2">
-                      <Link href={l.href}>
+                      <a href={l.href}>
                         <Image src={l.icon} alt={l.name} width={34} height={34} />
-                      </Link>
+                      </a>
                     </li>
                   ))}
                 </ul>
@@ -178,9 +178,9 @@ export default function Footer({ footerHtml }: FooterProps) {
                     <ul className="fotrlink">
                       <p className="text-sm font-semibold mr-2">{cat.category} :</p>
                     {cat.items.map((item, ix) => (
-                     <li key={ix}> <Link  href={item.href} className="text-white text-sm font-semibold">
+                     <li key={ix}> <a  href={item.href} className="text-white text-sm font-semibold">
                         {item.name}
-                      </Link> </li>
+                      </a> </li>
                     ))}
                     </ul>
                   </div>

@@ -1,6 +1,65 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiGet } from '../api/apiClient';
 
+const isPrivateOrLocalIp = (ip: string) => {
+  const v = (ip || "").trim().toLowerCase();
+  if (!v) return true;
+
+  if (v === "::1" || v === "::" || v === "0.0.0.0") return true;
+  if (v.startsWith("127.") || v.startsWith("10.") || v.startsWith("192.168.")) {
+    return true;
+  }
+  if (v.startsWith("172.")) {
+    const second = Number(v.split(".")[1] || "-1");
+    if (second >= 16 && second <= 31) return true;
+  }
+  if (v.startsWith("fc") || v.startsWith("fd") || v.startsWith("fe80")) {
+    return true;
+  }
+
+  return false;
+};
+
+const resolveClientIp = async () => {
+  const fallbackIp = "8.8.8.8";
+
+  if (typeof window !== "undefined") {
+    try {
+      const localIpRes = await fetch("/api/client-ip", {
+        method: "GET",
+        cache: "no-store",
+      });
+      if (localIpRes.ok) {
+        const localIpData = await localIpRes.json();
+        const localIp = (localIpData?.ip || "").trim();
+        if (localIp && !isPrivateOrLocalIp(localIp)) {
+          return localIp;
+        }
+      }
+    } catch {
+      // fallback to third-party resolver
+    }
+  }
+
+  try {
+    const ipRes = await fetch("https://api64.ipify.org?format=json", {
+      method: "GET",
+      cache: "no-store",
+    });
+    if (ipRes.ok) {
+      const ipData = await ipRes.json();
+      const externalIp = (ipData?.ip || "").trim();
+      if (externalIp && !isPrivateOrLocalIp(externalIp)) {
+        return externalIp;
+      }
+    }
+  } catch {
+    // keep hard fallback
+  }
+
+  return fallbackIp;
+};
+
 // ✅ Navigation and Sticky Section types
 interface NavigationItem {
   id: number;
@@ -118,7 +177,11 @@ interface ApiResponse {
 export const fetchCourseBySlug = createAsyncThunk(
   'course/fetchCourseBySlug',
   async (slug: string) => {
-    const response = await apiGet<ApiResponse>(`/course_details/${slug}`);
+    const ipAddress = await resolveClientIp();
+
+    const response = await apiGet<ApiResponse>(`/course_details/${slug}`, {
+      ip_address: ipAddress,
+    });
 
     console.log('API Response:', response);
 
@@ -191,3 +254,4 @@ const courseSlice = createSlice({
 
 export const { clearCourse } = courseSlice.actions;
 export default courseSlice.reducer;
+

@@ -591,7 +591,8 @@ details > * {
 }
 
 .recalbg {
-    background: url(../../public/callback_bg.jpg) center/cover no-repeat
+    background: url(../../public/callback_bg.jpg) right top/cover no-repeat;
+    min-height: 520px;
 }
 
 .iti__country-container {

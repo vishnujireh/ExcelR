@@ -44,15 +44,58 @@ export default function Navbar() {
 
   // Fetch course menu with IP address
   useEffect(() => {
-    const loadMenuWithIP = async () => {
-      try {
-        const ipResponse = await fetch("https://api64.ipify.org?format=json");
-        const ipData = await ipResponse.json();
-        dispatch(fetchCourseMenu(ipData.ip));
-      } catch (error) {
-        console.error("Error fetching IP:", error);
-        dispatch(fetchCourseMenu()); // Fallback without IP
+    const isPrivateOrLocalIp = (ip: string) => {
+      const v = (ip || "").toLowerCase();
+      if (!v) return true;
+
+      if (v === "::1" || v === "::" || v === "0.0.0.0") return true;
+      if (v.startsWith("127.") || v.startsWith("10.") || v.startsWith("192.168.")) {
+        return true;
       }
+      if (v.startsWith("172.")) {
+        const second = Number(v.split(".")[1] || "-1");
+        if (second >= 16 && second <= 31) return true;
+      }
+      if (v.startsWith("fc") || v.startsWith("fd") || v.startsWith("fe80")) {
+        return true;
+      }
+
+      return false;
+    };
+
+    const loadMenuWithIP = async () => {
+      let ipAddress = "8.8.8.8";
+      try {
+        const localIpRes = await fetch("/api/client-ip", {
+          method: "GET",
+          cache: "no-store",
+        });
+        if (localIpRes.ok) {
+          const localIpData = await localIpRes.json();
+          const localIp = typeof localIpData?.ip === "string" ? localIpData.ip : "";
+          if (localIp && !isPrivateOrLocalIp(localIp)) {
+            ipAddress = localIp;
+          } else {
+            const ipResponse = await fetch("https://api64.ipify.org?format=json");
+            const ipData = await ipResponse.json();
+            ipAddress = ipData?.ip || ipAddress;
+          }
+        } else {
+          const ipResponse = await fetch("https://api64.ipify.org?format=json");
+          const ipData = await ipResponse.json();
+          ipAddress = ipData?.ip || ipAddress;
+        }
+      } catch (error) {
+        try {
+          const ipResponse = await fetch("https://api64.ipify.org?format=json");
+          const ipData = await ipResponse.json();
+          ipAddress = ipData?.ip || ipAddress;
+        } catch {
+          console.error("Error fetching IP:", error);
+        }
+      }
+
+      dispatch(fetchCourseMenu(ipAddress));
     };
     
     loadMenuWithIP();
