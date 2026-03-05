@@ -21,8 +21,6 @@ const isPrivateOrLocalIp = (ip: string) => {
 };
 
 const resolveClientIp = async () => {
-  const fallbackIp = "8.8.8.8";
-
   if (typeof window !== "undefined") {
     try {
       const localIpRes = await fetch("/nextapi/client-ip", {
@@ -54,10 +52,10 @@ const resolveClientIp = async () => {
       }
     }
   } catch {
-    // keep hard fallback
+    // fallback to empty ip
   }
 
-  return fallbackIp;
+  return "";
 };
 
 // ✅ Navigation and Sticky Section types

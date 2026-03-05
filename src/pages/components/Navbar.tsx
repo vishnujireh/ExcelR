@@ -64,7 +64,7 @@ export default function Navbar() {
     };
 
     const loadMenuWithIP = async () => {
-      let ipAddress = "8.8.8.8";
+      let ipAddress = "";
       try {
         const localIpRes = await fetch("/nextapi/client-ip", {
           method: "GET",
@@ -75,23 +75,27 @@ export default function Navbar() {
           const localIp = typeof localIpData?.ip === "string" ? localIpData.ip : "";
           if (localIp && !isPrivateOrLocalIp(localIp)) {
             ipAddress = localIp;
-          } else {
-            const ipResponse = await fetch("https://api64.ipify.org?format=json");
-            const ipData = await ipResponse.json();
-            ipAddress = ipData?.ip || ipAddress;
           }
-        } else {
-          const ipResponse = await fetch("https://api64.ipify.org?format=json");
-          const ipData = await ipResponse.json();
-          ipAddress = ipData?.ip || ipAddress;
         }
       } catch (error) {
+        console.error("Error fetching /nextapi/client-ip:", error);
+      }
+
+      if (!ipAddress || isPrivateOrLocalIp(ipAddress)) {
         try {
-          const ipResponse = await fetch("https://api64.ipify.org?format=json");
-          const ipData = await ipResponse.json();
-          ipAddress = ipData?.ip || ipAddress;
-        } catch {
-          console.error("Error fetching IP:", error);
+          const ipResponse = await fetch("https://api64.ipify.org?format=json", {
+            method: "GET",
+            cache: "no-store",
+          });
+          if (ipResponse.ok) {
+            const ipData = await ipResponse.json();
+            const externalIp = typeof ipData?.ip === "string" ? ipData.ip : "";
+            if (externalIp && !isPrivateOrLocalIp(externalIp)) {
+              ipAddress = externalIp;
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching ipify:", error);
         }
       }
 

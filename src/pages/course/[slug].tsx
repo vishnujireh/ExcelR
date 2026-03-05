@@ -76,6 +76,41 @@ const isPrivateOrLocalIp = (ip: string) => {
 
 const resolveRequestIp = async (context: any) => {
   const req = context?.req;
+  const getHeaderValue = (header: any): string => {
+    if (typeof header === "string") return header;
+    if (Array.isArray(header)) return header[0] || "";
+    return "";
+  };
+
+  const protoHeader = getHeaderValue(req?.headers?.["x-forwarded-proto"]);
+  const protocol = (protoHeader.split(",")[0] || "http").trim();
+  const host = getHeaderValue(req?.headers?.host).trim();
+
+  if (host) {
+    try {
+      const localIpRes = await fetch(`${protocol}://${host}/nextapi/client-ip`, {
+        method: "GET",
+        cache: "no-store",
+        headers: {
+          "x-forwarded-for": getHeaderValue(req?.headers?.["x-forwarded-for"]),
+          "x-real-ip": getHeaderValue(req?.headers?.["x-real-ip"]),
+          "x-client-ip": getHeaderValue(req?.headers?.["x-client-ip"]),
+          "true-client-ip": getHeaderValue(req?.headers?.["true-client-ip"]),
+          "cf-connecting-ip": getHeaderValue(req?.headers?.["cf-connecting-ip"]),
+        },
+      });
+
+      if (localIpRes.ok) {
+        const localIpData = await localIpRes.json();
+        const localIp = normalizeIp(localIpData?.ip || "");
+        if (localIp && !isPrivateOrLocalIp(localIp)) {
+          return localIp;
+        }
+      }
+    } catch {
+      // fallback below
+    }
+  }
 
   const xClientIpHeader = req?.headers?.["x-client-ip"];
   const xClientIp = normalizeIp(
@@ -103,21 +138,26 @@ const resolveRequestIp = async (context: any) => {
   if (!ipAddress || isPrivateOrLocalIp(ipAddress)) {
     try {
       const ipRes = await fetch("https://api64.ipify.org?format=json", {
+        method: "GET",
         cache: "no-store",
       });
       if (ipRes.ok) {
         const ipData = await ipRes.json();
-        const resolvedPublicIp = normalizeIp(ipData?.ip || "");
-        if (resolvedPublicIp) {
-          ipAddress = resolvedPublicIp;
+        const externalIp = normalizeIp(ipData?.ip || "");
+        if (externalIp && !isPrivateOrLocalIp(externalIp)) {
+          ipAddress = externalIp;
+        } else {
+          ipAddress = "";
         }
+      } else {
+        ipAddress = "";
       }
     } catch {
-      // fallback below
+      ipAddress = "";
     }
   }
 
-  return ipAddress || "8.8.8.8";
+  return ipAddress || "";
 };
 
 export default function CoursePage({ courseData, error }: PageProps) {

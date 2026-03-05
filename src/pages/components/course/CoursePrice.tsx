@@ -32,8 +32,6 @@ const isPrivateOrLocalIp = (ip: string) => {
 };
 
 const resolveClientIp = async () => {
-  const fallbackIp = "8.8.8.8";
-
   try {
     const localIpRes = await fetch("/nextapi/client-ip", {
       method: "GET",
@@ -63,10 +61,10 @@ const resolveClientIp = async () => {
       }
     }
   } catch {
-    // keep hard fallback
+    // fallback to empty ip
   }
 
-  return fallbackIp;
+  return "";
 };
 
 /*   THIS HELPER HERE */
