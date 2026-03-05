@@ -25,7 +25,7 @@ const resolveClientIp = async () => {
 
   if (typeof window !== "undefined") {
     try {
-      const localIpRes = await fetch("/api/client-ip", {
+      const localIpRes = await fetch("/nextapi/client-ip", {
         method: "GET",
         cache: "no-store",
       });

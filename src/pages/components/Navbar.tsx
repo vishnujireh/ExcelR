@@ -66,7 +66,7 @@ export default function Navbar() {
     const loadMenuWithIP = async () => {
       let ipAddress = "8.8.8.8";
       try {
-        const localIpRes = await fetch("/api/client-ip", {
+        const localIpRes = await fetch("/nextapi/client-ip", {
           method: "GET",
           cache: "no-store",
         });

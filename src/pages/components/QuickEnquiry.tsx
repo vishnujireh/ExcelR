@@ -65,7 +65,7 @@ const resolveClientIp = async () => {
   const fallbackIp = "8.8.8.8";
 
   try {
-    const localIpRes = await fetch("/api/client-ip", {
+    const localIpRes = await fetch("/nextapi/client-ip", {
       method: "GET",
       cache: "no-store",
     });
