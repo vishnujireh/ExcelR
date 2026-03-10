@@ -3,19 +3,98 @@
 import React, { useState } from "react";
 import { LuPhoneCall, LuSmartphone, LuLifeBuoy } from "react-icons/lu";
 import QuickEnquiry from "./QuickEnquiry";
+import { apiGet } from "@/redux/api/apiClient";
+import type { CourseData } from "@/redux/slices/courseSlice";
 
-export default function FooterSticky() {
+interface FooterStickyProps {
+  courseData?: CourseData | null;
+}
+
+export default function FooterSticky({ courseData }: FooterStickyProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [variant, setVariant] = useState<"default" | "callback">("default");
   const [formName, setFormName] = useState("");
+  const [prefill, setPrefill] = useState({
+    course: "",
+    country: "",
+    state: "",
+    location: "",
+  });
 
-  const openModal = (
-    type: "default" | "callback",
-    name: string
-  ) => {
+  const resolveSlug = () => {
+    if (typeof window === "undefined") return "";
+    const pathname = window.location.pathname.split("?")[0].replace(/^\/+/, "");
+    if (!pathname) return "";
+    const parts = pathname.split("/").filter(Boolean);
+    if (parts[0] === "course") return parts[1] || "";
+
+    const excluded = new Set([
+      "_next",
+      "api",
+      "favicon.ico",
+      "favicon.png",
+      "images",
+      "thank-you",
+      "contact",
+      "corporate-training",
+      "every-day-learning",
+      "gallery",
+      "aboutv",
+      "terms-and-conditions1",
+      "careers",
+      "blogs",
+      "blog-category",
+      "blog-subcategory",
+      "news-events",
+      "news-event-detail",
+      "news-event-category",
+      "course",
+      "enroll_course",
+      "enroll_combo_course",
+      "page",
+      "home",
+    ]);
+
+    const candidate = parts[0]?.toLowerCase() || "";
+    return excluded.has(candidate) ? "" : parts[0];
+  };
+
+  const openModal = async (type: "default" | "callback", name: string) => {
     setVariant(type);
     setFormName(name);
-    setIsModalOpen(true);
+
+    if (courseData) {
+      setPrefill({
+        course: courseData.course || courseData.course_name || "",
+        country: courseData.country || "",
+        state: courseData.state || "",
+        location: courseData.city || "",
+      });
+      setIsModalOpen(true);
+      return;
+    }
+
+    const slug = resolveSlug();
+    if (!slug) {
+      setPrefill({ course: "", country: "", state: "", location: "" });
+      setIsModalOpen(true);
+      return;
+    }
+
+    try {
+      const response: any = await apiGet(`/course_details/${slug}`);
+      const detail = response?.data?.course_details?.[0];
+      setPrefill({
+        course: detail?.course || detail?.course_name || "",
+        country: detail?.country || "",
+        state: detail?.state || "",
+        location: detail?.city || "",
+      });
+    } catch {
+      setPrefill({ course: "", country: "", state: "", location: "" });
+    } finally {
+      setIsModalOpen(true);
+    }
   };
 
   const closeModal = () => setIsModalOpen(false);
@@ -57,7 +136,12 @@ export default function FooterSticky() {
         {/* MODAL */}
         {isModalOpen && (
           <QuickEnquiry
+          
             closeModal={closeModal}
+            course={prefill.course}
+            country={prefill.country}
+            state={prefill.state}
+            city={prefill.location}
             variant={variant}     // ✅ UI logic
             formName={formName}   // ✅ API logic
           />

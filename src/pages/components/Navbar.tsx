@@ -12,11 +12,17 @@ import {
 import { LuPhoneCall } from "react-icons/lu";
 import logo from "/public/logo.png";
 import QuickEnquiry from "./QuickEnquiry";
+import { apiGet } from "@/redux/api/apiClient";
+import type { CourseData } from "@/redux/slices/courseSlice";
 
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fetchCourseMenu } from "@/redux/slices/courseMenuSlice";
 
-export default function Navbar() {
+interface NavbarProps {
+  courseData?: CourseData | null;
+}
+
+export default function Navbar({ courseData }: NavbarProps) {
   // pathname removed because it's not used; keep imports minimal
   const dispatch = useAppDispatch();
   const { menu: categories = [], loading, error } = useAppSelector(
@@ -41,6 +47,12 @@ export default function Navbar() {
   const [, setSearchOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formName, setFormName] = useState("");
+  const [prefill, setPrefill] = useState({
+    course: "",
+    country: "",
+    state: "",
+    location: "",
+  });
 
   // Fetch course menu with IP address
   useEffect(() => {
@@ -119,9 +131,79 @@ export default function Navbar() {
     setHoveredSubcategory(null);
   };
   
-  const openDropQuery = () => {
+  const resolveSlug = () => {
+    if (typeof window === "undefined") return "";
+    const pathname = window.location.pathname.split("?")[0].replace(/^\/+/, "");
+    if (!pathname) return "";
+    const parts = pathname.split("/").filter(Boolean);
+    if (parts[0] === "course") return parts[1] || "";
+
+    const excluded = new Set([
+      "_next",
+      "api",
+      "favicon.ico",
+      "favicon.png",
+      "images",
+      "thank-you",
+      "contact",
+      "corporate-training",
+      "every-day-learning",
+      "gallery",
+      "aboutv",
+      "terms-and-conditions1",
+      "careers",
+      "blogs",
+      "blog-category",
+      "blog-subcategory",
+      "news-events",
+      "news-event-detail",
+      "news-event-category",
+      "course",
+      "enroll_course",
+      "enroll_combo_course",
+      "page",
+      "home",
+    ]);
+
+    const candidate = parts[0]?.toLowerCase() || "";
+    return excluded.has(candidate) ? "" : parts[0];
+  };
+
+  const openDropQuery = async () => {
     setFormName("Drop a Query");
-    setIsModalOpen(true);
+
+    if (courseData) {
+      setPrefill({
+        course: courseData.course || courseData.course_name || "",
+        country: courseData.country || "",
+        state: courseData.state || "",
+        location: courseData.city || "",
+      });
+      setIsModalOpen(true);
+      return;
+    }
+
+    const slug = resolveSlug();
+    if (!slug) {
+      setPrefill({ course: "", country: "", state: "", location: "" });
+      setIsModalOpen(true);
+      return;
+    }
+
+    try {
+      const response: any = await apiGet(`/course_details/${slug}`);
+      const detail = response?.data?.course_details?.[0];
+      setPrefill({
+        course: detail?.course || detail?.course_name || "",
+        country: detail?.country || "",
+        state: detail?.state || "",
+        location: detail?.city || "",
+      });
+    } catch {
+      setPrefill({ course: "", country: "", state: "", location: "" });
+    } finally {
+      setIsModalOpen(true);
+    }
   };
 
   const closeModal = () => setIsModalOpen(false);
@@ -149,10 +231,18 @@ export default function Navbar() {
             <FiSearch className="text-lg" />
           </button> */}
           <Link
+
             href="tel:18002122121"
-            className="flex items-center cursor-pointer justify-center gap-3 border border-solid border-[#0071BC] bg-[#0071BC] text-white font-medium text-sm w-10 h-10 rounded-full"
+
+ 
+
+            className="flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-[#f48f1c] to-[#e57709] text-white font-medium text-sm w-11 h-11 rounded-full"
+
           >
-            <LuPhoneCall />
+ 
+
+            <LuPhoneCall className="text-lg" />
+
           </Link>
         </div>
       </div>
@@ -291,13 +381,13 @@ export default function Navbar() {
 
               <div className="py-2 px-3 overflow-y-auto max-h-[500px]">
                 {directCourses.map((c, idx) => (
-                  <Link
+                  <a
                     key={idx}
                     href={c.base_url}
                     className="block py-2 px-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#0071BC] rounded-md"
                   >
                     {c.course_name}
-                  </Link>
+                  </a>
                 ))}
               </div>
             </div>
@@ -347,13 +437,13 @@ export default function Navbar() {
                     {isOpen && (
                       <div className="pl-5 py-2 space-y-1">
                         {subCourses.map((c, idx) => (
-                          <Link
+                          <a
                             key={idx}
                             href={c.base_url}
                             className="block text-sm py-1 px-2 text-gray-600 hover:text-[#0071BC] hover:bg-gray-50 rounded-md"
                           >
                             {c.course_name}
-                          </Link>
+                          </a>
                         ))}
                       </div>
                     )}
@@ -372,13 +462,13 @@ export default function Navbar() {
                   </h6>
 
                   {directCourses.map((c, idx) => (
-                    <Link
+                    <a
                       key={idx}
                       href={c.base_url}
                       className="block py-2 px-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#0071BC] rounded-md"
                     >
                       {c.course_name}
-                    </Link>
+                    </a>
                   ))}
                 </div>
               )}
@@ -393,16 +483,16 @@ export default function Navbar() {
  {/* --- DESKTOP RIGHT LINKS --- */}
       <ul className="hidden md:flex items-center space-x-6 text-sm font-semibold">
         <li>
-          <Link href="/blogs">Blog</Link>
+          <a href="blogs">Blog</a>
         </li>
         <li>
-          <Link href="/corporate-training">Corporate</Link>
+          <a href="corporate-training">Corporate</a>
         </li>
         <li>
-          <Link href="/every-day-learning">Institutions</Link>
+          <a href="every-day-learning">Institutions</a>
         </li>
         <li>
-          <Link href="/careers">Work With Us</Link>
+          <a href="careers">Work With Us</a>
         </li>
         <li>
           <button
@@ -451,12 +541,12 @@ export default function Navbar() {
                         <ul className="pl-3 space-y-1">
                           {sub.courses.map((c, k) => (
                             <li key={k}>
-                              <Link
+                              <a
                                 href={c.base_url}
                                 className="block text-sm text-gray-600 hover:text-blue-600"
                               >
                                 {c.course_name}
-                              </Link>
+                              </a>
                             </li>
                           ))}
                         </ul>
@@ -469,18 +559,18 @@ export default function Navbar() {
 
           {/* Other Links */}
           <div className="pt-4 border-t border-gray-200 space-y-3 text-sm font-semibold">
-            <Link href="/blogs" className="block">
+            <a href="blogs" className="block">
               Blog
-            </Link>
-            <Link href="/corporate-training" className="block">
+            </a>
+            <a href="corporate-training" className="block">
               Corporate
-            </Link>
-            <Link href="/every-day-learning" className="block">
+            </a>
+            <a href="every-day-learning" className="block">
               Institutions
-            </Link>
-            <Link href="/careers" className="block">
+            </a>
+            <a href="careers" className="block">
               Work With Us
-            </Link>
+            </a>
             {/* <Link
               href="tel:18002122121"
               className="block text-white bg-[#0071BC] text-center py-2 rounded-lg font-medium"
@@ -496,6 +586,10 @@ export default function Navbar() {
           closeModal={closeModal}
           variant="default"
           formName={formName}
+          course={prefill.course}
+          country={prefill.country}
+          state={prefill.state}
+          city={prefill.location}
         />
       )}
     </nav>

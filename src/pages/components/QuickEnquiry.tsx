@@ -42,61 +42,6 @@ interface QuickEnquiryProps {
   variant?: "default" | "callback";
 }
 
-const isPrivateOrLocalIp = (ip: string) => {
-  const v = (ip || "").trim().toLowerCase();
-  if (!v) return true;
-
-  if (v === "::1" || v === "::" || v === "0.0.0.0") return true;
-  if (v.startsWith("127.") || v.startsWith("10.") || v.startsWith("192.168.")) {
-    return true;
-  }
-  if (v.startsWith("172.")) {
-    const second = Number(v.split(".")[1] || "-1");
-    if (second >= 16 && second <= 31) return true;
-  }
-  if (v.startsWith("fc") || v.startsWith("fd") || v.startsWith("fe80")) {
-    return true;
-  }
-
-  return false;
-};
-
-const resolveClientIp = async () => {
-  try {
-    const localIpRes = await fetch("/nextapi/client-ip", {
-      method: "GET",
-      cache: "no-store",
-    });
-    if (localIpRes.ok) {
-      const localIpData = await localIpRes.json();
-      const localIp = (localIpData?.ip || "").trim();
-      if (localIp && !isPrivateOrLocalIp(localIp)) {
-        return localIp;
-      }
-    }
-  } catch {
-    // fallback to third-party resolver
-  }
-
-  try {
-    const ipRes = await fetch("https://api64.ipify.org?format=json", {
-      method: "GET",
-      cache: "no-store",
-    });
-    if (ipRes.ok) {
-      const ipData = await ipRes.json();
-      const externalIp = (ipData?.ip || "").trim();
-      if (externalIp && !isPrivateOrLocalIp(externalIp)) {
-        return externalIp;
-      }
-    }
-  } catch {
-    // fallback to empty ip
-  }
-
-  return "";
-};
-
 
 
 export default function QuickEnquiry({
@@ -113,6 +58,23 @@ export default function QuickEnquiry({
   const isDropQuery = formName?.toLowerCase().includes("drop a query");
   const headerIcon = isDropQuery ? drop_query_icon : quickenquiry_icon;
   const headerAlt = isDropQuery ? "Drop a Query" : "Quick Enquiry";
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    const { style } = document.body;
+    const prevOverflow = style.overflow;
+    const prevPaddingRight = style.paddingRight;
+    const scrollBarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+    style.overflow = "hidden";
+    if (scrollBarWidth > 0) {
+      style.paddingRight = `${scrollBarWidth}px`;
+    }
+    return () => {
+      style.overflow = prevOverflow;
+      style.paddingRight = prevPaddingRight;
+    };
+  }, []);
 
   const resolveSlug = () => {
     const pathname =
@@ -177,9 +139,11 @@ export default function QuickEnquiry({
     country: prefill.country,
     state: prefill.state,
     location: prefill.location,
+    locationOther: "",
     countryCode:"",
     agree: false,
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const dispatch = useDispatch<AppDispatch>();
   const [mappedCountryId, setMappedCountryId] = useState<string | null>(null);
@@ -219,11 +183,7 @@ export default function QuickEnquiry({
 
     const fetchCoursePrefill = async () => {
       try {
-        const ipAddress = await resolveClientIp();
-
-        const response: any = await apiGet(`/course_details/${slug}`, {
-          ip_address: ipAddress,
-        });
+        const response: any = await apiGet(`/course_details/${slug}`);
         const detail = response?.data?.course_details?.[0];
         if (!detail || cancelled) return;
 
@@ -379,11 +339,49 @@ export default function QuickEnquiry({
   ) => {
     const { name, value, type } = e.target;
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
-    }));
+    setFormData((prev) => {
+      const nextValue =
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
+      const next = {
+        ...prev,
+        [name]: nextValue,
+      };
+
+      if (name === "country") {
+        next.state = "";
+        next.location = "";
+        next.locationOther = "";
+      }
+
+      if (name === "state") {
+        next.location = "";
+        next.locationOther = "";
+      }
+
+      if (name === "location" && value !== "OTHER") {
+        next.locationOther = "";
+      }
+
+      return next;
+    });
+
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[name];
+      if (name === "country") {
+        delete next.state;
+        delete next.location;
+        delete next.locationOther;
+      }
+      if (name === "state") {
+        delete next.location;
+        delete next.locationOther;
+      }
+      if (name === "location") {
+        delete next.locationOther;
+      }
+      return next;
+    });
 
     // ---- Cascade logic ----
     if (name === "country") {
@@ -401,18 +399,87 @@ export default function QuickEnquiry({
     }
   };
 
+  const showCourse = prefillReady && !hasPrefillCourse;
+  const showCountry =
+    prefillReady &&
+    (!hasPrefillCountry ||
+      ((!hasPrefillState || !hasPrefillLocation) &&
+        countries.length > 0 &&
+        !mappedCountryId));
+  const showState =
+    prefillReady &&
+    (!hasPrefillState ||
+      (!hasPrefillLocation && states.length > 0 && !mappedStateId));
+  const showLocation = prefillReady && !hasPrefillLocation;
+
+  const validateForm = () => {
+    const nextErrors: Record<string, string> = {};
+    const emailOk = /^\S+@\S+\.\S+$/.test(formData.email.trim());
+
+    if (!formData.name.trim()) {
+      nextErrors.name = "Name is required.";
+    }
+    if (!formData.email.trim()) {
+      nextErrors.email = "Email is required.";
+    } else if (!emailOk) {
+      nextErrors.email = "Enter a valid email.";
+    }
+
+    const phoneCheck = syncPhoneField();
+    const countryData = itiRef.current?.getSelectedCountryData?.();
+    const isIndia =
+      countryData?.iso2 === "in" || countryData?.dialCode === "91" || !countryData;
+    if (!formData.mobile || !phoneCheck.isValid) {
+      nextErrors.mobile = isIndia
+        ? "Please enter a 10-digit mobile number."
+        : "Please enter a 12-digit mobile number.";
+    }
+
+    if (showCourse && !formData.course.trim()) {
+      nextErrors.course = "Course is required.";
+    }
+    if (showCountry && !formData.country) {
+      nextErrors.country = "Country is required.";
+    }
+    if (showState && !formData.state) {
+      nextErrors.state = "State is required.";
+    }
+    if (showLocation && !formData.location) {
+      nextErrors.location = "Location is required.";
+    }
+    if (showLocation && formData.location === "OTHER" && !formData.locationOther.trim()) {
+      nextErrors.locationOther = "Please enter your location.";
+    }
+    if (!formData.enquiry) {
+      nextErrors.enquiry = "Please select an option.";
+    }
+    if (!formData.agree) {
+      nextErrors.agree = "Please accept Terms & Conditions.";
+    }
+
+    return nextErrors;
+  };
+
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.agree) {
-      alert("Please accept Terms & Conditions");
+    const validationErrors = validateForm();
+    setErrors(validationErrors);
+    if (Object.keys(validationErrors).length > 0) {
+      if (validationErrors.mobile) {
+        phoneInputRef.current?.focus();
+      }
       return;
     }
 const pathname =
   typeof window !== "undefined"
     ? window.location.pathname.replace(/^\/+/, "")
     : "";
+    const resolvedLocation =
+      formData.location === "OTHER"
+        ? formData.locationOther.trim()
+        : formData.location;
     const payload = {
       user_name: formData.name,
       user_email: formData.email,
@@ -420,7 +487,7 @@ const pathname =
       course: formData.course,
       user_country: formData.country,
       user_state: formData.state,
-      user_location: formData.location,
+      user_location: resolvedLocation,
       user_message: "",
       looking_for: formData.enquiry,
 
@@ -460,14 +527,17 @@ const pathname =
         country: hasPrefillCountry ? formData.country : "",
         state: hasPrefillState ? formData.state : "",
         location: hasPrefillLocation ? formData.location : "",
+        locationOther: "",
         countryCode:"",
         agree: false,
       });
+      setErrors({});
 
       // Redirect to Thank You page
       if (result?.status) {
         closeModal();
-        router.push("/thank-you");
+        //router.push("/thank-you");
+	window.location.href = "https://www.excelr.com/thank-you";
       }
 
       // Reset Redux state
@@ -480,12 +550,58 @@ const pathname =
   const phoneInputRef = useRef<HTMLInputElement | null>(null);
   const itiRef = useRef<any>(null);
 
+  const syncPhoneField = () => {
+    const iti = itiRef.current;
+    const input = phoneInputRef.current;
+    if (!iti || !input) return { normalized: "", isValid: true };
+
+    const countryData = iti.getSelectedCountryData();
+    const isIndia = countryData?.iso2 === "in" || countryData?.dialCode === "91";
+    const rawNumber = input.value || "";
+    const digitsOnly = rawNumber.replace(/\D/g, "");
+    let normalized = digitsOnly;
+
+    if (isIndia) {
+      normalized = digitsOnly.slice(0, 10);
+      if (input.value !== normalized) {
+        input.value = normalized;
+      }
+      if (normalized.length > 0 && normalized.length !== 10) {
+        input.setCustomValidity("Please enter a 10-digit mobile number.");
+      } else {
+        input.setCustomValidity("");
+      }
+    } else {
+      if (digitsOnly.length > 12) {
+        normalized = digitsOnly.slice(0, 12);
+        if (input.value !== normalized) {
+          input.value = normalized;
+        }
+      }
+      if (normalized.length > 0) {
+        const lengthOk = normalized.length === 12;
+        const isValid =
+          typeof iti.isValidNumber === "function"
+            ? iti.isValidNumber() && lengthOk
+            : lengthOk;
+        input.setCustomValidity(
+          isValid ? "" : "Please enter a 12-digit mobile number."
+        );
+      } else {
+        input.setCustomValidity("");
+      }
+    }
+
+    return { normalized, isValid: input.checkValidity() };
+  };
+
   useEffect(() => {
   if (!phoneInputRef.current) return;
 
   itiRef.current = intlTelInput(phoneInputRef.current, {
     initialCountry: "in",
     separateDialCode: true,
+    loadUtils: () => import("intl-tel-input/utils"),
   });
 
  const handlePhoneChange = () => {
@@ -494,11 +610,11 @@ const pathname =
 
   const countryData = iti.getSelectedCountryData();
   const dialCode = countryData?.dialCode || "";
-  const rawNumber = phoneInputRef.current.value || "";
+  const { normalized } = syncPhoneField();
 
   setFormData((prev) => ({
     ...prev,
-    mobile: rawNumber.replace(/\D/g, ""), // ONLY number
+    mobile: normalized,
     countryCode: dialCode,
   }));
 };
@@ -520,7 +636,7 @@ const pathname =
       onClick={closeModal}
     >
       <div
-        className={`relative bg-white rounded-lg shadow-lg overflow-hidden ${
+        className={`relative bg-white rounded-lg shadow-lg overflow-hidden m-5 ${
           variant === "default" ? "w-full max-w-md" : "w-[900px] grid grid-cols-2 recalbg"
         }`}
         
@@ -574,6 +690,7 @@ const pathname =
       formData={formData}
       handleChange={handleChange}
       handleSubmit={handleSubmit}
+      errors={errors}
       countries={countries}
       states={states}
       locations={locations}
@@ -583,20 +700,10 @@ const pathname =
       submitting={submitting}
       error={error}
       phoneInputRef={phoneInputRef}
-      showCourse={prefillReady && !hasPrefillCourse}
-      showCountry={
-        prefillReady &&
-        (!hasPrefillCountry ||
-          ((!hasPrefillState || !hasPrefillLocation) &&
-            countries.length > 0 &&
-            !mappedCountryId))
-      }
-      showState={
-        prefillReady &&
-        (!hasPrefillState ||
-          (!hasPrefillLocation && states.length > 0 && !mappedStateId))
-      }
-      showLocation={prefillReady && !hasPrefillLocation}
+      showCourse={showCourse}
+      showCountry={showCountry}
+      showState={showState}
+      showLocation={showLocation}
     />
   </div>
 ) : (
@@ -604,6 +711,7 @@ const pathname =
     formData={formData}
     handleChange={handleChange}
     handleSubmit={handleSubmit}
+    errors={errors}
     countries={countries}
     states={states}
     locations={locations}
@@ -613,20 +721,10 @@ const pathname =
     submitting={submitting}
     error={error}
     phoneInputRef={phoneInputRef}
-    showCourse={prefillReady && !hasPrefillCourse}
-    showCountry={
-      prefillReady &&
-      (!hasPrefillCountry ||
-        ((!hasPrefillState || !hasPrefillLocation) &&
-          countries.length > 0 &&
-          !mappedCountryId))
-    }
-    showState={
-      prefillReady &&
-      (!hasPrefillState ||
-        (!hasPrefillLocation && states.length > 0 && !mappedStateId))
-    }
-    showLocation={prefillReady && !hasPrefillLocation}
+    showCourse={showCourse}
+    showCountry={showCountry}
+    showState={showState}
+    showLocation={showLocation}
   />
 )}
 
@@ -645,6 +743,7 @@ function ReusableForm({
   formData,
   handleChange,
   handleSubmit,
+  errors,
   countries,
   states,
   locations,
@@ -659,10 +758,20 @@ function ReusableForm({
   showState = true,
   showLocation = true,
 }: any) {
+  const showOtherLocationOption =
+    Boolean(formData.state) && !loadingLocations && locations.length === 0;
+  const locationOptions = showOtherLocationOption
+    ? [{ ID: "OTHER", name: "Others" }]
+    : locations;
+  const showLocationOtherField =
+    showLocation && formData.location === "OTHER";
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-2 px-4 text-gray-600" >
+    <form onSubmit={handleSubmit} noValidate className="space-y-2 px-4 text-gray-600" >
       <Input icon={<RiUserFill />} name="name" value={formData.name} onChange={handleChange} placeholder="Name *" />
+      {errors?.name && <p className="text-red-600 text-xs mt-1">{errors.name}</p>}
       <Input icon={<RiMailOpenFill />} name="email" value={formData.email} onChange={handleChange} placeholder="Email *" type="email" />
+      {errors?.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
 
       {/* PHONE INPUT (intl-tel-input) */}
       <div className="relative">
@@ -673,9 +782,12 @@ function ReusableForm({
           placeholder="Mobile No. *"
           type="tel"
           required
+          inputMode="numeric"
+          autoComplete="tel"
           className="border border-[#868686] text-gray-900 text-sm rounded-lg block w-full ps-10 p-2.5 moblig"
         />
       </div>
+      {errors?.mobile && <p className="text-red-600 text-xs mt-1">{errors.mobile}</p>}
 
       {showCourse && (
         <Input
@@ -686,6 +798,9 @@ function ReusableForm({
           placeholder="Course"
           type="text"
         />
+      )}
+      {showCourse && errors?.course && (
+        <p className="text-red-600 text-xs mt-1">{errors.course}</p>
       )}
 
       {/* COUNTRY */}
@@ -700,6 +815,9 @@ function ReusableForm({
           loading={loadingCountries}
           placeholder="Country"
         />
+      )}
+      {showCountry && errors?.country && (
+        <p className="text-red-600 text-xs mt-1">{errors.country}</p>
       )}
 
       {/* STATE */}
@@ -716,6 +834,9 @@ function ReusableForm({
           placeholder="State"
         />
       )}
+      {showState && errors?.state && (
+        <p className="text-red-600 text-xs mt-1">{errors.state}</p>
+      )}
 
       {/* LOCATION */}
       {showLocation && (
@@ -726,10 +847,28 @@ function ReusableForm({
           onChange={handleChange}
           required
           disabled={!formData.state}
-          options={locations}
+          options={locationOptions}
           loading={loadingLocations}
           placeholder="Location"
         />
+      )}
+      {showLocation && errors?.location && (
+        <p className="text-red-600 text-xs mt-1">{errors.location}</p>
+      )}
+
+      {showLocationOtherField && (
+        <Input
+          icon={<RiMapPin2Fill />}
+          name="locationOther"
+          value={formData.locationOther}
+          onChange={handleChange}
+          placeholder="Enter your location"
+          type="text"
+          required
+        />
+      )}
+      {showLocationOtherField && errors?.locationOther && (
+        <p className="text-red-600 text-xs mt-1">{errors.locationOther}</p>
       )}
 
       {/* ENQUIRY */}
@@ -745,6 +884,7 @@ function ReusableForm({
         ]}
         placeholder="Looking for?"
       />
+      {errors?.enquiry && <p className="text-red-600 text-xs mt-1">{errors.enquiry}</p>}
 
       <div className="flex items-start gap-2 text-xs text-gray-700">
         <input type="checkbox" name="agree" checked={formData.agree} onChange={handleChange} required className="mt-1" />
@@ -756,6 +896,7 @@ function ReusableForm({
           of Excelr Solutions.
         </span>
       </div>
+      {errors?.agree && <p className="text-red-600 text-xs mt-1">{errors.agree}</p>}
 
       <div className="text-center">
         {error && <p className="text-red-600 text-xs text-center">{error}</p>}
@@ -775,12 +916,13 @@ function ReusableForm({
 
 /* ================= INPUT COMPONENT ================= */
 function Input({ icon, ...props }: any) {
+  const { required = true, ...rest } = props;
   return (
     <div className="relative">
       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-900">{icon}</span>
       <input
-        {...props}
-        required
+        {...rest}
+        required={required}
         className="border border-[#868686] text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
       />
     </div>
@@ -805,4 +947,3 @@ function Select({ icon, options = [], loading = false, placeholder, ...props }: 
     </div>
   );
 }
-

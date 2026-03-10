@@ -1,7 +1,12 @@
 import React from "react";
 import Navbar from "./Navbar";
+import type { CourseData } from "@/redux/slices/courseSlice";
 
-export default function Header() {
+interface HeaderProps {
+  courseData?: CourseData | null;
+}
+
+export default function Header({ courseData }: HeaderProps) {
   return (
  <div
       className="
@@ -16,7 +21,7 @@ export default function Header() {
         fixed top-0 left-0 z-50 
         md:relative
       "
-    > <Navbar />
+    > <Navbar courseData={courseData} />
     </div>
   );
 }

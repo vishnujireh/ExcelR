@@ -5,13 +5,20 @@ import "intl-tel-input/build/css/intlTelInput.css";
 import Providers from "./providers";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { Open_Sans, Roboto } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import Script from "next/script";
+import type { CourseData } from "@/redux/slices/courseSlice";
 
 /* Dynamic Components */
-const Header = dynamic(() => import("./components/Header"), { ssr: true });
+type CourseDataProps = { courseData?: CourseData | null };
+
+const Header = dynamic<CourseDataProps>(() => import("./components/Header"), {
+  ssr: true,
+});
 const Footer = dynamic(() => import("./components/Footer"), { ssr: false });
-const FooterSticky = dynamic(() => import("./components/FooterSticky"), { ssr: false });
+const FooterSticky = dynamic<CourseDataProps>(() => import("./components/FooterSticky"), {
+  ssr: false,
+});
 
 /* Open Sans */
 const openSans = Open_Sans({
@@ -67,12 +74,12 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     //  ${roboto.className}
     <div className={`${openSans.className}`}>
       <Providers>
-        <Header />
+        <Header courseData={pageProps?.courseData ?? null} />
         <div className="pt-[73px] md:pt-0">
           <Component {...pageProps} />
         </div>
         {!isCoursePage && <Footer />}
-        <FooterSticky />
+        <FooterSticky courseData={pageProps?.courseData ?? null} />
 		
         {/* Zoho SalesIQ Script */}
         {shouldLoadZoho && (
