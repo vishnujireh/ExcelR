@@ -372,7 +372,28 @@ pre {
     -webkit-line-clamp: 3;
     line-clamp: 3
 }
-
+.banerdec ul {
+    display: block;
+    margin-top: 5px;
+}
+.banerdec ul li{
+    position: relative;
+    padding-left: 25px;
+    margin-left: 10px;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+.banerdec ul li:before {
+    background: url(https://www.excelr.com/assets/media/general/check.svg) 0 0/cover;
+    list-style-position: outside;
+    text-align: left;
+    content: '';
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    left: 0;
+    top: 5px
+}
 .courselist ul li:after {
     display: block;
     position: absolute;

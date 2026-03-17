@@ -292,18 +292,32 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                       </p>
 
                       <div className="flex justify-around mb-6 relative">
-                        <h6 className="dis-amt font-bold text-xl">
+                        {mode.price_info.discount_amount ?(
+                          <>
+<h6 className="dis-amt font-bold text-xl">
                           <span className="disam"></span>{" "}
                           {mode.price_info.currency}{" "}
                           {formatPrice(mode.price_info.amount)}
                         </h6>
+                        <h6 className="font-bold text-xl text-[#ea9b0a]">
+                            {mode.price_info.currency}{" "}
+                            {formatPrice(mode.price_info.discount_amount)}
+                          </h6>
+                          </>
+                        ): (
+                          <h6 className="font-bold text-xl">
+                          {mode.price_info.currency}{" "}
+                          {formatPrice(mode.price_info.amount)}
+                        </h6>
+                        )}
+                        
 
-                        {mode.price_info.discount_amount && (
+                        {/* {mode.price_info.discount_amount && (
                           <h6 className="font-bold text-xl text-[#ea9b0a]">
                             {mode.price_info.currency}{" "}
                             {formatPrice(mode.price_info.discount_amount)}
                           </h6>
-                        )}
+                        )} */}
                       </div>
 
                       <p className="text-sm font-semibold pb-2.5">
@@ -316,17 +330,23 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     </>
                   ) : (
                     <div className="flex justify-around mb-6 relative">
-                      <h6 className="dis-amt font-bold text-xl">
+                      {mode.price_info.discount_amount ? (
+                        <>
+                         <h6 className="dis-amt font-bold text-xl">
                         <span className="disam"></span>{" "}
                         {mode.price_info.currency}{" "}
                         {formatPrice(mode.price_info.amount)}
                       </h6>
-
-                      {mode.price_info.discount_amount && (
-                        <h6 className="font-bold text-xl text-[#ea9b0a]">
+                       <h6 className="font-bold text-xl text-[#ea9b0a]">
                           {mode.price_info.currency}{" "}
                           {formatPrice(mode.price_info.discount_amount)}
                         </h6>
+                        </>
+                      ):(
+ <h6 className=" font-bold text-xl">
+                        {mode.price_info.currency}{" "}
+                        {formatPrice(mode.price_info.amount)}
+                      </h6>
                       )}
                     </div>
                   )}
