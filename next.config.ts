@@ -20,6 +20,7 @@ const nextConfig = {
     minimumCacheTTL: 31536000,
       domains: [
       "demo.excelr.com",
+      "i3.ytimg.com",
       "demo3.excelr.com",   // for demo site images
       "www.excelr.com",    // for production site images
       "excelr.com",        // backup

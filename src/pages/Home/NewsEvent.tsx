@@ -1,5 +1,8 @@
 "use client";
-import React from "react";
+import React, {useEffect} from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchHomeNewsEvents } from "@/redux/slices/homeSlice";
+import { RootState  } from "@/redux/store";
 import Image from "next/image";
 import Link from "next/link";
 import readmore from "/public/log-in.png"
@@ -20,6 +23,14 @@ const newsEvents = [
 ]
 
 export default function NewsEvent (){
+    const dispatch = useDispatch<any>();
+    const { news_events} = useSelector ((state: RootState) => state.home);
+    
+    useEffect(() => {
+        dispatch(fetchHomeNewsEvents());
+    }, [dispatch]);
+
+
     return (
         <>
         <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF]">
@@ -28,24 +39,26 @@ export default function NewsEvent (){
                 <h2 className="text-2xl font-bold mb-1 text-center">News & Events</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {newsEvents.map((item, index) => (
+                {news_events.data?.news_events?.map((item, index) => (
                     <div key={index} className="p-5">
                         <div className=" border-l border-gray-200 pl-6 pb-2">
                             <div className="relative aspect-[5/2] w-full">
                                 <Image src={item.image} alt={item.title} fill className="rounded" />
                             </div>
-                        <Link href={item.link}><h3 className="text-md font-semibold mt-4 truncate">{item.title}</h3></Link>
+                        <Link href={item.url}><h3 className="text-md font-semibold mt-4 truncate">{item.title}</h3></Link>
                         <div className="min-h-[70px]">
-                        <p className="text-sm leading-6 mt-2 text-[#666] line-clamp-3">{item.desc}</p>
+                        <p className="text-sm leading-6 mt-2 text-[#666] line-clamp-3">{item.description}</p>
                         </div>
                         </div>
 
-                        <Link href={item.link} className="text-[#ff9600] mt-3 ml-1 text-sm flex items-center gap-2"><Image src={readmore} alt="Read more" /> Read more</Link>
+                        <Link href={item.url} className="text-[#ff9600] mt-3 ml-1 text-sm flex items-center gap-2"><Image src={readmore} alt="Read more" /> Read more</Link>
                     </div>
                 ))}
             </div>
             <div className="text-center mt-10 block">
-                <Link href="#" className="bg-[#ff9600] text-white text-sm inline-block items-center py-2.5 px-5 font-semibold rounded-lg"> View All</Link>
+                {news_events.data?.view_all && (
+                    <Link href={news_events.data.view_all} className="bg-[#ff9600] text-white text-sm inline-block items-center py-2.5 px-5 font-semibold rounded-lg"> View All</Link>
+                )} 
             </div>
         </div>
         </>

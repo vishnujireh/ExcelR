@@ -19,7 +19,7 @@ import pageDetailReducer from './slices/pageDetailSlice';
 import corporateTrainingReducer from "./slices/corporateTrainingSlice";
 import everyDayLearningReducer from "./slices/everyDayLearningSlice";
 import careerFormReducer from "./slices/careerFormSlice";
-
+import homeReducer from "./slices/homeSlice";
 
 export const store = configureStore({
   reducer: {
@@ -43,6 +43,7 @@ export const store = configureStore({
     corporateTraining: corporateTrainingReducer,
     everyDayLearning: everyDayLearningReducer,
     careerForm: careerFormReducer,
+    home: homeReducer,
   },
 });
 

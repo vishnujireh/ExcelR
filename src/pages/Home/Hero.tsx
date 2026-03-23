@@ -42,7 +42,7 @@ export default function Hero() {
                           className="object-cover"
                         />
                         </div>
-     <div className="relative z-10">
+     <div className="relative z-10 p-8 sm:p-0">
 <div className="grid md:grid-cols-7 grid-cols-1 gap-4 items-end">
   <div className="col-span-6 lg:col-span-3 text-white  md:py-15">
     <h1 className="text-left md:text-3xl text-xl  md:mb-7 mb-5 md:leading-12">Upskilling <span className="font-bold uppercase">Careers.</span> <span className="block">Transforming <span className="font-bold uppercase">Workforces.</span></span></h1>
@@ -52,16 +52,16 @@ export default function Hero() {
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">1,500+</span> Corporate Clients</li>
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">70+</span> In-Demand Courses</li>
     </ul>
-    <div className="md:mt-10 mt-7 md:text-left text-center flex md:justify-start justify-center items-center gap-5">
+    <div className="md:mt-10 mt-7 md:text-left text-center md:flex md:justify-start justify-center items-center gap-5">
     <Link
             href="tel:18002122121"
-            className="flex w-fit justify-center items-center gap-3 border border-solid border-[#0089ff] bg-[#0089ff] text-white hover:bg-white hover:text-[#0089ff] font-semibold text-sm py-2.5 px-4 rounded-lg"
+            className="block border border-solid border-[#0089ff] bg-[#0089ff] text-white hover:bg-white hover:text-[#0089ff] font-semibold text-sm py-2.5 px-4 rounded-lg"
           >
               <span>Explore Courses</span>
           </Link>
           <Link
             href="tel:18002122121"
-            className="flex w-fit justify-center items-center gap-3 border border-solid border-white bg-white text-black hover:bg-[#2563EB] hover:text-white font-semibold text-sm py-2.5 px-4 rounded-lg"
+            className="block mt-4 sm:mt-0 border border-solid border-white bg-white text-black hover:bg-[#2563EB] hover:text-white font-semibold text-sm py-2.5 px-4 rounded-lg"
           >
               <span>Explore for Enterprises</span>
           </Link>
