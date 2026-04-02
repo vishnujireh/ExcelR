@@ -1,7 +1,11 @@
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
 import parse from "html-react-parser";
+import fbicon from "/public/face-book.svg"
+import instaicon from "/public/instagram.svg"
+import linkedinicon from "/public/linked-in.svg"
+import twittericon from "/public/xlogo.svg"
+import youtubeicon from "/public/you-tube.svg"
 
 // Static Links
 const OrganizationLinks = [
@@ -32,11 +36,11 @@ const policyLinks = [
 ];
 
 const socialLinks = [
-  { name: "Facebook", href: "https://www.facebook.com/ExcelR/", icon: "/face-book.svg" },
-  { name: "Instagram", href: "https://www.instagram.com/excelr_official", icon: "/instagram.svg" },
-  { name: "LinkedIn", href: "https://www.linkedin.com/company/excelrofficial", icon: "/linked-in.svg" },
-  { name: "Twitter", href: "https://x.com/ExcelR_Official", icon: "/xlogo.svg" },
-  { name: "YouTube", href: "https://www.youtube.com/channel/UCF2_gALht1C1NsAm3fmFLsg", icon: "/you-tube.svg" },
+  { name: "Facebook", href: "https://www.facebook.com/ExcelR/", icon: fbicon },
+  { name: "Instagram", href: "https://www.instagram.com/excelr_official", icon: instaicon },
+  { name: "LinkedIn", href: "https://www.linkedin.com/company/excelrofficial", icon: linkedinicon },
+  { name: "Twitter", href: "https://x.com/ExcelR_Official", icon: twittericon },
+  { name: "YouTube", href: "https://www.youtube.com/channel/UCF2_gALht1C1NsAm3fmFLsg", icon: youtubeicon },
 ];
 
 const courses = [
@@ -161,8 +165,13 @@ export default function Footer({ footerHtml }: FooterProps) {
                 <ul className="md:mb-0 mb-3">
                   {socialLinks.map((l) => (
                     <li key={l.name} className="inline-block mr-2">
-                      <a href={l.href}>
-                        <Image src={l.icon} alt={l.name} width={34} height={34} />
+                      <a href={l.href} target="_blank" rel="noreferrer" aria-label={l.name}>
+                        <Image
+                          src={l.icon}
+                          alt={l.name}
+                          width={34}
+                          height={34}
+                        />
                       </a>
                     </li>
                   ))}

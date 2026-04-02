@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
 import QuickEnquiry from "../components/QuickEnquiry";
+import bannerImage from "/public/bg-3.jpg";
 
 const reasons = [
     { slno: 1, title: "Faculty is our strength", description: "Learn from experts who are certified, qualified, backed up by decades of rich industry experience and passionate about training" },
@@ -39,7 +39,12 @@ const [variant, setVariant] = useState<"default" | "callback">("default");
             </div>
             </div>
         </div>
-        <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 area-bg_grad">
+        <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 relative">
+            <div
+  className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-fixed"
+  style={{ backgroundImage: `url(${bannerImage.src})` }}
+/>
+                                     <div className="absolute inset-0 bg-black/60 -z-10"></div>
             <div className="text-center mb-10 z-20 relative">
                 <h2 className="text-2xl font-bold mb-1 text-white">Why ExcelR?</h2>
                 <p className="text-white text-sm leading-7 text-center">ExcelR is considered to be one of the best training institutes across the globe owing to our faculty, post training support and state of the art curriculum.</p>
