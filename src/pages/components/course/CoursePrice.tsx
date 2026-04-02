@@ -343,7 +343,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                         </h6>
                         </>
                       ):(
- <h6 className=" font-bold text-xl">
+ <h6 className="font-bold text-xl text-[#ea9b0a]">
                         {mode.price_info.currency}{" "}
                         {formatPrice(mode.price_info.amount)}
                       </h6>
@@ -360,6 +360,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     </div>
                   )}
 
+                 {!isSelfPaced  && (
                   <div className="mt-5">
                     <h6 className="font-semibold mb-3">Upcoming Batches</h6>
 
@@ -378,21 +379,25 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
 })}
                     </div>
                   </div>
+                 )}
+                  
 
                   <div className="flex flex-col gap-2 mt-5">
+                    {!isSelfPaced  && (
                     <button
                       onClick={() => openModal(mode)}
                       className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
                     >
                       Show All Batches
-                    </button>
+                    </button>)}
 
                     {mode.upcoming_dates_preview?.[0]?.batch_id && (
                       <Link
-                        href={`/enroll_course/${mode.upcoming_dates_preview[0].batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
+                       // href={`/enroll_course/${mode.upcoming_dates_preview[0].batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
+                       href={mode.upcoming_dates_preview[0].enroll_url}
                         className="flex items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
                       >
-                        Enroll Now
+                        {isSelfPaced ? "Buy Now" : "Enroll Now"}
                       </Link>
                     )}
                   </div>

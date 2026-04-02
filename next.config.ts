@@ -11,7 +11,7 @@ const nextConfig = {
   // ✅ Disable legacy browser transpilation
   experimental: {
     legacyBrowsers: false,
-  },
+  },  
   compress: true,
   images: {
     formats: ['image/webp', 'image/avif'],

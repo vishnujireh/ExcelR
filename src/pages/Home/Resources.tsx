@@ -1,22 +1,63 @@
 "use client";
-import {useState, useEffect} from "react";
+
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchHomeBlogs, fetchHomeQuizzes, fetchHomeGallery, fetchHomeYoutube } from "@/redux/slices/homeSlice";
-import { RootState  } from "@/redux/store";
+import {
+  fetchHomeBlogs,
+  fetchHomeQuizzes,
+  fetchHomeGallery,
+  fetchHomeYoutube,
+} from "@/redux/slices/homeSlice";
+import { RootState } from "@/redux/store";
 import Image from "next/image";
 import Link from "next/link";
 import { RiLinkM, RiSearchLine, RiPlayFill } from "react-icons/ri";
-import {FiPlus } from "react-icons/fi";
-const tabs = ["Blog", "Free Quizzes", "Gallery", "Webinars", "On Youtube"];
+import { FiPlus } from "react-icons/fi";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 
+const tabs = ["Blog", "Free Quizzes", "Gallery", "Webinars", "On Youtube"];
 
+/* ------------------ YOUTUBE EMBED HELPER ------------------ */
+const toEmbedUrl = (url: string) => {
+  if (!url) return "";
+
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.hostname === "youtu.be") {
+      return `https://www.youtube.com/embed/${parsed.pathname.slice(1)}`;
+    }
+
+    if (parsed.searchParams.get("v")) {
+      return `https://www.youtube.com/embed/${parsed.searchParams.get("v")}`;
+    }
+
+    if (url.includes("embed")) return url;
+
+    return "";
+  } catch {
+    return "";
+  }
+};
 
 export default function Resources() {
   const dispatch = useDispatch<any>();
-  const { blogs, quizzes, gallery, youtube } = useSelector ((state: RootState) => state.home);
+  const { blogs, quizzes, gallery, youtube } = useSelector(
+    (state: RootState) => state.home
+  );
 
+  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
+
+  /* ------------------ SAFE DATA ------------------ */
+  const blogsData = blogs?.data?.blogs || [];
+  const quizzesData = quizzes?.data || [];
+  const galleryData = gallery?.data?.galleries || [];
+  const youtubeData = youtube?.data || [];
+
+  /* ------------------ API CALLS ------------------ */
   useEffect(() => {
     dispatch(fetchHomeBlogs());
     dispatch(fetchHomeQuizzes());
@@ -24,198 +65,189 @@ export default function Resources() {
     dispatch(fetchHomeYoutube());
   }, [dispatch]);
 
-    const [activeTab, setActiveTab] = useState(tabs[0]);
-    const visibleGallery = gallery.data.galleries.slice(0, 7);
+  /* ------------------ LOCK SCROLL ------------------ */
+  useEffect(() => {
+    document.body.style.overflow = modalOpen ? "hidden" : "auto";
+  }, [modalOpen]);
+
   return (
-    <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF]">
-      <h3 className="text-2xl font-bold mb-1 text-center">Resources</h3>
-      <p className="text-[#666] text-sm leading-7 text-center">Avail our resources like free quizzes, blogs written by industry experts, gallery of our events which would give you a visual treat. Enjoy various course videos from our YouTube channel and also stay abreast of our knowledge sharing webinars, conducted by industry stalwarts.</p>
-    <div>
-        <div className="flex justify-center flex-wrap space-x-4 mt-8 mb-8">
-            {tabs.map((tab) =>(
-                <button key={tab} 
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-2 rounded-lg uppercase font-semibold cursor-pointer text-sm text-[#000]  ${activeTab === tab ? 'bg-[#4593d0] text-white' : 'bg-white text-gray-800 border border-gray-300 hover:bg-[#4ba7de] hover:text-white'}`}>
-                    {tab}
-                </button>
-            ))}
-        </div>
-        <div> 
-            {activeTab === "Blog" && (
-                <div className="text-center">
-                    <div className="grid md:grid-cols-4 gap-4">
-                      
-                    {blogs.data.blogs.map((blog, index) =>(
-  <div
-    key={index}
-    className="group bg-white shadow hover:shadow-lg transition duration-300 overflow-hidden relative"
-  >
-    <div className="relative w-full h-35">
-      <Image src={blog.image} alt={blog.title} fill className="block rounded" />
-    </div>
+    <>
+      <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF]">
+        <h3 className="text-2xl font-bold mb-1 text-center">Resources</h3>
+        <p className="text-[#666] text-sm leading-7 text-center">
+          Avail our resources like free quizzes, blogs written by industry
+          experts, gallery of our events which would give you a visual treat.
+        </p>
 
-    <div className="p-4 hidden group-hover:block absolute rounded w-full h-35 top-0 bg-[#000000cf]">
-      <p className="text-left text-white uppercase text-xs font-semibold">
-        {blog.title}
-      </p>
-      <div className="text-center mx-auto mt-2">
-        <Link
-          href={blog.url}
-          className="w-9 h-9 rounded-3xl bg-black mx-auto flex items-center justify-center text-white"
-        >
-          <RiLinkM className="text-xl" />
-        </Link>
-      </div>
-    </div>
-  </div>
-))}
-{/* 8th static card */}
-{blogs.data.read_more && (
-  <Link
-    href={blogs.data.read_more_url}
-    className="bg-white shadow hover:shadow-lg rounded transition duration-300 overflow-hidden relative"
-  >
-    <div className="relative w-full h-35 flex items-center justify-center">
-      <span className="w-12 h-12 border-gray-300 text-gray-400 rounded-3xl border flex items-center justify-center">
-        <FiPlus />
-      </span>
-    </div>
-  </Link>
-)}
-          </div>
-                </div>
-            )}
-            {activeTab === "Free Quizzes" && (
-                <div className="text-center">
-                   <div className="grid md:grid-cols-4 gap-4">
-                    {quizzes.data.map((quiz, index) =>(
-                      <Link href={quiz.url} key={index}  className="group bg-white shadow hover:shadow-lg transition duration-300 overflow-hidden relative">
-                        <div className="relative w-full h-35">
-                          <Image src={quiz.image} alt={quiz.title} fill />
-                        </div>
-                        <div className="p-4">
-                          <h3 className="text-left text-md- font-semibold mb-2">{quiz.title}</h3>
-                       <div>
-                          <p className="text-left text-sm leading-6 text-[#8b95a3]">{quiz.description}</p>
-                        </div>
-                        </div>
-                      </Link>
-                    ))}
-                   </div>
-                </div>
-            )}
-            {activeTab === "Gallery" && (
-                 <div className="text-center">
-    
-    <PhotoProvider
-  overlayRender={({ index }) => {
-    const flatImages = visibleGallery.map((g) => ({
-      image: g.main_image,
-      image_title: g.title,
-    }));
+        {/* ------------------ TABS ------------------ */}
+        <div className="grid grid-cols-2 md:flex md:flex-wrap gap-3 mt-8 mb-8 justify-center">
+  {tabs.map((tab) => (
+    <button
+      key={tab}
+      onClick={() => setActiveTab(tab)}
+      className={`w-full md:w-auto px-4 py-2 rounded-lg uppercase font-semibold text-sm cursor-pointer text-center ${
+        activeTab === tab
+          ? "bg-[#4593d0] text-white"
+          : "bg-white border hover:bg-[#4ba7de] hover:text-white"
+      }`}
+    >
+      {tab}
+    </button>
+  ))}
+</div>
 
-    const current = flatImages[index];
-
-    return (
-      <div className="absolute bottom-6 left-0 right-0 text-center pointer-events-none">
-        <div className="inline-block bg-black/70 text-white text-sm px-4 py-2 rounded">
-          {current?.image_title}
-        </div>
-      </div>
-    );
-  }}
->
-      <div className="grid md:grid-cols-4 gap-4">
-
-        {gallery.data.galleries.slice(0, 7).map((item) => (
-          <div
-            key={item.gallery_id}
-            className="group bg-white shadow hover:shadow-lg transition duration-300 overflow-hidden relative"
-          >
-            
-            {/* MAIN IMAGE CLICK → LIGHTBOX */}
-            <PhotoView src={item.main_image}>
-              <div className="relative w-full h-35 cursor-pointer">
-                <Image
-                  src={item.main_image}
-                  alt={item.title}
-                  fill
-                  className="block rounded object-cover"
-                />
-              </div>
-            </PhotoView>
-
-            {/* HOVER OVERLAY */}
-            <div className="hidden group-hover:flex absolute inset-0 bg-black/80 items-center justify-center gap-3 transition-all duration-300">
-              
-              {/* VIEW (LIGHTBOX TRIGGER) */}
-              <PhotoView src={item.main_image}>
-                <div className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-white cursor-pointer">
-                  <RiSearchLine className="text-xl" />
-                </div>
-              </PhotoView>
-
-              {/* EXTERNAL LINK */}
-              <Link
-                href={item.view_url}
-                className="w-9 h-9 rounded-full bg-black flex items-center justify-center text-white"
+        {/* ------------------ BLOG ------------------ */}
+        {activeTab === "Blog" && (
+          <div className="grid md:grid-cols-4 gap-4">
+            {blogsData.map((blog: any, index: number) => (
+              <div
+                key={index}
+                className="group bg-white shadow hover:shadow-lg relative"
               >
-                <RiLinkM className="text-xl" />
+                <div className="relative w-full h-35">
+                  <Image src={blog.image} alt={blog.title} fill />
+                </div>
+
+                <div className="hidden group-hover:block absolute inset-0 bg-black/80 p-4">
+                  <p className="text-white text-xs">{blog.title}</p>
+                  <Link
+                    href={blog.url}
+                    className="mt-2 w-9 h-9 flex items-center justify-center bg-black text-white mx-auto rounded-full"
+                  >
+                    <RiLinkM />
+                  </Link>
+                </div>
+              </div>
+            ))}
+
+            {blogs?.data?.read_more && (
+              <Link
+                href={blogs.data.read_more_url}
+                className="bg-white shadow hover:shadow-lg h-35 rounded transition duration-300 overflow-hidden relative"
+              >
+                <div className="relative w-full h-35 flex items-center justify-center"> <span className="w-12 h-12 border-gray-300 text-gray-400 rounded-3xl border flex items-center justify-center"> <FiPlus /> </span> </div>
               </Link>
-
-            </div>
-          </div>
-        ))}
-
-      </div>
-    </PhotoProvider>
-        {gallery.data.read_more && (
-          <div className="text-center mt-10">
-            <Link
-    href={gallery.data.read_more_url}
-    className="bg-white shadow hover:shadow-lg rounded transition duration-300 overflow-hidden relative"
-  >
-    <div className="relative w-full h-35 flex items-center justify-center">
-      <span className="w-12 h-12 border-gray-300 text-gray-400 rounded-3xl border flex items-center justify-center">
-        <FiPlus />
-      </span>
-    </div>
-  </Link>
+            )}
           </div>
         )}
-  </div>
-            )}
-            {activeTab === "Webinars" && (
-                <div className="text-center"></div>
-            )}
-            {activeTab === "On Youtube" && (
-                 <div className="text-center">
-                  <div className="grid md:grid-cols-4 gap-4">
-                    {youtube.data.slice(0, 7).map((youtube, index) =>(
-                       <div
-    key={index}
-    className="group bg-white shadow hover:shadow-lg transition duration-300 overflow-hidden relative"
-  >
-    <div className="relative w-full h-40">
-      <Image src={youtube.thumbnail} alt="let" fill className="block rounded" />
-    </div>
-    <div className="hidden group-hover:flex absolute inset-0 bg-black/80 rounded items-center justify-center transition-all duration-300">
-    <div className="text-center mx-auto flex items-center justify-center">
-        
-        <Link  href={youtube.embed_url}
-          className="w-9 h-9 rounded-3xl bg-black  flex items-center justify-center text-white"
-        >
-          <RiPlayFill className="text-xl" />
-        </Link>
-      </div>
-      </div>
-  </div>
-                    ))}
+
+        {/* ------------------ QUIZZES ------------------ */}
+        {activeTab === "Free Quizzes" && (
+          <div className="grid md:grid-cols-4 gap-4">
+            {quizzesData.map((quiz: any, index: number) => (
+              <Link
+                key={index}
+                href={quiz.url}
+                className="bg-white shadow"
+              >
+                <div className="relative w-full h-35">
+                  <Image src={quiz.image} alt={quiz.title} fill />
+                </div>
+                <div className="p-4">
+                  <h3 className="text-md font-semibold md:mb-1">{quiz.title}</h3>
+                  <p className="text-sm text-[#666] leading-6">{quiz.description}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {/* ------------------ GALLERY ------------------ */}
+        {activeTab === "Gallery" && (
+          <PhotoProvider>
+            <div className="grid md:grid-cols-4 gap-4">
+              {galleryData.slice(0, 7).map((item: any) => (
+                <div key={item.gallery_id} className="group relative">
+                  <PhotoView src={item.main_image}>
+                    <div className="relative w-full h-35 cursor-pointer">
+                      <Image src={item.main_image} alt={item.title} fill />
+                    </div>
+                  </PhotoView>
+
+                  <div className="hidden group-hover:flex absolute inset-0 bg-black/80 items-center justify-center gap-2">
+                    <PhotoView src={item.main_image}>
+                      <div className="w-9 h-9 bg-black text-white flex items-center justify-center rounded-full cursor-pointer">
+                        <RiSearchLine />
+                      </div>
+                    </PhotoView>
+
+                    <Link
+                      href={item.view_url}
+                      className="w-9 h-9 bg-black text-white flex items-center justify-center rounded-full"
+                    >
+                      <RiLinkM />
+                    </Link>
                   </div>
                 </div>
-            )}
+              ))}
+              {gallery.data.read_more && ( <div className="text-center"> <Link href={gallery.data.read_more_url} className="bg-white shadow hover:shadow-lg h-35 rounded transition duration-300 overflow-hidden relative" > <div className="relative w-full h-35 flex items-center justify-center"> <span className="w-12 h-12 border-gray-300 text-gray-400 rounded-3xl border flex items-center justify-center"> <FiPlus /> </span> </div> </Link> </div> )}
+            </div>
+          </PhotoProvider>
+        )}
+
+        {/* ------------------ YOUTUBE ------------------ */}
+        {activeTab === "On Youtube" && (
+          <div className="grid md:grid-cols-4 gap-4">
+            {youtubeData.slice(0, 7).map((yt: any, index: number) => (
+              <div key={index} className="group relative bg-white shadow">
+                <div className="relative w-full h-40">
+                  <Image src={yt.thumbnail} alt="" fill />
+                </div>
+
+                <div className="hidden group-hover:flex absolute inset-0 bg-black/80 items-center justify-center">
+                  <button
+                    onClick={() => {
+                      const embed = toEmbedUrl(yt.embed_url);
+                      if (embed) {
+                        setVideoUrl(embed);
+                        setModalOpen(true);
+                      }
+                    }}
+                    className="cursor-pointer w-10 h-10 bg-black text-white rounded-full flex items-center justify-center"
+                  >
+                    <RiPlayFill />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ------------------ MODAL ------------------ */}
+      {modalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center"
+          onClick={() => {
+            setModalOpen(false);
+            setVideoUrl("");
+          }}
+        >
+          <div
+            className="relative w-full max-w-4xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => {
+                setModalOpen(false);
+                setVideoUrl("");
+              }}
+              className="absolute -top-4 -right-4 bg-orange-500 text-white w-10 h-10 rounded-full"
+            >
+              ×
+            </button>
+
+            <div className="aspect-video bg-black">
+              <iframe
+                src={videoUrl}
+                className="w-full h-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
         </div>
-    </div>
-    </div>
+      )}
+    </>
   );
 }

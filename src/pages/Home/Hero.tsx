@@ -31,7 +31,7 @@ export default function Hero() {
      <>
      <div className="w-full relative md:mx-auto 2xl:px-25 xl:px-20 lg:px-10 text-center relative">
        {/* <div className="absolute inset-0 bg-gradient-to-r from-[#2781c8] via-black/100 via-[40%] to-[#52b7f3]"></div> */}
-<div className="hidden md:block absolute inset-0 -z-10">
+<div className="md:block absolute inset-0 -z-10">
                       <Image
                           src={bannerImageUrl}
                           alt="Enroll Course Banner"
@@ -43,10 +43,10 @@ export default function Hero() {
                         />
                         </div>
      <div className="relative z-10 p-8 sm:p-0">
-<div className="grid md:grid-cols-7 grid-cols-1 gap-4 items-end">
+<div className="grid md:grid-cols-7 grid-cols-1 gap-4 items-center">
   <div className="col-span-6 lg:col-span-3 text-white  md:py-15">
-    <h1 className="text-left md:text-3xl text-xl  md:mb-7 mb-5 md:leading-12">Upskilling <span className="font-bold uppercase">Careers.</span> <span className="block">Transforming <span className="font-bold uppercase">Workforces.</span></span></h1>
-    <ul className="text-left md:text-[17px] font-medium text-[14px] space-y-4">
+    <h1 className="text-left md:text-4xl text-xl  md:mb-7 mb-5 md:leading-12">Upskilling <span className="font-bold uppercase">Careers.</span> <span className="block">Transforming <span className="font-bold uppercase">Workforces.</span></span></h1>
+    <ul className="text-left md:text-[19px] font-medium text-[14px] space-y-4">
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">12 Years</span> of Training Legacy</li>
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"   /> <span className="font-bold">8 Lakh+</span> Learners Trained</li>
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">1,500+</span> Corporate Clients</li>
@@ -70,11 +70,8 @@ export default function Hero() {
    
  
   {/* Second div takes 2 columns on small screens, 3 columns on large screens */}
-   <div className="col-span-2 lg:col-span-1 hidden md:block"></div>
-  <div className="col-span-2 lg:col-span-3">
-    
-      <div className="col-span-1 hidden md:block"></div>
-       <div className="col-span-2 lg:col-span-1 items-center justify-center hidden md:flex">
+  <div className="col-span-2 lg:col-span-4">
+       <div className="col-span-2 lg:col-span-3 items-center justify-center hidden md:flex">
       <Image src={heroImage} alt="Hero Image" className="img-fluid" />
         </div>
   </div>

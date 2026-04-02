@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchHomeConfig, fetchHomeCourses } from "@/redux/slices/homeSlice";
 import { RootState  } from "@/redux/store";
 import Image from "next/image";
+import Link from "next/link";
 import parse from "html-react-parser";
+import { FaStar } from "react-icons/fa";
+import { RiCheckFill } from "react-icons/ri";
+
 
   
 
@@ -39,7 +43,7 @@ export default function OurCourses() {
             key={idx}
             className="bg-white shadow hover:shadow-lg transition duration-300 overflow-hidden"
           >
-            
+            <Link href={course.url} className="block">
             {/* Image */}
             <div className="relative w-full aspect-[16/9]">
               <Image
@@ -50,9 +54,10 @@ export default function OurCourses() {
               />
             </div>
             {/* Content */}
-            <div className="p-4">
-              <h3 className="text-md font-semibold md:mt-1 mt-0">{course.course_name}</h3>
-              <div className="home-popc-content">
+            <div className="p-4 flex flex-col h-full">
+             
+             <div className="home-popc-content">
+               <h3 className="text-md font-semibold md:mt-1 mt-0 mb-2">{course.course_name}</h3>
                  {/* Description (API empty → fallback) */}
                  {parse(course.description)}
               {/* {course.description && (
@@ -76,7 +81,20 @@ export default function OurCourses() {
               </div>
               {/* Rating */}
               {/* Rating (API HTML) */}
-              {parse(course.review_rating)}
+              <div className="pt-4">
+                                {course.review_rating && (
+                                  <div className="flex gap-1 items-center">
+                                    <FaStar className="text-yellow-500" />
+                                    <div
+                                      className="text-gray-600 text-sm">
+                                      {parse(course.review_rating)}
+                                    </div>
+                                  </div>
+                                )}
+              
+                                 
+                              </div>
+              
               {/* <div
                 className="mt-4"
                 dangerouslySetInnerHTML={{
@@ -89,6 +107,7 @@ export default function OurCourses() {
                 </span>
               </div> */}
             </div>
+            </Link>
           </div>
         ))}
             </div>

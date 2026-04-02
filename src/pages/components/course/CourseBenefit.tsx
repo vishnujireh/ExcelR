@@ -320,8 +320,6 @@ export default function CourseBenefit({ data }: CourseBenefitProps) {
 <div className="text-center block"><a href="https://www.excelr.com/testimonials" className="bg-[#ff9600] text-white text-sm inline-block items-center py-2.5 px-5 font-semibold rounded-lg">Read more</a></div>
 </div>
         </>
-       
-        
       )}
 
       {/* Video Modal */}
