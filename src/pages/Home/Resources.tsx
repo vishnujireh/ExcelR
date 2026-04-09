@@ -75,8 +75,7 @@ export default function Resources() {
       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF]">
         <h3 className="text-2xl font-bold mb-1 text-center">Resources</h3>
         <p className="text-[#666] text-sm leading-7 text-center">
-          Avail our resources like free quizzes, blogs written by industry
-          experts, gallery of our events which would give you a visual treat.
+          Avail our resources like free quizzes, blogs written by industry experts, gallery of our events which would give you a visual treat. Enjoy various course videos from our YouTube channel and also stay abreast of our knowledge sharing webinars, conducted by industry stalwarts.
         </p>
 
         {/* ------------------ TABS ------------------ */}
@@ -102,13 +101,14 @@ export default function Resources() {
             {blogsData.map((blog: any, index: number) => (
               <div
                 key={index}
-                className="group bg-white shadow hover:shadow-lg relative"
+                className="group bg-white shadow hover:shadow-lg relative focus:outline-none"
+                tabIndex={0}
               >
                 <div className="relative w-full h-35">
                   <Image src={blog.image} alt={blog.title} fill />
                 </div>
 
-                <div className="hidden group-hover:block absolute inset-0 bg-black/80 p-4">
+                <div className="hidden group-hover:block group-active:block group-focus-within:block absolute inset-0 bg-black/80 p-4">
                   <p className="text-white text-xs">{blog.title}</p>
                   <Link
                     href={blog.url}
@@ -189,12 +189,16 @@ export default function Resources() {
         {activeTab === "On Youtube" && (
           <div className="grid md:grid-cols-4 gap-4">
             {youtubeData.slice(0, 7).map((yt: any, index: number) => (
-              <div key={index} className="group relative bg-white shadow">
+              <div
+                key={index}
+                className="group relative bg-white shadow focus:outline-none"
+                tabIndex={0}
+              >
                 <div className="relative w-full h-40">
                   <Image src={yt.thumbnail} alt="" fill />
                 </div>
 
-                <div className="hidden group-hover:flex absolute inset-0 bg-black/80 items-center justify-center">
+                <div className="hidden group-hover:flex group-active:flex group-focus-within:flex absolute inset-0 bg-black/80 items-center justify-center">
                   <button
                     onClick={() => {
                       const embed = toEmbedUrl(yt.embed_url);

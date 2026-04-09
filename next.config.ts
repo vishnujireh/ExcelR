@@ -24,7 +24,8 @@ const nextConfig = {
       "demo3.excelr.com",   // for demo site images
       "www.excelr.com",    // for production site images
       "excelr.com",        // backup
-      "excelrcom.b-cdn.net" // CDN backup if used
+      "excelrcom.b-cdn.net", // CDN backup if used
+      "shield.sitelock.com", // for SiteLock badge
     ],
     remotePatterns: [
       {

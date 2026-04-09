@@ -47,12 +47,12 @@ export default function Hero() {
   <div className="col-span-6 lg:col-span-3 text-white  md:py-15">
     <h1 className="text-left md:text-4xl text-xl  md:mb-7 mb-5 md:leading-12">Upskilling <span className="font-bold uppercase">Careers.</span> <span className="block">Transforming <span className="font-bold uppercase">Workforces.</span></span></h1>
     <ul className="text-left md:text-[19px] font-medium text-[14px] space-y-4">
-      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">12 Years</span> of Training Legacy</li>
-      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"   /> <span className="font-bold">8 Lakh+</span> Learners Trained</li>
-      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">1,500+</span> Corporate Clients</li>
-      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">70+</span> In-Demand Courses</li>
+      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">13+ Years</span> of Training Experience</li>
+      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"   /> <span className="font-bold">400+</span> Corporate Clients</li>
+      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">800,000+</span> Learners Trained</li>
+      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">75+</span> Indemand Courses</li>
     </ul>
-    <div className="md:mt-10 mt-7 md:text-left text-center md:flex md:justify-start justify-center items-center gap-5">
+    {/* <div className="md:mt-10 mt-7 md:text-left text-center md:flex md:justify-start justify-center items-center gap-5">
     <Link
             href="tel:18002122121"
             className="block border border-solid border-[#0089ff] bg-[#0089ff] text-white hover:bg-white hover:text-[#0089ff] font-semibold text-sm py-2.5 px-4 rounded-lg"
@@ -65,7 +65,7 @@ export default function Hero() {
           >
               <span>Explore for Enterprises</span>
           </Link>
-          </div>
+          </div> */}
   </div>
    
  

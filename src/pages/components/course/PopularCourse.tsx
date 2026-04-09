@@ -8,11 +8,47 @@ import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { CourseData } from "@/redux/slices/courseSlice";
-import parse from "html-react-parser";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 interface Props {
   data: CourseData;
+}
+
+// ✅ Parse FontAwesome HTML → structured rating
+function parseRating(html: string) {
+  if (!html) return { full: 0, half: 0, empty: 0, total: 0 };
+
+  // Create DOM parser (safe in client)
+  const temp = document.createElement("div");
+  temp.innerHTML = html;
+
+  const icons = temp.querySelectorAll("i");
+
+  let full = 0;
+  let half = 0;
+  let empty = 0;
+
+  icons.forEach((icon) => {
+    const cls = icon.className;
+
+    if (cls.includes("fa-star-half")) {
+      half++;
+    } else if (cls.includes("fa-star-o")) {
+      empty++;
+    } else if (cls.includes("fa-star")) {
+      full++;
+    }
+  });
+
+  // ✅ total parsing (handles commas)
+  const text = temp.textContent || "";
+  const totalMatch = text.match(/\(([\d,]+)\)/);
+
+  const total = totalMatch
+    ? Number(totalMatch[1].replace(/,/g, ""))
+    : 0;
+
+  return { full, half, empty, total };
 }
 
 export default function PopularCourse({ data }: Props) {
@@ -47,48 +83,73 @@ export default function PopularCourse({ data }: Props) {
           1024: { slidesPerView: 4 },
         }}
       >
-        {courses.map((item) => (
-          <SwiperSlide key={item.id}>
-            <Link
-              href={item.url}
-              className="bg-white shadow hover:shadow-lg transition rounded-lg overflow-hidden block mb-3"
-            >
-              <div className="relative w-full aspect-[16/9]">
-                <Image
-                  src={item.image}
-                  alt={item.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 25vw"
-                />
-              </div>
+        {courses.map((item) => {
+          const ratingData = item.rating_html
+            ? parseRating(item.rating_html)
+            : null;
 
-              <div className="p-5">
-                <h3 className="font-semibold line-clamp-2 min-h-14">
-                  {item.name}
-                </h3>
-
-                <div className="mt-3 flex justify-between items-center">
-                  {item.rating_html && (
-                    <div className="flex gap-1 items-center">
-                      <FaStar className="text-yellow-500" />
-                      <div
-                        className="text-gray-600 text-sm">
-                        {parse(item.rating_html)}
-                      </div>
-                    </div>
-                  )}
-
-                  {item.enrolled_text && (
-                    <p className="text-sm text-gray-600">
-                      {item.enrolled_text}
-                    </p>
-                  )}
+          return (
+            <SwiperSlide key={item.id}>
+              <Link
+                href={item.url}
+                className="bg-white shadow hover:shadow-lg transition rounded-lg overflow-hidden block mb-3"
+              >
+                <div className="relative w-full aspect-[16/9]">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                  />
                 </div>
-              </div>
-            </Link>
-          </SwiperSlide>
-        ))}
+
+                <div className="p-5">
+                  <h3 className="font-semibold line-clamp-2 min-h-14">
+                    {item.name}
+                  </h3>
+
+                  <div className="mt-3 flex justify-between items-center">
+                    {ratingData && (
+                      <div className="flex gap-1 items-center">
+                        {[...Array(ratingData.full)].map((_, i) => (
+                          <FaStar
+                            key={`f-${i}`}
+                            className="text-yellow-500"
+                          />
+                        ))}
+
+                        {[...Array(ratingData.half)].map((_, i) => (
+                          <FaStarHalfAlt
+                            key={`h-${i}`}
+                            className="text-yellow-500"
+                          />
+                        ))}
+
+                        {[...Array(ratingData.empty)].map((_, i) => (
+                          <FaRegStar
+                            key={`e-${i}`}
+                            className="text-gray-300"
+                          />
+                        ))}
+
+                        <span className="text-gray-600 text-sm ml-1">
+                          ({ratingData.total})
+                        </span>
+                      </div>
+                    )}
+
+                    {item.enrolled_text && (
+                      <p className="text-sm text-gray-600">
+                        {item.enrolled_text}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
     </div>
   );

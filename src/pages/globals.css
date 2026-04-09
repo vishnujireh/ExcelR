@@ -649,6 +649,16 @@ details > * {
 .cormobiln .moblig {
     padding-left: 88px !important
 }
+.placemimge .icon {
+    width: 160px;
+    text-align: center;
+    margin: 0 auto;
+}
+.neplacimg .icon {
+    width: 200px;
+    text-align: center;
+    margin: 0 auto;
+}
 
 @media (min-width:1399px) and (max-width:1610px) {
     .b-progress-list-2 .b-progress-list__item:first-child {

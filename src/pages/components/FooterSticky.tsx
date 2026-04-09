@@ -1,16 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { LuPhoneCall, LuSmartphone, LuLifeBuoy } from "react-icons/lu";
 import QuickEnquiry from "./QuickEnquiry";
 import { apiGet } from "@/redux/api/apiClient";
 import type { CourseData } from "@/redux/slices/courseSlice";
+import { useRouter } from "next/router";
 
 interface FooterStickyProps {
   courseData?: CourseData | null;
 }
 
+const AUTO_POPUP_DELAY_MS = 30000;
+const MANUAL_POPUP_SESSION_KEY_PREFIX = "excelr_qe_manual_popup_opened";
+const AUTO_POPUP_SESSION_KEY_PREFIX = "excelr_qe_auto_popup_done";
+
 export default function FooterSticky({ courseData }: FooterStickyProps) {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [variant, setVariant] = useState<"default" | "callback">("default");
   const [formName, setFormName] = useState("");
@@ -59,9 +65,22 @@ export default function FooterSticky({ courseData }: FooterStickyProps) {
     return excluded.has(candidate) ? "" : parts[0];
   };
 
-  const openModal = async (type: "default" | "callback", name: string) => {
+  const openModal = useCallback(async (
+    type: "default" | "callback",
+    name: string,
+    source: "manual" | "auto" = "manual"
+  ) => {
     setVariant(type);
     setFormName(name);
+
+    const currentPath =
+      (typeof window !== "undefined" ? window.location.pathname : "/")
+        .split("?")[0]
+        .toLowerCase() || "/";
+    const manualSessionKey = `${MANUAL_POPUP_SESSION_KEY_PREFIX}:${currentPath}`;
+    if (source === "manual" && typeof window !== "undefined") {
+      window.sessionStorage.setItem(manualSessionKey, "1");
+    }
 
     if (courseData) {
       setPrefill({
@@ -95,7 +114,31 @@ export default function FooterSticky({ courseData }: FooterStickyProps) {
     } finally {
       setIsModalOpen(true);
     }
-  };
+  }, [courseData]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || isModalOpen) return;
+
+    const path =
+      (router.asPath || window.location.pathname || "")
+        .split("?")[0]
+        .toLowerCase() || "/";
+    const manualSessionKey = `${MANUAL_POPUP_SESSION_KEY_PREFIX}:${path}`;
+    const autoSessionKey = `${AUTO_POPUP_SESSION_KEY_PREFIX}:${path}`;
+
+    if (window.sessionStorage.getItem(manualSessionKey) === "1") return;
+    if (window.sessionStorage.getItem(autoSessionKey) === "1") return;
+
+    const timer = window.setTimeout(() => {
+      if (window.sessionStorage.getItem(manualSessionKey) === "1") return;
+      if (window.sessionStorage.getItem(autoSessionKey) === "1") return;
+
+      window.sessionStorage.setItem(autoSessionKey, "1");
+      openModal("default", "Drop a Query", "auto");
+    }, AUTO_POPUP_DELAY_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [isModalOpen, openModal, router.asPath]);
 
   const closeModal = () => setIsModalOpen(false);
 

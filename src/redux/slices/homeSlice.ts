@@ -10,6 +10,37 @@ interface ApiState<T> {
   error: string | null;
 }
 
+export interface HomeConfig {
+  our_courses: string;
+  our_clients: string;
+  our_instructors: string;
+
+  banner_image: string;
+  banner_image2: string;
+  banner_image3: string;
+
+  popular_courses: string;
+
+  section1_description: string;
+  section2_description: string;
+  section2_image: string;
+
+  no_of_years_experience: string;
+  no_of_courses: string;
+  no_of_corporate_clients: string;
+  no_of_universities_tieup: string;
+
+  our_moments_desc: string;
+  why_excelr_desc: string;
+  why_excelr_part1: string;
+  why_excelr_part2: string;
+  why_excelr_part3: string;
+
+  meta_title: string;
+  meta_description: string;
+  meta_keyword: string;
+}
+
 export interface HomeCourse {
   course_name: string;
   description: string;
@@ -17,7 +48,7 @@ export interface HomeCourse {
   url: string;
   review_rating: string;
 }
-
+ 
 export interface HomeBlog {
   title: string;
   image: string;
@@ -128,7 +159,28 @@ export const fetchHomeConfig = createAsyncThunk(
   "home/fetchConfig",
   async () => {
     const res = await apiGet("/home_data");
-    return res.data[0]; // important
+   const raw = res.data[0];
+
+    return {
+      ...raw,
+
+      // fix corrupted banner string
+      banner_image: raw.banner_image?.split(",")[0] || "",
+
+      // fallback safety
+      banner_image2: raw.banner_image2 || "",
+      banner_image3: raw.banner_image3 || "",
+
+      popular_courses: raw.popular_courses || "",
+
+      section1_description: raw.section1_description || "",
+      section2_description: raw.section2_description || "",
+      section2_image: raw.section2_image || "",
+
+      meta_title: raw.meta_title || "",
+  meta_description: raw.meta_description || "",
+  meta_keyword: raw.meta_keyword || "",
+    };
   }
 );
 

@@ -47,36 +47,36 @@ const courses = [
   {
     category: "Emerging Technologies",
     items: [
-      { name: "Artificial Intelligence", href: "/courses/ai" },
-      { name: "Machine Learning", href: "/courses/ml" },
-      { name: "AR / VR", href: "/courses/ar-vr" },
-      { name: "IR 4.0", href: "/courses/ir4" },
-      { name: "IoT", href: "/courses/iot" },
-      { name: "Block Chain", href: "/courses/blockchain" },
-      { name: "Cyber Security", href: "/courses/cyber-security" },
-      { name: "Financial Analytics", href: "/courses/financial-analytics" },
-      { name: "Cloud Computing", href: "/courses/cloud-computing" },
+      { name: "Artificial Intelligence", href: "/artificial-intelligence-ai-course-training" },
+      { name: "Machine Learning", href: "/machine-learning-course-training" },
+      { name: "AR / VR", href: "/augmented-reality-ar-virtual-reality-vr" },
+      { name: "IR 4.0", href: "/industrial-revolution-4-0" },
+      { name: "IoT", href: "/internet-of-things" },
+      { name: "Block Chain", href: "/blockchain-training" },
+      { name: "Cyber Security", href: "#" },
+      { name: "Financial Analytics", href: "#" },
+      { name: "Cloud Computing", href: "/cloud-computing-certification-course-training" },
     ],
   },
   {
     category: "Quality Management",
     items: [
-      { name: "Lean Six Sigma Green Belt", href: "/courses/lean-green" },
-      { name: "Lean Six Sigma Black Belt", href: "/courses/lean-black" },
-      { name: "ISO", href: "/courses/iso" },
-      { name: "Master Black Belt", href: "/courses/master-black" },
+      { name: "Lean Six Sigma Green Belt", href: "/lean-six-sigma-green-belt" },
+      { name: "Lean Six Sigma Black Belt", href: "/lean-six-sigma-black-belt" },
+      { name: "ISO", href: "#" },
+      { name: "Master Black Belt", href: "/lean-six-sigma-master-blackbelt" },
     ],
   },
   {
     category: "Analytics",
     items: [
-      { name: "Deep Learning", href: "/courses/deep-learning" },
-      { name: "Tableau", href: "/courses/tableau" },
-      { name: "Big Data Hadoop", href: "/courses/big-data" },
-      { name: "Business Analytics", href: "/courses/business-analytics" },
-      { name: "Data Analytics", href: "/courses/data-analytics" },
-      { name: "SPARK", href: "/courses/spark" },
-      { name: "Data Science", href: "/courses/data-science" },
+      { name: "Deep Learning", href: "/deep-learning-and-artificial-intelligence" },
+      { name: "Tableau", href: "/tableau" },
+      { name: "Big Data Hadoop", href: "/big-data-hadoop-course-training" },
+      { name: "Business Analytics", href: "/business-analytics" },
+      { name: "Data Analytics", href: "/data-analytics-certification-training-course" },
+      { name: "SPARK", href: "#" },
+      { name: "Data Science", href: "/data-science-course-training" },
     ],
   },
 ];
@@ -136,7 +136,28 @@ export default function Footer({ footerHtml }: FooterProps) {
                   ))}
                 </ul>
               </div>
-              <div className="col-span-1"></div>
+              <div className="col-span-1">
+                <a
+                  href="https://www.sitelock.com/verify.php?site=excelr.com"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    window.open(
+                      "https://www.sitelock.com/verify.php?site=excelr.com",
+                      "SiteLock",
+                      "width=600,height=600,left=160,top=170"
+                    );
+                  }}
+                >
+                  <Image
+                    className="img-responsive"
+                    alt="SiteLock"
+                    title="SiteLock"
+                    width={100}
+                    height={100}
+                    src="https://shield.sitelock.com/shield/excelr.com"
+                  />
+                </a>
+              </div>
             </div>
 
         {/* ------------------- DYNAMIC FOOTER (Course Pages Only) ------------------- */}

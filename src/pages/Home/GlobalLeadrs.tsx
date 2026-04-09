@@ -32,8 +32,10 @@
             <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bgouglobal relative overflow-hidden">
                 <div className="grid md:grid-cols-3 grid-cols-1 gap-4 z-10 relative">
         <div className="col-span-1 lg:col-span-1">
-            <h1 className="text-2xl font-bold mb-1 text-center md:text-left">Our Global Leaders</h1>
-            <p className="text-[#666] text-sm leading-7">ExcelR is a global leader delivering a wide gamut of management and technical training over 40 countries. We are a trusted training delivery partner of 400+ corporate clients and universities/educational institutions across the globe with 150,000+ professionals trained across various courses. ExcelR helps individuals and organizations to excel by providing courses based on practical knowledge and theoretical concepts. Our industry reputation speaks for itself. We offer the best value in training services combined with the support of our creative minds to establish a solution that suits your learning needs. We just don’t train, we help in building careers and shaping up the future leaders.</p>
+            <h1 className="text-2xl font-bold mb-1 text-center md:text-left">Global Leaders In Training</h1>
+            <p className="text-[#666] text-sm leading-7">
+                ExcelR is a global leader delivering a wide gamut of management and technical training over 40 countries. We are a trusted training delivery partner of 400+ corporate clients and universities/educational institutions across the globe with 800,000+ professionals trained across various courses. ExcelR helps individuals and organizations to excel by providing courses based on practical knowledge and theoretical concepts. Our industry reputation speaks for itself. We offer the best value in training services combined with the support of our creative minds to establish a solution that suits your learning needs. We just don’t train, we help in building careers and shaping up the future leaders.
+            </p>
         </div>
         <div className="col-span-2 justify-self-end max-w-full">
             <div>
@@ -63,7 +65,7 @@
                 </div>
             </div>
             <div className="col-span-1 lg:col-span-1">
-                <div className="relative md:mt-10 mt-3 home-youtube">
+                <div className="relative md:mt-10 mt-3 home-youtube text-center">
                     <button onClick={openVideo} className="relative cursor-pointer">
                         <Image src={homeyoutube} alt="worldmap" className="img-fluid text-center mx-auto" />
                     </button>

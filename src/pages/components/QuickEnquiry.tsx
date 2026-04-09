@@ -42,8 +42,6 @@ interface QuickEnquiryProps {
   variant?: "default" | "callback";
 }
 
-
-
 export default function QuickEnquiry({
   closeModal,
   course = "",
