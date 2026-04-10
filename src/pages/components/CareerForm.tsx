@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { submitCareerForm, resetCareerFormState } from "@/redux/slices/careerFormSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import intlTelInput from "intl-tel-input";
-import "intl-tel-input/build/css/intlTelInput.css";
 
 interface CareerApplyFormProps {
   title?: string;

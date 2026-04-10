@@ -329,12 +329,12 @@ export default function CourseBenefit({ data }: CourseBenefitProps) {
           onClick={() => setModalOpen(false)}
         >
           <div
-            className="relative w-full max-w-4xl"
+            className="relative w-full max-w-4xl m-5 sm:m-0"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               onClick={() => setModalOpen(false)}
-              className="absolute -top-4 -right-4 bg-orange-500 text-white w-10 h-10 rounded-full"
+              className="absolute -top-4 -right-4 cursor-pointer bg-orange-500 text-white w-10 h-10 rounded-full"
             >
               ×
             </button>

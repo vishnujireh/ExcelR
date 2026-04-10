@@ -14,7 +14,6 @@ import Link from "next/link";
 import { RiLinkM, RiSearchLine, RiPlayFill } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 import { PhotoProvider, PhotoView } from "react-photo-view";
-import "react-photo-view/dist/react-photo-view.css";
 
 const tabs = ["Blog", "Free Quizzes", "Gallery", "Webinars", "On Youtube"];
 
@@ -228,7 +227,7 @@ export default function Resources() {
           }}
         >
           <div
-            className="relative w-full max-w-4xl"
+            className="relative w-full max-w-4xl m-5 sm:m-0"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -236,7 +235,7 @@ export default function Resources() {
                 setModalOpen(false);
                 setVideoUrl("");
               }}
-              className="absolute -top-4 -right-4 bg-orange-500 text-white w-10 h-10 rounded-full"
+              className="absolute cursor-pointer -top-4 -right-4 bg-orange-500 text-white w-10 h-10 rounded-full"
             >
               ×
             </button>

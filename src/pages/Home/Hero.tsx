@@ -1,7 +1,6 @@
 "use client";
-import React from "react";
+import React, {useState} from "react";
 import Image from "next/image";
-import Link from "next/link";
 // import saurabh from "/public/saurabh.jpg"
 // import linkedin from "/public/linked-in.svg"
 // import facebook from "/public/face-book.svg"
@@ -16,8 +15,8 @@ import bannerImageUrl from "/public/homebaner.webp";
 // import itil from "/public/itil_home.svg"
 // import dm from "/public/dm_home.svg"
 // import ai from "/public/ai_home.svg"
-import { LuPhoneCall } from "react-icons/lu";
 import { RiCheckboxCircleLine  } from "react-icons/ri";
+import QuickEnquiry from "../components/QuickEnquiry";
 
 // const relateCourses = [
 //   { name: "Data Science", href: "#", revicon: datascience },
@@ -26,7 +25,13 @@ import { RiCheckboxCircleLine  } from "react-icons/ri";
 //   { name: "Digital Marketing", href: "#", revicon: dm },
 //   { name: "AI", href: "#", revicon: ai },
 // ]
+
+
 export default function Hero() {
+
+  const [ShowEnterprisesPopup, setShowEnterprisesPopup] = useState(false);
+  const [ShowQuickEnquiryPopup, setShowQuickEnquiryPopup] = useState(false);
+
   return (
      <>
      <div className="w-full relative md:mx-auto 2xl:px-25 xl:px-20 lg:px-10 text-center relative">
@@ -52,20 +57,20 @@ export default function Hero() {
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">800,000+</span> Learners Trained</li>
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">75+</span> Indemand Courses</li>
     </ul>
-    {/* <div className="md:mt-10 mt-7 md:text-left text-center md:flex md:justify-start justify-center items-center gap-5">
-    <Link
-            href="tel:18002122121"
-            className="block border border-solid border-[#0089ff] bg-[#0089ff] text-white hover:bg-white hover:text-[#0089ff] font-semibold text-sm py-2.5 px-4 rounded-lg"
+    <div className="md:mt-10 mt-7 md:text-left text-center md:flex md:justify-start justify-center items-center gap-5">
+    <button
+            onClick={() => setShowQuickEnquiryPopup(true)}
+            className="cursor-pointer block border border-solid border-[#0089ff] bg-[#0089ff] text-white hover:bg-white hover:text-[#0089ff] font-semibold text-sm py-2.5 px-4 rounded-lg w-full sm:w-auto"
           >
               <span>Explore Courses</span>
-          </Link>
-          <Link
-            href="tel:18002122121"
-            className="block mt-4 sm:mt-0 border border-solid border-white bg-white text-black hover:bg-[#2563EB] hover:text-white font-semibold text-sm py-2.5 px-4 rounded-lg"
+          </button>
+          <button
+          onClick={() => setShowEnterprisesPopup(true)}
+          className="cursor-pointer block mt-4 sm:mt-0 border border-solid border-white bg-white text-black hover:bg-[#2563EB] hover:text-white font-semibold text-sm py-2.5 px-4 rounded-lg w-full sm:w-auto"
           >
               <span>Explore for Enterprises</span>
-          </Link>
-          </div> */}
+          </button>
+          </div>
   </div>
    
  
@@ -78,6 +83,20 @@ export default function Hero() {
 </div>
      </div>
     </div>
+
+   {ShowQuickEnquiryPopup && (
+  <QuickEnquiry
+    formName="drop a query"
+    closeModal={() => setShowQuickEnquiryPopup(false)}
+  />
+)}
+
+   {ShowEnterprisesPopup && (
+  <QuickEnquiry
+    formName="enterprises"
+    closeModal={() => setShowEnterprisesPopup(false)}
+  />
+)}
      </>
   );
 }

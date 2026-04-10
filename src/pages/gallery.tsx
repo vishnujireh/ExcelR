@@ -6,7 +6,6 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { fetchGallery } from "@/redux/slices/gallerySlice";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 import Image from "next/image";
-import "react-photo-view/dist/react-photo-view.css";
 import Breadcrumb from "./components/Breadcrumb";
 import { FiSearch } from "react-icons/fi";
 import bannerImageUrl from "/public/blog_page.webp";

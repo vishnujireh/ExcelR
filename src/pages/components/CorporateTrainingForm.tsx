@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { submitCorporateTraining, resetCorporateTrainingState } from "@/redux/slices/corporateTrainingSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import intlTelInput from "intl-tel-input";
-import "intl-tel-input/build/css/intlTelInput.css";
 
 const INITIAL_FORM_STATE = {
   name: "",

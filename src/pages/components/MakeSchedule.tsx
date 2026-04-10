@@ -10,7 +10,6 @@ import {
 } from "react-icons/ri";
 import { useSearchParams } from "next/navigation";
 import intlTelInput from "intl-tel-input";
-import "intl-tel-input/build/css/intlTelInput.css";
 
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";

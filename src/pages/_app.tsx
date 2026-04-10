@@ -2,6 +2,7 @@ import React from "react";
 import type { AppProps } from "next/app";
 import "./globals.css";
 import "intl-tel-input/build/css/intlTelInput.css";
+import "react-photo-view/dist/react-photo-view.css";
 import Providers from "./providers";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";

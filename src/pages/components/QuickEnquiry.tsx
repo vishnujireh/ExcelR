@@ -13,6 +13,8 @@ import {
   RiPhoneFill,
   RiMapPin2Fill,
   RiArtboardFill,
+  RiBuildingFill,
+  RiGroupFill
 } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
@@ -29,7 +31,7 @@ import {
   resetDropQueryState,
 } from "@/redux/slices/dropQuerySlice";
 import intlTelInput from "intl-tel-input";
-import "intl-tel-input/build/css/intlTelInput.css";
+
 import logo from "/public/logo.png";
 
 interface QuickEnquiryProps {
@@ -138,6 +140,8 @@ export default function QuickEnquiry({
     state: prefill.state,
     location: prefill.location,
     locationOther: "",
+    company:"",
+    teamSize:"",
     countryCode:"",
     agree: false,
   });
@@ -414,13 +418,28 @@ export default function QuickEnquiry({
     const nextErrors: Record<string, string> = {};
     const emailOk = /^\S+@\S+\.\S+$/.test(formData.email.trim());
 
+    const personalDomains =[
+      "gmail.com",
+      "yahoo.com",
+      "outlook.com",
+      "hotmail.com",
+      "rediffmail.com"
+    ];
+    const emailDomain = formData.email.trim().split("@")[1]?.toLowerCase();
+
+
     if (!formData.name.trim()) {
       nextErrors.name = "Name is required.";
     }
     if (!formData.email.trim()) {
-      nextErrors.email = "Email is required.";
+
+      nextErrors.email =  isEnterprisesForm
+      ? "Work Email is required."
+      : "Email is required.";
     } else if (!emailOk) {
       nextErrors.email = "Enter a valid email.";
+    } else if (isEnterprisesForm && emailDomain && personalDomains.includes(emailDomain)) {
+      nextErrors.email = "Please enter a work email address.";
     }
 
     const phoneCheck = syncPhoneField();
@@ -433,11 +452,14 @@ export default function QuickEnquiry({
         : "Please enter a 12-digit mobile number.";
     }
 
-    if (showCourse && !formData.course.trim()) {
+    if (!isEnterprisesForm && showCourse && !formData.course.trim()) {
       nextErrors.course = "Course is required.";
     }
     if (showCountry && !formData.country) {
       nextErrors.country = "Country is required.";
+    }
+    if (!formData.company.trim()) {
+      nextErrors.company = "Company Name is required.";
     }
     if (showState && !formData.state) {
       nextErrors.state = "State is required.";
@@ -526,6 +548,8 @@ const pathname =
         state: hasPrefillState ? formData.state : "",
         location: hasPrefillLocation ? formData.location : "",
         locationOther: "",
+        company:"",
+        teamSize:"",
         countryCode:"",
         agree: false,
       });
@@ -627,6 +651,8 @@ const pathname =
   };
 }, []);
 
+const isEnterprisesForm = formName === "enterprises";
+
 
   return (
     <div
@@ -699,9 +725,10 @@ const pathname =
       error={error}
       phoneInputRef={phoneInputRef}
       showCourse={showCourse}
-      showCountry={showCountry}
-      showState={showState}
-      showLocation={showLocation}
+      showCountry={isEnterprisesForm ? false : showCountry}
+      showState={ isEnterprisesForm ? false : showState}
+      showLocation={ isEnterprisesForm ? false : showLocation}
+      isEnterprisesForm={isEnterprisesForm}
     />
   </div>
 ) : (
@@ -720,9 +747,10 @@ const pathname =
     error={error}
     phoneInputRef={phoneInputRef}
     showCourse={showCourse}
-    showCountry={showCountry}
-    showState={showState}
-    showLocation={showLocation}
+    showCountry={isEnterprisesForm ? false : showCountry}
+    showState={isEnterprisesForm ? false : showState}
+    showLocation={isEnterprisesForm ? false : showLocation}
+    isEnterprisesForm={isEnterprisesForm}
   />
 )}
 
@@ -755,6 +783,7 @@ function ReusableForm({
   showCountry = true,
   showState = true,
   showLocation = true,
+  isEnterprisesForm = false,
 }: any) {
   const showOtherLocationOption =
     Boolean(formData.state) && !loadingLocations && locations.length === 0;
@@ -768,7 +797,7 @@ function ReusableForm({
     <form onSubmit={handleSubmit} noValidate className="space-y-2 px-4 text-gray-600" >
       <Input icon={<RiUserFill />} name="name" value={formData.name} onChange={handleChange} placeholder="Name *" />
       {errors?.name && <p className="text-red-600 text-xs mt-1">{errors.name}</p>}
-      <Input icon={<RiMailOpenFill />} name="email" value={formData.email} onChange={handleChange} placeholder="Email *" type="email" />
+      <Input icon={<RiMailOpenFill />} name="email" value={formData.email} onChange={handleChange} placeholder={isEnterprisesForm ? "Work Email *" : "Email *"} type="email" />
       {errors?.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
 
       {/* PHONE INPUT (intl-tel-input) */}
@@ -787,13 +816,39 @@ function ReusableForm({
       </div>
       {errors?.mobile && <p className="text-red-600 text-xs mt-1">{errors.mobile}</p>}
 
+   {isEnterprisesForm && (
+      <>
+        <Input
+          icon={<RiBuildingFill />}
+          name="company"
+          value={formData.company}
+          onChange={handleChange}
+          placeholder="Company Name *"
+        />
+          {errors?.company && <p className="text-red-600 text-xs mt-1">{errors.company}</p>}
+       <Select
+        icon={<RiGroupFill />}
+      name="teamSize"
+      value={formData.teamSize}
+      onChange={handleChange} 
+      options={[
+        { ID: "5-10", name: "5 to 10" },
+        { ID: "10-20", name: "10 to 20" },
+        { ID: "20-40", name: "20 to 40" },
+        { ID: "40+", name: "40+" },
+      ]}
+      placeholder="Team Size ( Approx )"
+    />
+        
+      </>
+    )}
       {showCourse && (
         <Input
           icon={<RiArtboardFill />}
           name="course"
           value={formData.course}
           onChange={handleChange}
-          placeholder="Course"
+          placeholder={isEnterprisesForm ? "Name of Course" : "Course *"}
           type="text"
         />
       )}
@@ -870,7 +925,9 @@ function ReusableForm({
       )}
 
       {/* ENQUIRY */}
-      <Select
+      {!isEnterprisesForm && (
+        <>
+        <Select
         icon={<RiUserFill />}
         name="enquiry"
         value={formData.enquiry}
@@ -883,6 +940,9 @@ function ReusableForm({
         placeholder="Looking for?"
       />
       {errors?.enquiry && <p className="text-red-600 text-xs mt-1">{errors.enquiry}</p>}
+        </>
+      )}
+     
 
       <div className="flex items-start gap-2 text-xs text-gray-700">
         <input type="checkbox" name="agree" checked={formData.agree} onChange={handleChange} required className="mt-1" />
