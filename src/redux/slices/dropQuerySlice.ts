@@ -32,7 +32,10 @@ export interface DropQueryPayload {
   country_code: string;
   template: string;
 }
-
+export interface EnterprisePayload extends DropQueryPayload {
+  company_name?: string;
+  team_size?: string;
+}
 interface DropQueryResponse {
   status: boolean;
   message: string;
@@ -88,6 +91,30 @@ export const submitDropQuery = createAsyncThunk<
   }
 });
 
+ export const submitEnterpriseQuery = createAsyncThunk<
+  DropQueryResponse,
+  EnterprisePayload,
+  { rejectValue: string }
+>("dropQuery/submitEnterprise", async (payload, { rejectWithValue }) => {
+  try {
+    const formData = new URLSearchParams();
+
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, String(value));
+      }
+    });
+
+    return await apiPost<DropQueryResponse>("/home_drop_query", formData, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+  } catch (error: any) {
+    return rejectWithValue(error.message || "Enterprise query failed");
+  }
+});
+
 /* ------------------ Slice ------------------ */
 
 const dropQuerySlice = createSlice({
@@ -116,7 +143,24 @@ const dropQuerySlice = createSlice({
         state.loading = false;
         state.success = false;
         state.error = action.payload || "Something went wrong";
-      });
+      })
+       .addCase(submitEnterpriseQuery.pending, (state) => {
+  state.loading = true;
+  state.success = false;
+  state.error = null;
+})
+.addCase(submitEnterpriseQuery.fulfilled, (state, action) => {
+  state.loading = false;
+  state.success = action.payload.status;
+  state.message = action.payload.message;
+  state.data = action.payload.data;
+})
+.addCase(submitEnterpriseQuery.rejected, (state, action) => {
+  state.loading = false;
+  state.success = false;
+  state.error = action.payload || "Something went wrong";
+})
+      ;
   },
 });
 

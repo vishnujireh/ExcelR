@@ -29,8 +29,8 @@ import QuickEnquiry from "../components/QuickEnquiry";
 
 export default function Hero() {
 
-  const [ShowEnterprisesPopup, setShowEnterprisesPopup] = useState(false);
-  const [ShowQuickEnquiryPopup, setShowQuickEnquiryPopup] = useState(false);
+   const [ShowEnterprisesPopup, setShowEnterprisesPopup] = useState(false);
+   const [ShowQuickEnquiryPopup, setShowQuickEnquiryPopup] = useState(false);
 
   return (
      <>
@@ -70,7 +70,7 @@ export default function Hero() {
           >
               <span>Explore for Enterprises</span>
           </button>
-          </div>
+          </div>  
   </div>
    
  
@@ -84,7 +84,7 @@ export default function Hero() {
      </div>
     </div>
 
-   {ShowQuickEnquiryPopup && (
+    {ShowQuickEnquiryPopup && (
   <QuickEnquiry
     formName="drop a query"
     closeModal={() => setShowQuickEnquiryPopup(false)}
@@ -96,7 +96,7 @@ export default function Hero() {
     formName="enterprises"
     closeModal={() => setShowEnterprisesPopup(false)}
   />
-)}
+)} 
      </>
   );
 }

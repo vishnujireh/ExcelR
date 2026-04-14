@@ -142,10 +142,8 @@ export default function CourseBatche({
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const shouldHideBatchSection =
-    Array.isArray(batchData?.training_modes) && batchData.training_modes.length === 0;
-
-  if (shouldHideBatchSection) {
+  // Only render component if we have batch data with training modes
+  if (!batchData || !batchData.training_modes || batchData.training_modes.length === 0) {
     return null;
   }
 

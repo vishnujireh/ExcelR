@@ -180,12 +180,10 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
     }
   : null;
 
-  if (loading) return <p className="text-center py-10">Loading...</p>;
-  if (error) return <p className="text-center text-red-600 py-10">{error}</p>;
-
-  const shouldHideBatchSection =
-    Array.isArray(batchData?.training_modes) && batchData.training_modes.length === 0;
-  if (shouldHideBatchSection) return null;
+  // Only render component if we have batch data with training modes
+  if (!batchData || !batchData.training_modes || batchData.training_modes.length === 0) {
+    return null;
+  }
 
   return (
     <>

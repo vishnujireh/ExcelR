@@ -109,7 +109,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
                     <Image src={reviewic} alt="Reviews" fill />
                   </div>
                   <div className="text-sm md:text-base text-center md:text-center">
-                  <Link
+                  <a
                     href="/testimonials"
                     className="text-white block mb-2 mx-auto md:mx-0"
                   >
@@ -119,7 +119,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
                     alt="For testimonials click here"
                     className="course-test-img mx-auto "
                   />
-                  </Link>
+                  </a>
                   </div>
                 </div>
               )}
