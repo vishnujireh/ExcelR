@@ -1,4 +1,6 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 import Image from "next/image";
 import parse from "html-react-parser";
 import fbicon from "/public/face-book.svg"
@@ -96,6 +98,9 @@ interface FooterProps {
 }
 
 export default function Footer({ footerHtml }: FooterProps) {
+
+  const {footer_menu, info, org, contact, footer_course, links} = useSelector((state: RootState) => state.home);
+
   return (
     <>
     
@@ -105,36 +110,38 @@ export default function Footer({ footerHtml }: FooterProps) {
         
          <div className="grid md:grid-cols-4 grid-cols-2 gap-4">
               <div className="col-span-1 lg:col-span-1">
-                <p className="text-md font-semibold">Organization</p>
-                <ul>
-                  {OrganizationLinks.map((l) => (
-                    <li key={l.name} className="my-2">
-                      <a href={l.href} className="text-sm text-white">{l.name}</a>
+                {/* <p className="text-md font-semibold">Organization</p> */}
+                {info.data?.length > 0 && info.data[0]?.description
+                ? parse(info.data[0].description)
+                : null}
+                {/* <ul>
+                  {links.data.map((l) => (
+                    <li key={l.title} className="my-2">
+                      <a href={l.base_url} className="text-sm text-white">{l.title}</a>
                     </li>
                   ))}
-                </ul>
+                </ul> */}
               </div>
 
               <div className="col-span-1">
-                <p className="text-md font-semibold">Resources</p>
-                <ul>
+                {/* <p className="text-md font-semibold">Resources</p> */}
+                {org.data?.length > 0 && org.data[0]?.description
+                ? parse(org.data[0].description)
+                : null}
+                {/* <ul>
                   {ResourcesLinks.map((l) => (
                     <li key={l.name} className="my-2">
                       <a href={l.href} className="text-sm text-white">{l.name}</a>
                     </li>
                   ))}
-                </ul>
+                </ul> */}
               </div>
 
               <div className="col-span-1">
-                <p className="text-md font-semibold">Lines Of Business</p>
-                <ul>
-                  {LinesOfBusinessLinks.map((l) => (
-                    <li key={l.name} className="my-2">
-                      <a href={l.href} className="text-sm text-white">{l.name}</a>
-                    </li>
-                  ))}
-                </ul>
+                {/* <p className="text-md font-semibold">Lines Of Business</p> */}
+               {contact.data?.length > 0 && contact.data[0]?.description
+    ? parse(contact.data[0].description)
+    : null}
               </div>
               <div className="col-span-1">
                 <a
@@ -172,8 +179,13 @@ export default function Footer({ footerHtml }: FooterProps) {
           <>
            
           <div>
+            {footer_course.data?.length > 0 && footer_course.data[0]?.description
+    ? parse(footer_course.data[0].description)
+    : null}
             <div className="grid md:grid-cols-4 grid-cols-1 gap-4 mt-2 items-center mb-2">
-              <div className="col-span-3 lg:col-span-3">
+            
+             
+              {/* <div className="col-span-3 lg:col-span-3">
                 <ul className="fotrlink">
                   {policyLinks.map((l) => (
                     <li key={l.name} className="inline-block">
@@ -197,10 +209,10 @@ export default function Footer({ footerHtml }: FooterProps) {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </div> */}
             </div>
           </div>
-          <div>
+          {/* <div>
             <div>
                 {courses.map((cat, i) => (
                   <div key={i} className="flex flex-wrap gap-3 mb-1.5 text-justify">
@@ -217,7 +229,7 @@ export default function Footer({ footerHtml }: FooterProps) {
                 ))}
             </div>
                 
-          </div>
+          </div> */}
           </>
         )}
         <div className="mt-5">

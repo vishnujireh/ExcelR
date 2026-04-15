@@ -45,13 +45,13 @@ export default function NewsEvent (){
                             <div className="relative aspect-[5/2] w-full">
                                 <Image src={item.image} alt={item.title} fill className="rounded" />
                             </div>
-                        <Link href={item.url}><h3 className="text-md font-semibold mt-4 truncate">{item.title}</h3></Link>
+                        <a href={item.url}><h3 className="text-md font-semibold mt-4 truncate">{item.title}</h3></a>
                         <div className="min-h-[70px]">
                         <p className="text-sm leading-6 mt-2 text-[#666] line-clamp-3">{item.description}</p>
                         </div>
                         </div>
 
-                        <Link href={item.url} className="text-[#ff9600] mt-3 ml-1 text-sm flex items-center gap-2"><Image src={readmore} alt="Read more" /> Read more</Link>
+                        <a href={item.url} className="text-[#ff9600] mt-3 ml-1 text-sm flex items-center gap-2"><Image src={readmore} alt="Read more" /> Read more</a>
                     </div>
                 ))}
             </div>

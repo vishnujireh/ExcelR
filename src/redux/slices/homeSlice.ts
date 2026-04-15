@@ -41,6 +41,39 @@ export interface HomeConfig {
   meta_keyword: string;
 }
 
+export interface HomeInstructor {
+  id:string;
+  name: string;
+  image: string;
+  designation: string;
+  to_show:string;
+}
+
+export interface HomeLink{
+  id:string;
+  title:string;
+  base_url:string;
+}
+
+export interface FooterMenu{
+  id:string;
+  course_name:string;
+  base_url:string;
+}
+
+export interface HomeContact {
+  description: string;
+}
+
+export interface HomeInfo{
+  description: string;
+}
+export interface HomeOrg{
+  description: string;
+}
+export interface HomeFooterCourse {
+  description: string;
+}
 export interface HomeCourse {
   course_name: string;
   description: string;
@@ -117,6 +150,14 @@ interface HomeState {
   quizzes: ApiState<HomeQuiz[]>;
   gallery: ApiState<HomeGalleryResponse>;
   youtube: ApiState<HomeYoutube[]>;
+
+   instructors: ApiState<HomeInstructor[]>;
+  links: ApiState<HomeLink[]>;
+  footer_menu: ApiState<FooterMenu[]>;
+  contact: ApiState<HomeContact[]>;
+  footer_course: ApiState<HomeFooterCourse[]>;
+  org: ApiState<HomeOrg[]>;
+  info: ApiState<HomeInfo[]>;
 }
 
 const initialState: HomeState = {
@@ -150,6 +191,13 @@ news_events: {
   error: null,
 },
   youtube: { data: [], loading: false, error: null },
+  instructors: { data: [], loading: false, error: null },
+  links: { data: [], loading: false, error: null },
+  footer_menu: { data: [], loading: false, error: null },
+  contact: { data: [], loading: false, error: null },
+  footer_course: { data: [], loading: false, error: null },
+  org: { data: [], loading: false, error: null },
+  info: { data: [], loading: false, error: null },
 };
 
 /* ================= THUNKS ================= */
@@ -180,6 +228,15 @@ export const fetchHomeConfig = createAsyncThunk(
       meta_title: raw.meta_title || "",
   meta_description: raw.meta_description || "",
   meta_keyword: raw.meta_keyword || "",
+
+      instructors: res.instructors || [],
+      links: res.links || [],
+      footer_menu: res.footer_menu || [],
+      contact: res.contacts || [],
+      footer_course: res.footer_course || [],
+      org: res.org || [],
+      info: res.info || [],
+
     };
   }
 );
@@ -271,19 +328,73 @@ const homeSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     // CONFIG
-    builder
-      .addCase(fetchHomeConfig.pending, (state) => {
-        state.config.loading = true;
-        state.config.error = null;
-      })
-      .addCase(fetchHomeConfig.fulfilled, (state, action) => {
-        state.config.loading = false;
-        state.config.data = action.payload;
-      })
-      .addCase(fetchHomeConfig.rejected, (state, action) => {
-        state.config.loading = false;
-        state.config.error = action.error.message || "Error";
-      });
+   builder
+  .addCase(fetchHomeConfig.pending, (state) => {
+    state.config.loading = true;
+    state.config.error = null;
+
+    state.instructors.loading = true;
+    state.links.loading = true;
+    state.footer_menu.loading = true;
+    state.contact.loading = true;
+    state.footer_course.loading = true;
+    state.org.loading = true;
+    state.info.loading = true;
+  })
+
+  .addCase(fetchHomeConfig.fulfilled, (state, action) => {
+    state.config.loading = false;
+    state.config.data = action.payload;
+
+    state.instructors.loading = false;
+    state.instructors.data = action.payload.instructors || [];
+
+    state.links.loading = false;
+    state.links.data = action.payload.links || [];
+
+    state.footer_menu.loading = false;
+    state.footer_menu.data = action.payload.footer_menu || [];
+
+    state.contact.loading = false;
+    state.contact.data = action.payload.contact || [];
+
+    state.footer_course.loading = false;
+    state.footer_course.data = action.payload.footer_course || [];
+    
+    state.org.loading = false;
+    state.org.data = action.payload.org || [];
+
+    state.info.loading = false;
+    state.info.data = action.payload.info || [];
+  })
+
+  .addCase(fetchHomeConfig.rejected, (state, action) => {
+    const error = action.error.message || "Error";
+
+    state.config.loading = false;
+    state.config.error = error;
+
+    state.instructors.loading = false;
+    state.instructors.error = error;
+
+    state.links.loading = false;
+    state.links.error = error;
+
+    state.footer_menu.loading = false;
+    state.footer_menu.error = error;
+
+    state.contact.loading = false;
+    state.contact.error = error;
+
+    state.footer_course.loading = false;
+    state.footer_course.error = error;
+
+    state.org.loading = false;
+    state.org.error = error;
+
+    state.info.loading = false;
+    state.info.error = error;
+  });
 
     // COURSES
     builder
