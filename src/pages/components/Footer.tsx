@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Image from "next/image";
 import parse from "html-react-parser";
+import { useRouter } from "next/router";
 import fbicon from "/public/face-book.svg"
 import instaicon from "/public/instagram.svg"
 import linkedinicon from "/public/linked-in.svg"
@@ -99,7 +100,9 @@ interface FooterProps {
 
 export default function Footer({ footerHtml }: FooterProps) {
 
-  const {footer_menu, info, org, contact, footer_course, links} = useSelector((state: RootState) => state.home);
+  const {footer_menu, info, org, contact, footer_course} = useSelector((state: RootState) => state.home);
+  const router = useRouter();
+  const isCoursePage = router.pathname.startsWith('/course');
 
   return (
     <>
@@ -107,41 +110,62 @@ export default function Footer({ footerHtml }: FooterProps) {
 
     <footer>
       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#1A1A1A] text-white">
-        
-         <div className="grid md:grid-cols-4 grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-4 grid-cols-2 gap-4">
               <div className="col-span-1 lg:col-span-1">
-                {/* <p className="text-md font-semibold">Organization</p> */}
-                {info.data?.length > 0 && info.data[0]?.description
-                ? parse(info.data[0].description)
-                : null}
-                {/* <ul>
-                  {links.data.map((l) => (
-                    <li key={l.title} className="my-2">
-                      <a href={l.base_url} className="text-sm text-white">{l.title}</a>
-                    </li>
-                  ))}
-                </ul> */}
+                {isCoursePage ? (
+                  <>
+                    <p className="text-md font-semibold">Organization</p>
+                    <ul>
+                      {OrganizationLinks.map((l) => (
+                        <li key={l.name} className="my-2">
+                          <a href={l.href} className="text-sm text-white">{l.name}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  info.data?.length > 0 && info.data[0]?.description
+                    ? parse(info.data[0].description)
+                    : null
+                )}
               </div>
 
               <div className="col-span-1">
-                {/* <p className="text-md font-semibold">Resources</p> */}
-                {org.data?.length > 0 && org.data[0]?.description
-                ? parse(org.data[0].description)
-                : null}
-                {/* <ul>
-                  {ResourcesLinks.map((l) => (
-                    <li key={l.name} className="my-2">
-                      <a href={l.href} className="text-sm text-white">{l.name}</a>
-                    </li>
-                  ))}
-                </ul> */}
+                {isCoursePage ? (
+                  <>
+                    <p className="text-md font-semibold">Resources</p>
+                    <ul>
+                      {ResourcesLinks.map((l) => (
+                        <li key={l.name} className="my-2">
+                          <a href={l.href} className="text-sm text-white">{l.name}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  org.data?.length > 0 && org.data[0]?.description
+                    ? parse(org.data[0].description)
+                    : null
+                )}
               </div>
 
               <div className="col-span-1">
-                {/* <p className="text-md font-semibold">Lines Of Business</p> */}
-               {contact.data?.length > 0 && contact.data[0]?.description
-    ? parse(contact.data[0].description)
-    : null}
+                {isCoursePage ? (
+                  <>
+                    <p className="text-md font-semibold">Lines Of Business</p>
+                    <ul>
+                      {LinesOfBusinessLinks.map((l) => (
+                        <li key={l.name} className="my-2">
+                          <a href={l.href} className="text-sm text-white">{l.name}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  contact.data?.length > 0 && contact.data[0]?.description
+                    ? parse(contact.data[0].description)
+                    : null
+                )}
               </div>
               <div className="col-span-1">
                 <a
