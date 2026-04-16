@@ -435,7 +435,10 @@ export default function QuickEnquiry({
   }, []);
 
   return (
-    <div className="fixed inset-0 z-60 flex items-center justify-center bg-[#000000cc]" onClick={closeModal}>
+    <div
+      className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-[#000000cc] py-6 md:items-center"
+      onClick={closeModal}
+    >
       <div
         className={`relative bg-white rounded-lg shadow-lg overflow-hidden m-5 ${
           variant === "default" ? "w-full max-w-md" : "w-[900px] grid grid-cols-2 recalbg"

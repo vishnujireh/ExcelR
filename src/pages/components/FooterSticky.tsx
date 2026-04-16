@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { LuPhoneCall, LuSmartphone, LuLifeBuoy } from "react-icons/lu";
 import QuickEnquiry from "./QuickEnquiry";
-import { apiGet } from "@/redux/api/apiClient";
 import type { CourseData } from "@/redux/slices/courseSlice";
 import { useRouter } from "next/router";
 
@@ -12,6 +11,8 @@ interface FooterStickyProps {
 }
 
 const AUTO_POPUP_DELAY_MS = 30000;
+const AUTO_POPUP_DELAY_MOBILE_MS = 30000;
+const MOBILE_BREAKPOINT_MAX_WIDTH = 767;
 const MANUAL_POPUP_SESSION_KEY_PREFIX = "excelr_qe_manual_popup_opened";
 const AUTO_POPUP_SESSION_KEY_PREFIX = "excelr_qe_auto_popup_done";
 
@@ -100,20 +101,10 @@ export default function FooterSticky({ courseData }: FooterStickyProps) {
       return;
     }
 
-    try {
-      const response: any = await apiGet(`/course_details/${slug}`);
-      const detail = response?.data?.course_details?.[0];
-      setPrefill({
-        course: detail?.course || detail?.course_name || "",
-        country: detail?.country || "",
-        state: detail?.state || "",
-        location: detail?.city || "",
-      });
-    } catch {
-      setPrefill({ course: "", country: "", state: "", location: "" });
-    } finally {
-      setIsModalOpen(true);
-    }
+    // Open immediately on slug pages and let QuickEnquiry hydrate course details.
+    // Waiting for this fetch here makes auto popups feel broken on slower mobile networks.
+    setPrefill({ course: "", country: "", state: "", location: "" });
+    setIsModalOpen(true);
   }, [courseData]);
 
   useEffect(() => {
@@ -129,13 +120,18 @@ export default function FooterSticky({ courseData }: FooterStickyProps) {
     if (window.sessionStorage.getItem(manualSessionKey) === "1") return;
     if (window.sessionStorage.getItem(autoSessionKey) === "1") return;
 
+    const isMobileViewport = window.innerWidth <= MOBILE_BREAKPOINT_MAX_WIDTH;
+    const popupDelay = isMobileViewport
+      ? AUTO_POPUP_DELAY_MOBILE_MS
+      : AUTO_POPUP_DELAY_MS;
+
     const timer = window.setTimeout(() => {
       if (window.sessionStorage.getItem(manualSessionKey) === "1") return;
       if (window.sessionStorage.getItem(autoSessionKey) === "1") return;
 
       window.sessionStorage.setItem(autoSessionKey, "1");
       openModal("default", "Drop a Query", "auto");
-    }, AUTO_POPUP_DELAY_MS);
+    }, popupDelay);
 
     return () => window.clearTimeout(timer);
   }, [isModalOpen, openModal, router.asPath]);
@@ -176,7 +172,9 @@ export default function FooterSticky({ courseData }: FooterStickyProps) {
           </a>
         </div>
 
-        {/* MODAL */}
+        
+      </div>
+      {/* MODAL */}
         {isModalOpen && (
           <QuickEnquiry
           
@@ -189,7 +187,6 @@ export default function FooterSticky({ courseData }: FooterStickyProps) {
             formName={formName}   // ✅ API logic
           />
         )}
-      </div>
     </>
   );
 }

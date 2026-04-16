@@ -196,7 +196,7 @@ export default function Footer({ footerHtml }: FooterProps) {
           <div className="col-span-4">
             {parse(footerHtml)}
           </div>
-        )}
+        )}  
 
         {/* ------------------- STATIC FOOTER (All Other Pages) ------------------- */}
         {!footerHtml && (
