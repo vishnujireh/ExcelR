@@ -64,12 +64,12 @@ export default function Hero() {
           >
               <span>Explore Courses</span>
           </button>
-          <button
+          {/* <button
           onClick={() => setShowEnterprisesPopup(true)}
           className="cursor-pointer block mt-4 sm:mt-0 border border-solid border-white bg-white text-black hover:bg-[#2563EB] hover:text-white font-semibold text-sm py-2.5 px-4 rounded-lg w-full sm:w-auto"
           >
               <span>Explore for Enterprises</span>
-          </button>
+          </button> */}
           </div>  
   </div>
    
@@ -87,6 +87,7 @@ export default function Hero() {
     {ShowQuickEnquiryPopup && (
   <QuickEnquiry
     formName="drop a query"
+    enableHeroTabs
     closeModal={() => setShowQuickEnquiryPopup(false)}
   />
 )}

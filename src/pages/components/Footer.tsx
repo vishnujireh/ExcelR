@@ -1,88 +1,9 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import Image from "next/image";
 import parse from "html-react-parser";
-import { useRouter } from "next/router";
-import fbicon from "/public/face-book.svg"
-import instaicon from "/public/instagram.svg"
-import linkedinicon from "/public/linked-in.svg"
-import twittericon from "/public/xlogo.svg"
-import youtubeicon from "/public/you-tube.svg"
-
-// Static Links
-const OrganizationLinks = [
-  { name: "About Us", href: "/about-us" },
-  { name: "Contact Us", href: "/contact-us" },
-  { name: "In Media", href: "/in-media" },
-  { name: "Gallery", href: "/gallery" },
-  { name: "News Events", href: "/news-events" },
-];
-
-const ResourcesLinks = [
-  { name: "Free Quizzes", href: "#" },
-  { name: "Blogs", href: "/blogs" },
-  { name: "Webinars", href: "#" },
-  { name: "Self-Paced Learning", href: "https://elearning.excelr.com/" },
-];
-
-const LinesOfBusinessLinks = [
-  { name: "Work With Us", href: "/careers" },
-  { name: "Corporate Training", href: "/corporate-training" },
-];
-
-const policyLinks = [
-  { name: "Terms And Conditions", href: "/terms-and-conditions" },
-  { name: "Privacy Policy", href: "/privacy-policy" },
-  { name: "Refund Policy", href: "/refund-policy" },
-  { name: "Sitemap", href: "/sitemap" },
-];
-
-const socialLinks = [
-  { name: "Facebook", href: "https://www.facebook.com/ExcelR/", icon: fbicon },
-  { name: "Instagram", href: "https://www.instagram.com/excelr_official", icon: instaicon },
-  { name: "LinkedIn", href: "https://www.linkedin.com/company/excelrofficial", icon: linkedinicon },
-  { name: "Twitter", href: "https://x.com/ExcelR_Official", icon: twittericon },
-  { name: "YouTube", href: "https://www.youtube.com/channel/UCF2_gALht1C1NsAm3fmFLsg", icon: youtubeicon },
-];
-
-const courses = [
-  {
-    category: "Emerging Technologies",
-    items: [
-      { name: "Artificial Intelligence", href: "/artificial-intelligence-ai-course-training" },
-      { name: "Machine Learning", href: "/machine-learning-course-training" },
-      { name: "AR / VR", href: "/augmented-reality-ar-virtual-reality-vr" },
-      { name: "IR 4.0", href: "/industrial-revolution-4-0" },
-      { name: "IoT", href: "/internet-of-things" },
-      { name: "Block Chain", href: "/blockchain-training" },
-      { name: "Cyber Security", href: "#" },
-      { name: "Financial Analytics", href: "#" },
-      { name: "Cloud Computing", href: "/cloud-computing-certification-course-training" },
-    ],
-  },
-  {
-    category: "Quality Management",
-    items: [
-      { name: "Lean Six Sigma Green Belt", href: "/lean-six-sigma-green-belt" },
-      { name: "Lean Six Sigma Black Belt", href: "/lean-six-sigma-black-belt" },
-      { name: "ISO", href: "#" },
-      { name: "Master Black Belt", href: "/lean-six-sigma-master-blackbelt" },
-    ],
-  },
-  {
-    category: "Analytics",
-    items: [
-      { name: "Deep Learning", href: "/deep-learning-and-artificial-intelligence" },
-      { name: "Tableau", href: "/tableau" },
-      { name: "Big Data Hadoop", href: "/big-data-hadoop-course-training" },
-      { name: "Business Analytics", href: "/business-analytics" },
-      { name: "Data Analytics", href: "/data-analytics-certification-training-course" },
-      { name: "SPARK", href: "#" },
-      { name: "Data Science", href: "/data-science-course-training" },
-    ],
-  },
-];
+import { fetchHomeConfig } from "@/redux/slices/homeSlice";
 
 const disclaimerList = [
   { name: "PMI®, PMBOK® Guide, PMP®, PgMP®, CAPM®, PMI-RMP®, PMI-ACP® are registered marks of the Project Management Institute (PMI)®"},
@@ -100,9 +21,30 @@ interface FooterProps {
 
 export default function Footer({ footerHtml }: FooterProps) {
 
-  const {footer_menu, info, org, contact, footer_course} = useSelector((state: RootState) => state.home);
-  const router = useRouter();
-  const isCoursePage = router.pathname.startsWith('/course');
+  const dispatch = useDispatch<AppDispatch>();
+  const {info, org, contact, footer_course} = useSelector((state: RootState) => state.home);
+
+  useEffect(() => {
+    const hasColumnData =
+      info.data.length > 0 &&
+      org.data.length > 0 &&
+      contact.data.length > 0;
+
+    const isLoadingColumns =
+      info.loading || org.loading || contact.loading;
+
+    if (!hasColumnData && !isLoadingColumns) {
+      dispatch(fetchHomeConfig());
+    }
+  }, [
+    contact.data.length,
+    contact.loading,
+    dispatch,
+    info.data.length,
+    info.loading,
+    org.data.length,
+    org.loading,
+  ]);
 
   return (
     <>
@@ -112,60 +54,21 @@ export default function Footer({ footerHtml }: FooterProps) {
       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#1A1A1A] text-white">
         <div className="grid md:grid-cols-4 grid-cols-2 gap-4">
               <div className="col-span-1 lg:col-span-1">
-                {isCoursePage ? (
-                  <>
-                    <p className="text-md font-semibold">Organization</p>
-                    <ul>
-                      {OrganizationLinks.map((l) => (
-                        <li key={l.name} className="my-2">
-                          <a href={l.href} className="text-sm text-white">{l.name}</a>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                ) : (
-                  info.data?.length > 0 && info.data[0]?.description
-                    ? parse(info.data[0].description)
-                    : null
-                )}
+                {info.data?.length > 0 && info.data[0]?.description
+                  ? parse(info.data[0].description)
+                  : null}
               </div>
 
               <div className="col-span-1">
-                {isCoursePage ? (
-                  <>
-                    <p className="text-md font-semibold">Resources</p>
-                    <ul>
-                      {ResourcesLinks.map((l) => (
-                        <li key={l.name} className="my-2">
-                          <a href={l.href} className="text-sm text-white">{l.name}</a>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                ) : (
-                  org.data?.length > 0 && org.data[0]?.description
-                    ? parse(org.data[0].description)
-                    : null
-                )}
+                {org.data?.length > 0 && org.data[0]?.description
+                  ? parse(org.data[0].description)
+                  : null}
               </div>
 
               <div className="col-span-1">
-                {isCoursePage ? (
-                  <>
-                    <p className="text-md font-semibold">Lines Of Business</p>
-                    <ul>
-                      {LinesOfBusinessLinks.map((l) => (
-                        <li key={l.name} className="my-2">
-                          <a href={l.href} className="text-sm text-white">{l.name}</a>
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                ) : (
-                  contact.data?.length > 0 && contact.data[0]?.description
-                    ? parse(contact.data[0].description)
-                    : null
-                )}
+                {contact.data?.length > 0 && contact.data[0]?.description
+                  ? parse(contact.data[0].description)
+                  : null}
               </div>
               <div className="col-span-1">
                 <a

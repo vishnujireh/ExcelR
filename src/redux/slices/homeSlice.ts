@@ -80,6 +80,8 @@ export interface HomeCourse {
   image: string;
   url: string;
   review_rating: string;
+  enrolled_text: string;
+  enrolled_count: number;
 }
  
 export interface HomeBlog {

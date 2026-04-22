@@ -15,8 +15,10 @@ import { RiLinkM, RiSearchLine, RiPlayFill } from "react-icons/ri";
 import { FiPlus } from "react-icons/fi";
 import { PhotoProvider, PhotoView } from "react-photo-view";
 
-const tabs = ["Blog", "Free Quizzes", "Gallery", "Webinars", "On Youtube"];
+const tabs = ["Blog",  "Gallery",  "On Youtube"];
 
+// "Free Quizzes",
+// "Webinars",
 /* ------------------ YOUTUBE EMBED HELPER ------------------ */
 const toEmbedUrl = (url: string) => {
   if (!url) return "";

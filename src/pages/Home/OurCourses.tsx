@@ -103,8 +103,9 @@ export default function OurCourses() {
                   </div>
 
                   {/* ✅ Updated Rating */}
-                  <div className="pt-4">
+                  <div className="mt-3 flex justify-between items-center">
                     {ratingData && (
+                     <>
                       <div className="flex gap-1 items-center">
                         {[...Array(ratingData.full)].map((_, i) => (
                           <FaStar
@@ -131,6 +132,12 @@ export default function OurCourses() {
                           ({ratingData.total})
                         </span>
                       </div>
+                       {course.enrolled_count > 0 && (
+          <p className="text-sm text-gray-600">
+                          {course.enrolled_count} Learners
+                        </p> )}
+                       
+                     </>
                     )}
                   </div>
                 </div>

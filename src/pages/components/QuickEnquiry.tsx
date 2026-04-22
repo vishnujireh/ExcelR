@@ -33,6 +33,8 @@ interface QuickEnquiryProps {
   country?: string;
   formName: string;
   variant?: "default" | "callback";
+  enableHeroTabs?: boolean;
+  initialTab?: "retail" | "corporate";
 }
 
 export default function QuickEnquiry({
@@ -43,15 +45,31 @@ export default function QuickEnquiry({
   country = "",
   state = "",
   city = "",
+  enableHeroTabs = false,
+  initialTab = "retail",
 }: QuickEnquiryProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isDropQuery = formName?.toLowerCase().includes("drop a query");
-  const headerIcon = isDropQuery ? drop_query_icon : quickenquiry_icon;
-  const headerAlt = isDropQuery ? "Drop a Query" : "Quick Enquiry";
+  const [activeTab, setActiveTab] = useState<"retail" | "corporate">(initialTab);
+  const isDropQuery = enableHeroTabs
+    ? activeTab === "retail"
+    : formName?.toLowerCase().includes("drop a query");
+  const headerIcon = enableHeroTabs ? drop_query_icon : isDropQuery ? drop_query_icon : quickenquiry_icon;
+  const headerAlt = enableHeroTabs && activeTab === "corporate"
+    ? "Enterprise Enquiry"
+    : isDropQuery
+    ? "Drop a Query"
+    : "Quick Enquiry";
 
   // FIX 1: trim() prevents whitespace mismatches like "Enterprise " or " enterprise"
-  const isEnterprisesForm = formName?.trim().toLowerCase().includes("enterprise");
+  const isEnterprisesForm = enableHeroTabs
+    ? activeTab === "corporate"
+    : formName?.trim().toLowerCase().includes("enterprise");
+
+  useEffect(() => {
+    if (!enableHeroTabs) return;
+    setActiveTab(initialTab);
+  }, [enableHeroTabs, initialTab]);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
@@ -121,6 +139,12 @@ export default function QuickEnquiry({
   // FIX 2: track API-level error message for status:false responses
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!enableHeroTabs) return;
+    setErrors({});
+    setSubmitError(null);
+  }, [activeTab, enableHeroTabs]);
 
   const dispatch = useDispatch<AppDispatch>();
   const [mappedCountryId, setMappedCountryId] = useState<string | null>(null);
@@ -455,6 +479,32 @@ export default function QuickEnquiry({
             <>
               <Image src={logo} alt="Logo" width={110} height={40} className="mx-auto mb-2" />
               <Image src={headerIcon} width={100} alt={headerAlt} className="mx-auto mb-1" />
+              {enableHeroTabs && (
+                <div className="mb-4 mt-3 flex rounded-lg border border-[#d7d7d7] bg-white p-1">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("retail")}
+                    className={`flex-1 rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                      activeTab === "retail"
+                        ? "bg-[#0071BC] text-white"
+                        : "text-[#0071BC] hover:bg-[#eaf5fc]"
+                    }`}
+                  >
+                    Retail
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("corporate")}
+                    className={`flex-1 rounded-md px-3 py-2 text-sm font-semibold transition-colors ${
+                      activeTab === "corporate"
+                        ? "bg-[#0071BC] text-white"
+                        : "text-[#0071BC] hover:bg-[#eaf5fc]"
+                    }`}
+                  >
+                    Corporate
+                  </button>
+                </div>
+              )}
             </>
           )}
           {variant === "callback" && (
