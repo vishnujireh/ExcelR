@@ -53,7 +53,7 @@ export default function QuickEnquiry({
   const [activeTab, setActiveTab] = useState<"retail" | "corporate">(initialTab);
   const isDropQuery = enableHeroTabs
     ? activeTab === "retail"
-    : formName?.toLowerCase().includes("drop a query");
+    : formName?.toLowerCase().includes("Drop a Query");
   const headerIcon = enableHeroTabs ? drop_query_icon : isDropQuery ? drop_query_icon : quickenquiry_icon;
   const headerAlt = enableHeroTabs && activeTab === "corporate"
     ? "Enterprise Enquiry"
@@ -648,7 +648,7 @@ function ReusableForm({
           <Link href="/terms-and-conditions" target="_blank" className="text-blue-600 underline">Terms and Conditions</Link>{" "}
           and{" "}
           <Link href="/privacy-policy" target="_blank" className="text-blue-600 underline">Privacy Policy</Link>{" "}
-          of Excelr Solutions.
+          of ExcelR Solutions.
         </span>
       </div>
       {errors?.agree && <p className="text-red-600 text-xs mt-1">{errors.agree}</p>}

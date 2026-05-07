@@ -86,6 +86,21 @@ const formatPrice = (amount?: number | string | null) => {
   return Number(amount).toLocaleString("en-IN"); // Adds commas for Indian numbering style
 };
 
+const isSelfPacedMode = (mode?: string) => {
+  const value = (mode || "").trim().toLowerCase();
+  return value === "self paced" || value === "self-paced";
+};
+
+const isOnlineOrClassroomMode = (mode?: string) => {
+  const value = (mode || "").trim().toLowerCase();
+  return (
+    value === "online" ||
+    value === "classroom" ||
+    value === "live virtual" ||
+    value === "live-virtual"
+  );
+};
+
 interface CoursePriceProps {
   data?: CourseData;
 }
@@ -180,8 +195,21 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
     }
   : null;
 
-  // Only render component if we have batch data with training modes
-  if (!batchData || !batchData.training_modes || batchData.training_modes.length === 0) {
+  if (!batchData) {
+    return null;
+  }
+
+  const trainingModes = batchData.training_modes || [];
+  const comboItems = batchData.combo_offer?.items || [];
+  const selfPacedModes = trainingModes.filter((mode) => isSelfPacedMode(mode.mode));
+  const nonSelfPacedModes = trainingModes.filter((mode) => !isSelfPacedMode(mode.mode));
+  // const hasComboOffer = comboItems.length > 0 && selfPacedModes.length === 0;
+  const hasComboOffer = comboItems.length > 0;
+  const priorityModes = nonSelfPacedModes.filter((mode) => isOnlineOrClassroomMode(mode.mode));
+  const remainingModes = nonSelfPacedModes.filter((mode) => !isOnlineOrClassroomMode(mode.mode));
+  const hasRenderableCards = selfPacedModes.length > 0 || nonSelfPacedModes.length > 0 || hasComboOffer;
+
+  if (!hasRenderableCards) {
     return null;
   }
 
@@ -190,86 +218,9 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#000000]">
         <div className="w-full md:flex justify-center">
           <div className="flex flex-row justify-center flex-wrap gap-10">
-            {batchData?.training_modes?.map((mode) => {
-              const isSelfPaced =
-                mode.mode?.toLowerCase() === "self paced";
-              const combo = batchData?.combo_offer;
+            {priorityModes.map((mode) => {
+              const isSelfPaced = isSelfPacedMode(mode.mode);
 
-              /* ------------------------------------------------------------------
-                  ⭐ CASE 1: SELF PACED → Show Combo Offer List
-              ------------------------------------------------------------------ */
-              if (isSelfPaced && combo?.items?.length) {
-                return (
-                  <div
-                    key="combo-offer"
-                    className="bg-white rounded-2xl text-center p-6 w-sm"
-                  >
-                    <h5 className="uppercase text-black text-md font-semibold tracking-wider pb-3">
-                      Combo Offer
-                    </h5>
-
-                    <hr className="border-gray-200 my-5" />
-
-                    {/* Combo Items */}
-                    {combo.items.map((item: any, idx: number) => (
-                      <div key={idx} className="mb-6 text-left">
-                        {/* TITLE */}
-                        <h4 className="font-semibold text-[16px] mb-2">
-                          {item.name}
-                        </h4>
-                        
-                        <div className="flex justify-around mb-6 relative">
-                    <h6 className="dis-amt font-bold text-lg">
-                     <span className='disam'></span> {item.currency} {formatPrice(item.mrp)}
-                    </h6>
-                    <h6 className="font-bold text-lg text-[#ea9b0a]">
-                         {item.currency} {formatPrice (item.discount_price)}
-                      </h6>
-                  </div>
-                         
-
-                        {/* ENROLL BUTTON */}
-                        {/* <Link
-                          href={item.enroll_url}
-                          target="_blank"
-                          className="flex items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
-                        >
-                          Enroll Now
-                        </Link> */}
-                      </div>
-                    ))}
-                    <div className="flex flex-col gap-2 mt-5">
-                    <button
-                      onClick={() => openQuickEnquiryModal("Quick Enquiry", "default")}
-                      className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
-                    >
-                     Enquire Now
-                    </button>
-
-                    <button
-                      onClick={() => setIsComboModalOpen(true)}
-                      className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
-                    >
-                    Enroll Now
-                    </button>
-
-                    {/* {mode.upcoming_dates_preview?.[0]?.enroll_url && (
-                      <Link
-                        href={mode.upcoming_dates_preview[0].enroll_url}
-                        target="_blank"
-                        className="flex items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
-                      >
-                        Enroll Now
-                      </Link>
-                    )} */}
-                  </div>
-                  </div>
-                );
-              }
-
-              /* ------------------------------------------------------------------
-                  ⭐ CASE 2: ALL OTHER TRAINING MODES → NORMAL CARD
-              ------------------------------------------------------------------ */
               return (
                 <div
                   key={mode.mode}
@@ -402,6 +353,336 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                 </div>
               );
             })}
+            {remainingModes.map((mode) => {
+              const isSelfPaced = isSelfPacedMode(mode.mode);
+
+              return (
+                <div
+                  key={mode.mode}
+                  className="bg-white rounded-2xl text-center p-6 max-w-sm"
+                >
+                  <h5 className="uppercase text-black text-md font-semibold tracking-wider pb-3">
+                    {mode.mode}
+                  </h5>
+
+                  {!mode.price_info ? (
+                    <p className="text-sm text-red-600">
+                      Pricing unavailable
+                    </p>
+                  ) : mode.price_info.iitm_certificate_amount ? (
+                    <>
+                      <p className="text-sm font-semibold pb-2.5">
+                        Without IITM Pravartak Certification
+                      </p>
+
+                      <div className="flex justify-around mb-6 relative">
+                        {mode.price_info.discount_amount ?(
+                          <>
+<h6 className="dis-amt font-bold text-xl">
+                          <span className="disam"></span>{" "}
+                          {mode.price_info.currency}{" "}
+                          {formatPrice(mode.price_info.amount)}
+                        </h6>
+                        <h6 className="font-bold text-xl text-[#ea9b0a]">
+                            {mode.price_info.currency}{" "}
+                            {formatPrice(mode.price_info.discount_amount)}
+                          </h6>
+                          </>
+                        ): (
+                          <h6 className="font-bold text-xl">
+                          {mode.price_info.currency}{" "}
+                          {formatPrice(mode.price_info.amount)}
+                        </h6>
+                        )}
+                        
+
+                        {/* {mode.price_info.discount_amount && (
+                          <h6 className="font-bold text-xl text-[#ea9b0a]">
+                            {mode.price_info.currency}{" "}
+                            {formatPrice(mode.price_info.discount_amount)}
+                          </h6>
+                        )} */}
+                      </div>
+
+                      <p className="text-sm font-semibold pb-2.5">
+                        With IITM Pravartak Certification
+                      </p>
+                      <h6 className="font-bold text-xl text-[#ea9b0a]">
+                        {mode.price_info.currency}{" "}
+                        {formatPrice(mode.price_info.iitm_certificate_amount)}
+                      </h6>
+                    </>
+                  ) : (
+                    <div className="flex justify-around mb-6 relative">
+                      {mode.price_info.discount_amount ? (
+                        <>
+                         <h6 className="dis-amt font-bold text-xl">
+                        <span className="disam"></span>{" "}
+                        {mode.price_info.currency}{" "}
+                        {formatPrice(mode.price_info.amount)}
+                      </h6>
+                       <h6 className="font-bold text-xl text-[#ea9b0a]">
+                          {mode.price_info.currency}{" "}
+                          {formatPrice(mode.price_info.discount_amount)}
+                        </h6>
+                        </>
+                      ):(
+ <h6 className="font-bold text-xl text-[#ea9b0a]">
+                        {mode.price_info.currency}{" "}
+                        {formatPrice(mode.price_info.amount)}
+                      </h6>
+                      )}
+                    </div>
+                  )}
+
+                  <hr className="border-gray-200 my-5" />
+
+                  {mode.benefits_html && (
+                    <div
+                      className="text-[#666666] text-sm mb-5 text-left">
+                      {parse(mode.benefits_html ?? "")}
+                    </div>
+                  )}
+
+                 {!isSelfPaced  && (
+                  <div className="mt-5">
+                    <h6 className="font-semibold mb-3">Upcoming Batches</h6>
+
+                    <div className="flex justify-center flex-wrap gap-4">
+                     {mode.upcoming_dates_preview?.map((batch, i) => {
+  const { day, suffix } = formatDayWithSuffix(batch.date.raw);
+
+  return (
+    <div key={i} className="text-center">
+      <span className="clsschdate time-change-wrapper">
+        {day} <sup className="-left-1">{suffix}</sup>
+      </span>
+      <p className="text-[#666] text-sm mt-1">{batch.date.display.split(" ")[1]}</p>
+    </div>
+  );
+})}
+                    </div>
+                  </div>
+                 )}
+                  
+
+                  <div className="flex flex-col gap-2 mt-5">
+                    {!isSelfPaced  && (
+                    <button
+                      onClick={() => openModal(mode)}
+                      className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                    >
+                      Show All Batches
+                    </button>)}
+
+                    {mode.upcoming_dates_preview?.[0]?.batch_id && (
+                      <Link
+                       // href={`/enroll_course/${mode.upcoming_dates_preview[0].batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
+                       href={mode.upcoming_dates_preview[0].enroll_url}
+                        className="flex items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                      >
+                        {isSelfPaced ? "Buy Now" : "Enroll Now"}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            {!hasComboOffer && selfPacedModes.map((mode) => {
+              const isSelfPaced = isSelfPacedMode(mode.mode);
+
+              return (
+                <div
+                  key={mode.mode}
+                  className="bg-white rounded-2xl text-center p-6 max-w-sm"
+                >
+                  <h5 className="uppercase text-black text-md font-semibold tracking-wider pb-3">
+                    {mode.mode}
+                  </h5>
+
+                  {!mode.price_info ? (
+                    <p className="text-sm text-red-600">
+                      Pricing unavailable
+                    </p>
+                  ) : mode.price_info.iitm_certificate_amount ? (
+                    <>
+                      <p className="text-sm font-semibold pb-2.5">
+                        Without IITM Pravartak Certification
+                      </p>
+
+                      <div className="flex justify-around mb-6 relative">
+                        {mode.price_info.discount_amount ?(
+                          <>
+<h6 className="dis-amt font-bold text-xl">
+                          <span className="disam"></span>{" "}
+                          {mode.price_info.currency}{" "}
+                          {formatPrice(mode.price_info.amount)}
+                        </h6>
+                        <h6 className="font-bold text-xl text-[#ea9b0a]">
+                            {mode.price_info.currency}{" "}
+                            {formatPrice(mode.price_info.discount_amount)}
+                          </h6>
+                          </>
+                        ): (
+                          <h6 className="font-bold text-xl">
+                          {mode.price_info.currency}{" "}
+                          {formatPrice(mode.price_info.amount)}
+                        </h6>
+                        )}
+                        
+
+                        {/* {mode.price_info.discount_amount && (
+                          <h6 className="font-bold text-xl text-[#ea9b0a]">
+                            {mode.price_info.currency}{" "}
+                            {formatPrice(mode.price_info.discount_amount)}
+                          </h6>
+                        )} */}
+                      </div>
+
+                      <p className="text-sm font-semibold pb-2.5">
+                        With IITM Pravartak Certification
+                      </p>
+                      <h6 className="font-bold text-xl text-[#ea9b0a]">
+                        {mode.price_info.currency}{" "}
+                        {formatPrice(mode.price_info.iitm_certificate_amount)}
+                      </h6>
+                    </>
+                  ) : (
+                    <div className="flex justify-around mb-6 relative">
+                      {mode.price_info.discount_amount ? (
+                        <>
+                         <h6 className="dis-amt font-bold text-xl">
+                        <span className="disam"></span>{" "}
+                        {mode.price_info.currency}{" "}
+                        {formatPrice(mode.price_info.amount)}
+                      </h6>
+                       <h6 className="font-bold text-xl text-[#ea9b0a]">
+                          {mode.price_info.currency}{" "}
+                          {formatPrice(mode.price_info.discount_amount)}
+                        </h6>
+                        </>
+                      ):(
+ <h6 className="font-bold text-xl text-[#ea9b0a]">
+                        {mode.price_info.currency}{" "}
+                        {formatPrice(mode.price_info.amount)}
+                      </h6>
+                      )}
+                    </div>
+                  )}
+
+                  <hr className="border-gray-200 my-5" />
+
+                  {mode.benefits_html && (
+                    <div
+                      className="text-[#666666] text-sm mb-5 text-left">
+                      {parse(mode.benefits_html ?? "")}
+                    </div>
+                  )}
+
+                 {!isSelfPaced  && (
+                  <div className="mt-5">
+                    <h6 className="font-semibold mb-3">Upcoming Batches</h6>
+
+                    <div className="flex justify-center flex-wrap gap-4">
+                     {mode.upcoming_dates_preview?.map((batch, i) => {
+  const { day, suffix } = formatDayWithSuffix(batch.date.raw);
+
+  return (
+    <div key={i} className="text-center">
+      <span className="clsschdate time-change-wrapper">
+        {day} <sup className="-left-1">{suffix}</sup>
+      </span>
+      <p className="text-[#666] text-sm mt-1">{batch.date.display.split(" ")[1]}</p>
+    </div>
+  );
+})}
+                    </div>
+                  </div>
+                 )}
+                  
+
+                  <div className="flex flex-col gap-2 mt-5">
+                    {!isSelfPaced  && (
+                    <button
+                      onClick={() => openModal(mode)}
+                      className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                    >
+                      Show All Batches
+                    </button>)}
+
+                    {mode.upcoming_dates_preview?.[0]?.batch_id && (
+                      <Link
+                       // href={`/enroll_course/${mode.upcoming_dates_preview[0].batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
+                       href={mode.upcoming_dates_preview[0].enroll_url}
+                        className="flex items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                      >
+                        {isSelfPaced ? "Buy Now" : "Enroll Now"}
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            {hasComboOffer && (
+              <div
+                key="combo-offer"
+                className="bg-white rounded-2xl text-center p-6 w-sm"
+              >
+                <h5 className="uppercase text-black text-md font-semibold tracking-wider pb-3">
+                  Combo Offer
+                </h5>
+
+                <hr className="border-gray-200 my-5" />
+
+                {/* Combo Items */}
+                {comboItems.map((item: any, idx: number) => (
+                  <div key={idx} className="mb-6 text-left">
+                    {/* TITLE */}
+                    <h4 className="font-semibold text-[16px] mb-2">
+                      {item.name}
+                    </h4>
+                    
+                    <div className="flex justify-around mb-6 relative">
+                <h6 className="dis-amt font-bold text-lg">
+                 <span className='disam'></span> {item.currency} {formatPrice(item.mrp)}
+                </h6>
+                <h6 className="font-bold text-lg text-[#ea9b0a]">
+                     {item.currency} {formatPrice (item.discount_price)}
+                  </h6>
+              </div>
+                     
+
+                    {/* ENROLL BUTTON */}
+                    {/* <Link
+                      href={item.enroll_url}
+                      target="_blank"
+                      className="flex items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                    >
+                      Enroll Now
+                    </Link> */}
+                  </div>
+                ))}
+                <div className="flex flex-col gap-2 mt-5">
+                <button
+                  onClick={() => openQuickEnquiryModal("Quick Enquiry", "default")}
+                  className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                >
+                 Enquire Now
+                </button>
+
+                <button
+                  onClick={() => setIsComboModalOpen(true)}
+                  className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                >
+                Enroll Now
+                </button>
+              </div>
+              </div>
+            )}
+
+            
           </div>
         </div>
 
@@ -437,4 +718,3 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
     </>
   );
 }
-

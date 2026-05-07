@@ -9,6 +9,8 @@ import Image from "next/image";
 // import youtube from "/public/you-tube.svg"
 // import { FiSearch } from "react-icons/fi";
 import heroImage from "/public/hbndo.webp";
+import deloitte from "/public/hom-deloitte.png";
+import nascom from "/public/hom-nasscom.png";
 import bannerImageUrl from "/public/homebaner.webp";
 // import datascience from "/public/ds_home.svg"
 // import pmp from "/public/pmp_home.svg"
@@ -17,6 +19,8 @@ import bannerImageUrl from "/public/homebaner.webp";
 // import ai from "/public/ai_home.svg"
 import { RiCheckboxCircleLine  } from "react-icons/ri";
 import QuickEnquiry from "../components/QuickEnquiry";
+
+const MANUAL_POPUP_SESSION_KEY_PREFIX = "excelr_qe_manual_popup_opened";
 
 // const relateCourses = [
 //   { name: "Data Science", href: "#", revicon: datascience },
@@ -31,6 +35,17 @@ export default function Hero() {
 
    const [ShowEnterprisesPopup, setShowEnterprisesPopup] = useState(false);
    const [ShowQuickEnquiryPopup, setShowQuickEnquiryPopup] = useState(false);
+
+   const markManualPopupOpened = () => {
+     if (typeof window === "undefined") return;
+     const currentPath = window.location.pathname.split("?")[0].toLowerCase() || "/";
+     window.sessionStorage.setItem(`${MANUAL_POPUP_SESSION_KEY_PREFIX}:${currentPath}`, "1");
+   };
+
+   const openQuickEnquiryPopup = () => {
+     markManualPopupOpened();
+     setShowQuickEnquiryPopup(true);
+   };
 
   return (
      <>
@@ -57,15 +72,28 @@ export default function Hero() {
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">800,000+</span> Learners Trained</li>
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">75+</span> Indemand Courses</li>
     </ul>
+
+    <div className="flex gap-4 mt-7 md:justify-start justify-center items-center sm:hidden">
+      <div className="bg-white rounded-lg p-2">
+        <Image src={deloitte} alt="Deloitte"/>
+      </div>
+      <div className="bg-white rounded-lg p-2">
+        <Image src={nascom} alt="Nasscom"/>
+      </div>
+    </div>
+
     <div className="md:mt-10 mt-7 md:text-left text-center md:flex md:justify-start justify-center items-center gap-5">
     <button
-            onClick={() => setShowQuickEnquiryPopup(true)}
+            onClick={openQuickEnquiryPopup}
             className="cursor-pointer block border border-solid border-[#0089ff] bg-[#0089ff] text-white hover:bg-white hover:text-[#0089ff] font-semibold text-sm py-2.5 px-4 rounded-lg w-full sm:w-auto"
           >
               <span>Explore Courses</span>
           </button>
           {/* <button
-          onClick={() => setShowEnterprisesPopup(true)}
+          onClick={() => {
+            markManualPopupOpened();
+            setShowEnterprisesPopup(true);
+          }}
           className="cursor-pointer block mt-4 sm:mt-0 border border-solid border-white bg-white text-black hover:bg-[#2563EB] hover:text-white font-semibold text-sm py-2.5 px-4 rounded-lg w-full sm:w-auto"
           >
               <span>Explore for Enterprises</span>
@@ -86,7 +114,7 @@ export default function Hero() {
 
     {ShowQuickEnquiryPopup && (
   <QuickEnquiry
-    formName="drop a query"
+    formName="Drop a Query"
     enableHeroTabs
     closeModal={() => setShowQuickEnquiryPopup(false)}
   />
