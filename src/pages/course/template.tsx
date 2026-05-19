@@ -21,12 +21,8 @@ import googlestars from '../../../public/4.8star.svg'
 import logo_white from "../../../public/logo_white.png"
 import paymenticon from "../../../public/ecavn.png";
  
-import {
-  SiMysql,
-  SiTableau,
-  SiPython,
-  SiR
-} from "react-icons/si";
+import { SiMysql } from "react-icons/si";
+import { RiBarChartLine } from "react-icons/ri";
 import {
   RiTruckLine,
   RiHotelLine,
@@ -37,10 +33,10 @@ import {
   RiLinkedinBoxFill,
   RiTwitterXLine,
   RiYoutubeFill,
-  RiArrowRightUpLine,
   RiArrowDownSLine,
   RiArrowUpSLine,
-  RiArrowRightLine
+  RiArrowRightLine,
+  RiArrowRightUpLine 
 } from "react-icons/ri";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -262,7 +258,7 @@ const modules = [
   {
     id: "excel",
     title: "Excel & Advance Excel",
-    icon: <SiTableau className="text-green-600 text-xl" />,
+    icon: <RiBarChartLine className="text-green-600 text-xl" />,
     content:
       "This module lays the foundation and helps you reach an advanced level of Excel skills. Topics include the Basics of Excel, Pivot Tables and all the way to VBA and Macros."
   },
@@ -276,14 +272,14 @@ const modules = [
   {
     id: "tableau",
     title: "Tableau",
-    icon: <SiTableau className="text-orange-500 text-xl" />,
+    icon: <RiBarChartLine className="text-orange-500 text-xl" />,
     content:
       "Build interactive dashboards, data stories, charts and visual analytics using Tableau."
   },
   {
     id: "powerbi",
     title: "Power BI",
-    icon: <SiTableau className="text-yellow-500 text-xl" />,
+    icon: <RiBarChartLine className="text-yellow-500 text-xl" />,
     content:
       "Learn Power BI Desktop, DAX, Power Query and advanced reporting techniques."
   }
@@ -376,6 +372,7 @@ const testimonials = [
     rating: 4,
     companylogo: "/companylogo.png",
     roleincomoany: "Data Analyst",
+    linkedin:"/vishal-linkedin",
   },
   {
     name: "Jenifer",
@@ -386,6 +383,7 @@ const testimonials = [
     profile: "/testimonial-girl.png",
     rating: 5,
     companylogo: "/companylogo.png",
+    linkedin:"/vishal-linkedin",
     roleincomoany: "Data Analyst",
   },
   {
@@ -397,6 +395,7 @@ const testimonials = [
     profile: "/testimonial-men.png",
     rating: 4,
     companylogo: "/companylogo.png",
+    linkedin:"/vishal-linkedin",
     roleincomoany: "Data Analyst",
   },
   {
@@ -408,6 +407,7 @@ const testimonials = [
     profile: "/testimonial-girl.png",
     rating: 5,
     companylogo: "/companylogo.png",
+    linkedin:"/vishal-linkedin",
     roleincomoany: "Data Analyst",
   },
 ];
@@ -453,7 +453,6 @@ type FAQData = {
   "Course Structure": string[];
   "Fees and Payment Options": string[];
 };
-import mobilelearnpthcntr3 from "../../../public/rightsidecurvedarrowline.svg"
 import Gettrained from "../../../public/get-trained.svg"
 import submitassignment from "../../../public/assignments.svg"
 import guidedproject from '../../../public/guidedprojects.svg'
@@ -463,7 +462,8 @@ import jobready from "../../../public/jobready.svg"
 import googlereviewmobile from "../../../public/googlereviews.svg"
 import mobilearrowconnectorline from "../../../public/mobilearrowconnector.svg"
 import mobilelearnpthcntr1 from "../../../public/mobileConnector line (1).svg"
-import mobilelearnpthcntr2 from "../../../public/leftcurvemobilearrow.svg"
+import bgnhImageUrl from "../../../public/bgogn.svg"
+import cnubgImageUrl from "../../../public/cnubg.svg"
 const stepsTop = [
   { title: "Get Trained", icon: Gettrained },
   { title: "Submit Assignments", icon: submitassignment },
@@ -641,13 +641,13 @@ export default function Template() {
           sizes="100vw"
           className="object-cover -z-10"
         />
-        <div className="grid md:grid-cols-3 gap-4 relative z-10">
+        <div className="grid md:grid-cols-4 gap-4 relative z-10">
           <div className="col-span-3 lg:col-span-2">
             {/* ✅ Course Name from API */}
-            <h1 className="text-3xl font-medium mb-5 font-roboto">Data Analyst Course In Bangalore With Placement Assistance</h1>
+            <h1 className="text-2xl font-[200] mb-5 "><span className="font-bold text-4xl block">Data Analyst Course</span> With Placement Assistance</h1>
             {/* ✅ Short Description from API */}
             <div className="banerdec">
-              <ul className="list-disc ml-5 space-y-1  text-base font-roboto">
+              <ul className="ml-0 space-y-5 text-base ">
                 <li>6 Months of Learning</li>
                 <li>Prestigious IIT Certificate</li>
                 <li>No Coding Background Required</li>
@@ -666,7 +666,7 @@ export default function Template() {
             {/* ✅ CTA Button */}
 
           </div>
-
+         <div className="col-span-1 lg:col-span-1 hidden lg:flex"></div>
           <div className="col-span-1 lg:col-span-1 hidden lg:flex">
             <div className="w-full h-auto relative max-w-xs mx-auto mt-6 lg:mt-0">
               <Image
@@ -681,7 +681,7 @@ export default function Template() {
           </div>
         </div>
       </section>
-    <div className=" hidden md:block relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F5FAFF]">
+    <div className=" hidden md:block relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 lg:pb-0 bg-[#F5FAFF]">
         <div className="grid md:grid-cols-3 grid-cols-1 gap-6 items-center">
           <div className="col-span-1 lg:col-span-1">
             <div className="flex justify-start gap-5 items-center">
@@ -698,7 +698,7 @@ export default function Template() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold">150,000+</h3>
-                <p className="text-base font-medium">Hiring Partners</p>
+                <p className="text-lg font-medium">Hiring Partners</p>
               </div>
             </div>
             <div className="my-8 flex justify-start gap-5 items-center">
@@ -714,7 +714,7 @@ export default function Template() {
 
               </div>
               <div>
-                <p className="text-base font-medium">Global Presence in</p>
+                <p className="text-lg font-medium">Global Presence in</p>
                 <h3 className="text-2xl font-bold">40+ countries</h3>
               </div>
             </div>
@@ -731,7 +731,7 @@ export default function Template() {
 
               </div>
               <div>
-                <p className="text-base font-medium">Industry experience</p>
+                <p className="text-lg font-medium">Industry experience</p>
                 <h3 className="text-2xl font-bold">12+ years</h3>
               </div>
             </div>
@@ -751,7 +751,7 @@ export default function Template() {
           <div className="col-span-1 lg:col-span-1">
             <div className="text-end flex justify-end gap-5 items-center">
               <div>
-                <p className="text-base font-medium">In collaboration with</p>
+                <p className="text-lg font-medium">In collaboration with</p>
                 <h3 className="text-2xl font-bold">Premier IITs</h3>
               </div>
               <div className="  bg-[#5CADFF] w-24 h-24 p-3 rounded-full flex justify-center items-center">
@@ -769,7 +769,7 @@ export default function Template() {
             <div className="my-8 text-end flex justify-end gap-5 items-center">
               <div>
                 <h3 className="text-2xl font-bold">80,000+</h3>
-                <p className="text-base font-medium">Learners</p>
+                <p className="text-lg font-medium">Learners</p>
               </div>
               <div className="  bg-[#5CADFF] w-24 h-24 p-3 rounded-full flex justify-center items-center">
 
@@ -786,7 +786,7 @@ export default function Template() {
             <div className="text-end flex justify-end gap-5 items-center">
               <div>
                 <h3 className="text-2xl font-bold">4.8/5</h3>
-                <p className="text-base font-medium">Google Reviews</p>
+                <p className="text-lg font-medium">Google Reviews</p>
               </div>
               <div className="  bg-[#5CADFF] w-24 h-24 p-3 rounded-full flex justify-center items-center">
 
@@ -895,12 +895,12 @@ export default function Template() {
         </div>
       </div>
        <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
-        <h2 className="text-center text-3xl font-base mb-9 font-roboto">What You’ll Learn in Our <span className="block font-semibold"> Data Analytics Course</span>
+        <h2 className="text-center text-3xl font-base mb-9 ">What You’ll Learn in Our <span className="block font-semibold"> Data Analytics Course</span>
           </h2>
         <div className="hidden md:flex grid md:grid-cols-2 gap-8 mx-auto">
           <div className="bg-[#CEE6FF] rounded-2xl overflow-hidden ">
             <div className="bg-[#155DFC] text-white p-4 text-center">
-              <h3 className="text-xl font-medium font-roboto">Core Modules</h3>
+              <h3 className="text-2xl font-semibold ">Core Modules</h3>
             </div>
             <div className="p-4">
               <div className="flex gap-3">
@@ -943,7 +943,7 @@ export default function Template() {
           <div className="bg-white rounded-2xl overflow-hidden">
             <div className="bg-[#CEE6FF] rounded-2xl shadow-2xl overflow-hidden ">
               <div className="bg-[#155DFC] text-white p-4 text-center">
-                <h3 className="text-xl font-medium font-roboto">Value-Added Modules</h3>
+                <h3 className="text-2xl font-semibold">Value-Added Modules</h3>
               </div>
               <div className="p-4">
                 <div className="flex gap-3">
@@ -1063,10 +1063,12 @@ export default function Template() {
 
 
       </div>
-    <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
-        <h2 className="text-center text-3xl font-medium font-roboto mb-9">Capstone Projects</h2>
+    <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 slider-ful-hgt">
+        <h2 className="text-center text-3xl font-semibold mb-9">Capstone Projects</h2>
         {/* Top Detail Card */}
-        <div
+
+        <div className="max-w-4xl mx-auto">
+            <div
           className={`rounded-xl container border ${activeProject.activeBorder} ${activeProject.bg} p-6 mb-8 transition-all`}
         >
           <div className="flex items-center gap-3 mb-3">
@@ -1088,6 +1090,8 @@ export default function Template() {
             {activeProject.id}/{projects.length} <RiArrowUpSLine size={18} />
           </div>
         </div>
+        </div>
+        
 
         <Swiper
           modules={[Pagination, Autoplay]}
@@ -1103,34 +1107,36 @@ export default function Template() {
           breakpoints={{
             640: { slidesPerView: 2.2 },
             1024: { slidesPerView: 4 }
-          }}
-          className=" mb-10"
+          }} 
           onSlideChange={(swiper) => {
             setActiveProject(projects[swiper.realIndex]);
           }}
         >
           {projects.map((project) => (
-            <SwiperSlide key={project.id} style={{ paddingBottom: "50px" }}>
+            <SwiperSlide key={project.id}
+             className="h-auto"
+            style={{ paddingBottom: "50px" }}>
               <button
-                onClick={() => setActiveProject(project)}
-                className={`w-full text-left rounded-xl md:p-4 border transition 
-          ${activeProject.id === project.id
-                    ? project.activeBorder + " bg-white shadow-md"
-                    : `border-transparent ${project.bg} hover:bg-gray-100`
-                  }
-        `}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow">
+    onClick={() => setActiveProject(project)}
+    className={`w-full h-full text-left rounded-xl md:p-4 border transition flex flex-col justify-between
+      ${
+        activeProject.id === project.id
+          ? `${project.activeBorder} bg-white shadow-md`
+          : `border-transparent ${project.bg} hover:bg-gray-100`
+      }
+    `}
+  >
+                <div className="flex items-center gap-3 max-w-[200px]">
+                  <div className="w-10 h-10 flex items-center justify-center">
                     {project.icon}
                   </div>
-                  <p className="text-lg font-semibold text-balance">
+                  <p className="text-lg font-medium text-balance">
                     {project.title}
                   </p>
-                </div> 
+                </div>
 
                 <div
-    className={`text-right text-sm font-semibold mt-4 flex items-center gap-1 justify-end transition-colors
+    className={`text-right text-sm font-semibold flex items-center gap-1 justify-end transition-colors
       ${
         activeProject.id === project.id
           ? project.activeText
@@ -1147,7 +1153,7 @@ export default function Template() {
       </div>
     <section className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#E5EFFF]">
   <div className="w-full mx-auto text-center">
-    <h2 className="text-3xl font-medium font-roboto mb-6">
+    <h2 className="text-center text-3xl font-semibold mb-7">
       Certificates You’ll Earn
     </h2>
 
@@ -1162,7 +1168,7 @@ export default function Template() {
             fill
           />
         </div>
-        <p className="mt-4 font-medium text-center">
+        <p className="mt-4 font-medium text-lg text-center">
           Certificate by <span className="font-bold">ExcelR</span>
         </p>
       </div>
@@ -1177,7 +1183,7 @@ export default function Template() {
             className="object-contain"
           />
         </div>
-        <p className="mt-4 font-medium text-center">
+        <p className="mt-4 font-medium text-lg text-center">
           Certificate by <span className="font-bold">NASSCOM</span>
         </p>
       </div>
@@ -1192,7 +1198,7 @@ export default function Template() {
             className="object-contain"
           />
         </div>
-        <p className="mt-4 font-medium text-center">
+        <p className="mt-4 font-medium text-lg text-center">
           Certificate by <span className="font-bold">AiVariant</span>
         </p>
       </div>
@@ -1253,7 +1259,7 @@ export default function Template() {
     <section className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
 
         {/* Title */}
-        <h2 className="text-center text-3xl font-medium font-roboto mb-2">Hear From Our Alumni</h2>
+        <h2 className="text-center text-3xl font-semibold">Hear From Our Alumni</h2>
 
 
         {/* Video Carousel */}
@@ -1301,7 +1307,20 @@ export default function Template() {
           ))}
         </div>
       </section>
-      <div className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
+      <div className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 relative slider-ful-hgt">
+        <div className="hidden md:block absolute inset-0 -z-10">
+        <Image
+            src={bgnhImageUrl}
+            alt="Artificial Intelligence (AI) Course Training in Thane"
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+            className="object-cover -z-10"
+            quality={55}
+          />
+          </div>
+         
          {/* Testimonials */}
            <div className="grid grid-cols-6 gap-4">
           <div className="col-span-4 col-start-2">
@@ -1329,7 +1348,7 @@ export default function Template() {
             <SwiperSlide key={index} style={{ paddingBottom: "50px" }}>
               <div
                 key={index}
-                className=" flex flex-col justify-between rounded-2xl shadow-lg p-6 bg-white h-full"
+               className="flex flex-col justify-between h-full rounded-2xl shadow-lg p-6 bg-[#F9FAFB]"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="relative w-14 h-14 overflow-hidden rounded-xl">
@@ -1346,21 +1365,16 @@ export default function Template() {
                     <div className="flex flex-col">
                       <div>
                         <p className="font-semibold">{t.name}</p>
-                        <p className="text-xs text-gray-600">{t.role}</p>
+                        <p className="text-xs text-gray-600 mb-1">{t.role}</p>
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <Image
-                          src="/linkedin.svg"
-                          width={18}
-                          height={18}
-                          alt="LinkedIn"
-                          className="cursor-pointer"
-                        />
-
+                        <Link href={t.linkedin} target="_blank" rel="noopener noreferrer">
+                        <RiLinkedinBoxFill className="text-[#2867b2]" />
+                      </Link>
                         <div className="flex gap-1">
                           {Array.from({ length: t.rating }).map((_, i) => (
-                            <FaStar key={i} className="text-yellow-400" size={14} />
+                            <FaStar key={i} className="text-orange-400" size={14} />
                           ))}
                         </div>
                       </div>
@@ -1409,7 +1423,7 @@ export default function Template() {
         
       </div>
     <div className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
-        <h2 className="text-center text-3xl font-medium font-roboto mb-7">Placement Assistance Benefits</h2>
+        <h2 className="text-center text-3xl font-semibold mb-9">Placement Assistance Benefits</h2>
         <div className="grid grid-cols-6 gap-4">
           <div className="col-span-4 col-start-2">
             <div className="grid grid-cols-3 gap-3 md:gap-6">
@@ -1429,7 +1443,7 @@ export default function Template() {
                   />
                 </div>
 
-                <h3 className="md:text-lg  text-sm text-center md:text-start font-semibold mb-2 mr-auto text-[#282938]">{item.title}</h3>
+                <p className="md:text-lg  text-sm text-center md:text-start font-medium mb-2 mr-auto text-[#282938]">{item.title}</p>
 
               </div>
             ))}
@@ -1438,25 +1452,17 @@ export default function Template() {
         </div> 
       </div>
     <div className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#E5EFFF]">
-        <h2 className="text-center text-3xl font-medium font-roboto mb-6">Our Alumni Work At</h2>
+        <h2 className="text-center text-3xl font-semibold mb-6">Our Alumni Work At</h2>
 
 
 
-        <div className="grid 
-  grid-cols-3 
-  sm:grid-cols-3 
-  md:grid-cols-4 
-
-  md:gap-6
-  gap-3
-  justify-center items-center w-full"
+        <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 md:gap-6 gap-3 justify-center items-center w-full"
         >
           {(showAllCompanies ? Alumniworks : Alumniworks.slice(0, 12)).map((item, idx) => (
             <div
               key={idx}
-              className="rounded-xl p-3 flex justify-center items-center  
-      md:aspect-[16/9] w-full"
-            >
+              className="rounded-xl p-3 flex justify-center items-center
+      md:aspect-[16/9] w-full">
               <Image
                 src={item.img}
                 alt={item.company}
@@ -1468,9 +1474,7 @@ export default function Template() {
           ))}
         </div>
 
-
-        {!showAllCompanies && Alumniworks.length > 12 && (
-          <div className="flex justify-center mt-6">
+    <div className="flex justify-center mt-6">
             <button
               onClick={() => setShowAllCompanies((prev) => !prev)}
               className="px-6 py-2 flex items-center  text-black rounded-lg font-medium hover:opacity-90 transition"
@@ -1479,11 +1483,10 @@ export default function Template() {
               <FiChevronDown />
             </button>
           </div>
-
-        )}
+ 
       </div>
     <div className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
-        <h2 className="text-center text-3xl font-medium font-roboto mb-6">Data Analyst Course Fees</h2>
+        <h2 className="text-center text-3xl font-semibold mb-6">Data Analyst Course Fees</h2>
 
 
         <div className="w-full flex flex-col items-center gap-3 md:gap-10">
@@ -1569,7 +1572,7 @@ export default function Template() {
               </div>
 
               <button className="w-full mt-4 bg-[#1B4ED8] text-white rounded-lg py-3 font-medium flex justify-center items-center gap-2">
-                Enrol Now <RiArrowRightUpLine />
+                Enrol Now <RiArrowRightLine />
               </button>
             </div>
 
@@ -1647,7 +1650,7 @@ export default function Template() {
               </div>
 
               <button className="w-full mt-4 bg-[#1B4ED8] text-white rounded-lg py-3 font-medium flex justify-center items-center gap-2">
-                Enrol Now <RiArrowRightUpLine />
+                Enrol Now <RiArrowRightLine />
               </button>
             </div>
 
@@ -1658,7 +1661,7 @@ export default function Template() {
 bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
 
         {/* Heading */}
-        <h2 className="text-3xl font-medium font-roboto text-center mb-6">
+        <h2 className="text-3xl font-semibold text-center mb-6">
           Classroom Tour
         </h2>
 
@@ -1695,28 +1698,27 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
           </div>
         </div>
         <div className="pt-10">
-          <h2 className="text-3xl font-medium font-roboto text-center mb-6">
+          <h2 className="text-3xl font-semibold text-center mb-6">
             Why Join Our Data Analyst Course?
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 md:gap-10 md:max-w-5xl mx-auto">
             {joinCourse.map((item, idx) => (
               <div key={idx} className="flex md:flex-col gap-2 md:gap-0 items-center text-center   rounded-xl md:rounded-none py-2 md:py-0 px-2 bg-white md:bg-transparent m-2 md:m-0">
-                <div className="md:w-20 md:h-20  md:mb-4">
-                  <img src={item.img} alt={item.title} className="w-full h-full object-contain" />
+                <div className="md:w-20 md:h-20  md:mb-4 relative">
+                  <Image src={item.img} alt={item.title} fill className="w-full h-full object-contain" />
                 </div>
                 <div className="flex-col text-center md:text-center">
-                  <h3 className="font-medium text-lg text-left md:text-center mb-2 font-roboto">{item.title}</h3>
+                  <h3 className="font-semibold text-lg text-left md:text-center mb-2 ">{item.title}</h3>
                   <p className="text-gray-700 text-sm leading-relaxed">{item.description}</p>
                 </div>
               </div>
             ))}
           </div>
-
         </div>
       </section>
-    <section className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
+    <section className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 ">
         <div className=" max-w-full ">
-          <h2 className=" text-3xl font-medium font-roboto mb-3 text-center">
+          <h2 className=" text-3xl font-semibold mb-3 text-center">
             Learning Path
           </h2>
 
@@ -1759,52 +1761,17 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
 
           </div>
 
-          <div className="relative block px-8 md:hidden w-full gap-2 ">
-            <div className="flex flex-col justify-center items-center gap-2 ">
-              <div className="w-10 h-10">
-                <Image src={Gettrained} alt="Gettrained" />
-              </div>
-
-              <p className="text-sm ">Get Trained</p>
-            </div>
-            <div className="flex justify-center items-start w-full gap-1 mt-12 ml-2 ">
-              <div className="flex  flex-col justify-center items-center gap-2">
-                <div className="w-10 h-10">
-                  <Image src={guidedproject} alt="guidedproject" />
-                </div>
-                <p className="text-xs text-center  ">Work on
-                  Guided Projects</p>
-              </div>
-              <div className="relative w-[140px] flex-shrink-0  items-center  h-10">
+          <div className="relative block md:hidden w-full max-w-[430px] mx-auto px-2 pt-2 pb-4">
+            <div className="relative grid grid-cols-3 items-start text-center">
+              <div className="absolute left-[22%] top-5 z-0 h-6 w-[24%]">
                 <Image
                   src={mobilearrowconnectorline}
                   alt="Connector"
                   fill
-                  className="object-contain"
+                  className="object-contain rotate-180"
                 />
               </div>
-
-              <div className="flex flex-col justify-center items-center gap-2 ">
-                <div className="w-10 h-10">
-                  <Image src={submitassignment} alt="submitassignment" />
-                </div>
-                <p className="text-xs text-center">Submit
-                  Assignments</p>
-              </div>
-            </div>
-
-            <div className="absolute top-5 -right-5 w-[151px] p-2">
-              <Image src={mobilelearnpthcntr1} alt="mobilelearnpthcntr1" />
-            </div>
-
-            <div className="flex justify-center items-start w-full gap-1 mt-12   ">
-              <div className="flex flex-col justify-center items-center gap-2">
-                <div className="w-10 h-10">
-                  <Image src={certifieddata} alt="certifieddata" />
-                </div>
-                <p className="text-xs text-center  ">Become a Certified Data Analyst</p>
-              </div>
-              <div className="relative w-[140px] flex-shrink-0  items-center  h-10">
+              <div className="absolute left-[55%] top-5 z-0 h-6 w-[24%]">
                 <Image
                   src={mobilearrowconnectorline}
                   alt="Connector"
@@ -1813,31 +1780,95 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
                 />
               </div>
 
-              <div className="flex flex-col justify-center items-center gap-2 ">
+              <div className="relative z-10 flex flex-col items-center gap-2">
+                <div className="w-10 h-10">
+                  <Image src={Gettrained} alt="Gettrained" />
+                </div>
+                <p className="text-xs font-semibold leading-tight">Get Trained</p>
+              </div>
+
+              <div className="relative z-10 flex flex-col items-center gap-2">
+                <div className="w-10 h-10">
+                  <Image src={submitassignment} alt="submitassignment" />
+                </div>
+                <p className="text-xs font-semibold leading-tight">Submit<br />Assignments</p>
+              </div>
+
+              <div className="relative z-10 flex flex-col items-center gap-2">
+                <div className="w-10 h-10">
+                  <Image src={guidedproject} alt="guidedproject" />
+                </div>
+                <p className="text-xs font-semibold leading-tight">Work on<br />Guided Projects</p>
+              </div>
+            </div>
+
+            <div className="relative h-20">
+              <div className="absolute right-0 top-1 h-full w-[78%]">
+                <Image
+                  src={mobilelearnpthcntr1}
+                  alt="mobilelearnpthcntr1"
+                  fill
+                  className="object-fill"
+                />
+              </div>
+            </div>
+
+            <div className="relative grid grid-cols-3 items-start text-center">
+              <div className="absolute left-[22%] top-5 z-0 h-6 w-[24%]">
+                <Image
+                  src={mobilearrowconnectorline}
+                  alt="Connector"
+                  fill
+                  className="object-contain rotate-180"
+                />
+              </div>
+              <div className="absolute left-[55%] top-5 z-0 h-6 w-[24%]">
+                <Image
+                  src={mobilearrowconnectorline}
+                  alt="Connector"
+                  fill
+                  className="object-contain rotate-180"
+                />
+              </div>
+
+              <div className="relative z-10 flex flex-col items-center gap-2">
+                <div className="w-10 h-10">
+                  <Image src={certifieddata} alt="certifieddata" />
+                </div>
+                <p className="text-xs font-semibold leading-tight">Become a Certified<br />Data Analyst</p>
+              </div>
+
+              <div className="relative z-10 flex flex-col items-center gap-2">
                 <div className="w-10 h-10">
                   <Image src={placementassistance} alt="placementassistance" />
                 </div>
-                <p className="text-xs text-center">Avail Placement Assistance</p>
-              </div>
-            </div>
-            <div className="absolute top-32 -left-5 w-[110px] p-2">
-              <Image src={mobilelearnpthcntr2} alt="mobilelearnpthcntr2" />
-            </div>
-            <div className="flex flex-col justify-center items-center gap-2 mt-8 ">
-              <div className="w-10 h-10">
-                <Image src={jobready} alt="jobready" />
+                <p className="text-xs font-semibold leading-tight">Avail Placement<br />Assistance</p>
               </div>
 
-              <p className="text-sm ">Get Job-Ready!</p>
-            </div>
-            <div className="absolute top-68 -right-5 w-[160px] p-2">
-              <Image src={mobilelearnpthcntr3} alt="mobilelearnpthcntr3" />
+              <div className="relative z-10 flex flex-col items-center gap-2">
+                <div className="w-10 h-10">
+                  <Image src={jobready} alt="jobready" />
+                </div>
+                <p className="text-xs font-semibold leading-tight">Get Job-Ready!</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
-    <div className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-no-repeat bg-cover bg-center mx-auto bg-[linear-gradient(77.86deg,rgba(8,79,199,0.9)_23.66%,rgba(127,86,217,0.9)_139.78%)]">
-        <h2 className="text-3xl font-medium font-roboto text-white text-center mb-12">Why Choose Data Analytics as Your Career?</h2>
+    <div className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 relative">
+       <div className="hidden md:block absolute inset-0 -z-10">
+        <Image
+            src={cnubgImageUrl}
+            alt="Artificial Intelligence (AI) Course Training in Thane"
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+            className="object-cover -z-10"
+            quality={55}
+          />
+          </div>
+        <h2 className="text-3xl font-semibold text-white text-center mb-12">Why Choose Data Analytics as Your Career?</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 px-3 md:px-0  md:max-w-[800px] mx-auto justify-items-center gap-8 ">
           {dataanalysiscareer.map((item, idx) => (
             <div key={idx} className="flex flex-col items-center text-start p-6 border border-white border-1 bg-white/20 backdrop-blur-md rounded-xl md:shadow-lg w-full md:w-[380px]">
@@ -1849,14 +1880,14 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
                   className="object-contain"
                 />
               </div>
-              <h3 className="font-medium text-white font-roboto text-lg mb-2 text-start mr-auto">{item.title}</h3>
+              <h3 className="font-semibold text-white  text-lg mb-2 text-start mr-auto">{item.title}</h3>
               <p className="text-white text-sm leading-relaxed text-start mr-auto">{item.description}</p>
             </div>
           ))}
         </div>
       </div>
     <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#E5EFFF]">
-        <h2 className="text-center text-3xl font-medium font-roboto mb-8">
+        <h2 className="text-center text-3xl font-semibold mb-8">
           Frequently Asked Questions
         </h2>
         <div className="hidden 2xl:flex flex-wrap justify-center gap-3 mb-8">
@@ -1864,7 +1895,7 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
             <button
               key={tab}
               onClick={() => setActiveTab(tab as keyof FAQData)}
-              className={`px-4 py-2 rounded-lg font-medium text-sm border transition cursor-pointer
+              className={`px-4 py-2 rounded-lg font-semibold text-sm border transition cursor-pointer
         ${activeTab === tab ? "bg-blue-600 text-white" : "bg-transparent border-blue-600 hover:bg-gray-100"}`}
             >
               {tab}
@@ -1906,10 +1937,11 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
 
 
         {/* Accordion */}
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-5xl mx-auto ">
           {faqData[activeTab].map((question, index) => (
              <div className="space-y-4 accordion-group coursetm2" id="accordionfaq" key={index}>
-<details className="border-b border-gray-300"><summary className="w-full flex justify-between gap-3 cursor-pointer items-center text-left text-base px-5 py-4 font-semibold text-[#3F3F3F]"> {question}</summary>
+<details className="border-b border-gray-300">
+  <summary className="w-full flex justify-between gap-3 cursor-pointer items-center text-left text-base px-5 py-4 font-semibold text-[#3F3F3F] bg[#E5EFFF]"> {question}</summary>
 <div className="p-5 text-[#666] text-sm leading-6 pt-2">
 <ul className="list-disc ml-5">
 	<li>The all new and exclusive JUMBO PASS is the latest initiative taken by ExcelR to offer you access to attend unlimited batches over the duration of 365 days. You will be able to attend unlimited number of classes for the course of your choice.</li>
@@ -1922,7 +1954,7 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
         </div>
       </div>
     <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
-        <h2 className="text-3xl font-medium font-roboto mb-2 text-center">
+        <h2 className="text-3xl font-semibold mb-7 text-center">
           Our Ratings Across the Web
         </h2>
 
@@ -1933,7 +1965,7 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
               className="bg-white shadow-md rounded-lg px-3 py-2 md:px-6 md:py-4 flex flex-col items-center"
             >
               <div className="flex items-center gap-2 mb-2 text-3xl font-semibold">
-                {item.score} <span className="text-yellow-400">★</span>
+                {item.score} <span className="text-yellow-400"><FaStar className="text-orange-400" /></span>
               </div>
               <div className="md:w-32 w-16 h-6 md:h-12 relative">
                 <Image
@@ -1949,7 +1981,7 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
       </div>
     <section className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#E5EFFF]">
         <div className="container mx-auto text-center">
-          <h2 className="text-3xl font-medium font-roboto mb-2">In-Demand Courses</h2>
+          <h2 className="text-3xl font-semibold mb-2">In-Demand Courses</h2>
 
           {/* Swiper */}
           <div className="relative w-full px-5 max-w-5xl mx-auto pt-5 sliderdmd">
@@ -1981,11 +2013,9 @@ bg-[linear-gradient(360deg,#DBEDFF_-0.02%,rgba(219,237,255,0)_107.9%)]">
                       </div>
                     </div>
                     </div>
-                   
-
                     <div className="px-4 text-left space-y-2 pb-4">
-                      <h3 className="font-medium text-lg font-roboto">{item.title}</h3>
-                      <p className="text-sm text-gray-600 ">{item.desc}</p>
+                      <h3 className="font-semibold text-lg">{item.title}</h3>
+                      <p className="text-sm text-gray-600">{item.desc}</p>
                       </div>
                        <div className="border-t border-gray-200 px-4 text-center">
                       <Link href="" className="flex justify-center items-center text-sm font-medium text-black mx-auto py-4">

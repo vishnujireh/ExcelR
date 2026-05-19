@@ -181,7 +181,7 @@ export default function Resources() {
                   </div>
                 </div>
               ))}
-              {gallery.data.read_more && ( <div className="text-center"> <Link href={gallery.data.read_more_url} className="bg-white shadow hover:shadow-lg h-35 rounded transition duration-300 overflow-hidden relative" > <div className="relative w-full h-35 flex items-center justify-center"> <span className="w-12 h-12 border-gray-300 text-gray-400 rounded-3xl border flex items-center justify-center"> <FiPlus /> </span> </div> </Link> </div> )}
+              {gallery.data.read_more && ( <div className="text-center bg-white shadow hover:shadow-lg h-35 rounded transition duration-300 overflow-hidden relative"> <Link href={gallery.data.read_more_url} className="bg-white shadow hover:shadow-lg h-35 rounded transition duration-300 overflow-hidden relative" > <div className="relative w-full h-35 flex items-center justify-center"> <span className="w-12 h-12 border-gray-300 text-gray-400 rounded-3xl border flex items-center justify-center"> <FiPlus /> </span> </div> </Link> </div> )}
             </div>
           </PhotoProvider>
         )}

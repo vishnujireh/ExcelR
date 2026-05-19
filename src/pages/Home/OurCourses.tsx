@@ -69,7 +69,7 @@ export default function OurCourses() {
         <p className="text-center text-gray-500">Loading courses...</p>
       )}
 
-      <div className="grid md:grid-cols-4 gap-4">
+      <div className="grid md:grid-cols-4 gap-4 items-stretch">
         {courses.data.map((course, idx) => {
           const ratingData = course.review_rating
             ? parseRating(course.review_rating)
@@ -78,9 +78,9 @@ export default function OurCourses() {
           return (
             <div
               key={idx}
-              className="bg-white shadow hover:shadow-lg transition duration-300 overflow-hidden"
+              className="bg-white shadow hover:shadow-lg transition duration-300 overflow-hidden h-full flex flex-col"
             >
-              <a href={course.url} className="block">
+              <a href={course.url} className="flex flex-col h-full">
                 {/* Image */}
                 <div className="relative w-full aspect-[16/9]">
                   <Image
@@ -92,7 +92,7 @@ export default function OurCourses() {
                 </div>
 
                 {/* Content */}
-                <div className="p-4 flex flex-col h-full">
+               <div className="p-4 flex flex-col flex-1 h-full">
                   <div className="home-popc-content">
                     <h3 className="text-md font-semibold md:mt-1 mt-0 mb-2">
                       {course.course_name}
@@ -103,7 +103,7 @@ export default function OurCourses() {
                   </div>
 
                   {/* ✅ Updated Rating */}
-                  <div className="mt-3 flex justify-between items-center">
+                  <div className="mt-auto pt-6 flex items-center justify-between">
                     {ratingData && (
                      <>
                       <div className="flex gap-1 items-center">

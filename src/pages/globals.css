@@ -23,7 +23,7 @@
 }
 
 :root {
-    --font-inter: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    --font-inter: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
     --font-open-sans: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
     --font-jetbrains-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Courier New', monospace
 }
@@ -67,9 +67,7 @@ code,
 pre {
     font-family: var(--font-jetbrains-mono), monospace
 }
-.font-roboto{
-    font-family: 'Roboto', sans-serif;
-}
+ 
 .shadow {
     box-shadow: 0 4px 20px 2px rgb(16 30 87 / 7%)
 }
@@ -408,9 +406,9 @@ pre {
 
 .home-popc-content {
     color: #0b0b0b;
-     max-height: 200px;
+     /* max-height: 200px;
     min-height: 200px;
-    text-overflow: ellipsis;
+    text-overflow: ellipsis; */
     width: 100%;
     /* -webkit-line-clamp: 6;
     line-clamp: 6 */
@@ -658,6 +656,12 @@ details > * {
     width: 200px;
     text-align: center;
     margin: 0 auto;
+}
+.slider-ful-hgt .swiper-slide {
+  height: auto !important;
+}
+.coursetm2 summary, .coursetm2 details {
+    background: transparent;
 }
 
 @media (min-width:1399px) and (max-width:1610px) {
