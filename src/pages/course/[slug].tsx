@@ -202,6 +202,7 @@ console.log('Layout Component:', LayoutComponent.name);
   title={courseData.meta_title}
   description={courseData.meta_description}
   keywords={courseData.meta_keyword}
+  canonicalUrl={courseData.canonical_url}
   ogImage={courseData.course_image ?
     `https://www.excelr.com/uploads/course/${courseData.course_image}` : undefined}
   schema={courseData.schema_field?.replace(/<\/?script[^>]*>/g, "")}
