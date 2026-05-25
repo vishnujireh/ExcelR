@@ -20,6 +20,7 @@ import { FaChevronDown, FaChevronUp } from "react-icons/fa";
 import googlestars from '../../../public/4.8star.svg'
 import logo_white from "../../../public/logo_white.png"
 import paymenticon from "../../../public/ecavn.png";
+import googlervn from "../../../public/googlrevn.svg"
  
 import { SiMysql } from "react-icons/si";
 import { RiBarChartLine } from "react-icons/ri";
@@ -464,6 +465,9 @@ import mobilearrowconnectorline from "../../../public/mobilearrowconnector.svg"
 import mobilelearnpthcntr1 from "../../../public/mobileConnector line (1).svg"
 import bgnhImageUrl from "../../../public/bgogn.svg"
 import cnubgImageUrl from "../../../public/cnubg.svg"
+import premieriits from "../../../public/premieriits.png"
+import deloitte from "../../../public/hom-deloitte.png"
+import { title } from "process";
 const stepsTop = [
   { title: "Get Trained", icon: Gettrained },
   { title: "Submit Assignments", icon: submitassignment },
@@ -560,7 +564,52 @@ const socialLinks = [
     icon: RiYoutubeFill,
   },
 ];
+const bannercont = [
+  {
+    count: "80,000 +",
+    title: "Learners",
+    icon: Learners,
+    showOn: "all",
+  },
+  {
+    icon: premieriits,
+    title: "In collaboration with",
+    hideCount: true,
+    showOn: "all",
+  },
+  {
+    count: "5,000 +",
+    title: "Hiring Partner",
+    icon: hiringpartnericon,
+    showOn: "all",
+  },
+  { 
+    title: "4.8/5",
+    hideCount: true,
+    icon: googlervn,
+    showOn: "mobile",
+  },
+];
 
+const ourtrakrecord = [
+  {
+    title:"Global Presence in",
+    heading:"40+ Countries",
+    icon: globalpresence,
+  },
+  {
+    title:"Industry experience of",
+    heading:"12+ years",
+    icon: industryexperience,
+  },
+  {
+    icon:deloitte
+  },
+  {
+    heading:"4.8/5",
+    icon:googlervn
+  }
+]
 
 
 
@@ -628,6 +677,7 @@ export default function Template() {
 
   const visibleProjects = showAllProjects ? projects : projects.slice(0, 4);
 
+  
 
   return (
     <>
@@ -644,7 +694,7 @@ export default function Template() {
         <div className="grid md:grid-cols-4 gap-4 relative z-10">
           <div className="col-span-3 lg:col-span-2">
             {/* ✅ Course Name from API */}
-            <h1 className="text-2xl font-[200] mb-5 "><span className="font-bold text-4xl block">Data Analyst Course</span> With Placement Assistance</h1>
+            <h1 className="md:text-2xl text-xl font-[200] mb-5 text-center md:text-left"><span className="font-bold text-3xl block">Data Analyst Course</span> With Placement Assistance</h1>
             {/* ✅ Short Description from API */}
             <div className="banerdec">
               <ul className="ml-0 space-y-5 text-base ">
@@ -655,7 +705,54 @@ export default function Template() {
                 <li>100 Hours of Theory, 40 Hours of Practice Assignments, and 2 Hands-on Capstone Projects</li>
               </ul>
             </div>
+        <div>
+        <ul className="ml-0 mt-5 flex flex-col md:flex-row gap-4 w-full hidden md:flex">
+  {bannercont
+  .filter((item) => item.showOn !== "mobile")
+  .map((item) => (
+    <li
+      key={item.title}
+      className={`bg-[#E5EFFF] text-[#000000] font-medium px-4 py-3 rounded-xl shadow-lg flex-1 min-w-0 ${
+        item.hideCount
+          ? "flex flex-col items-center justify-center text-center"
+          : "flex items-center gap-3"
+      }`}
+    >
+      {item.hideCount ? (
+        <>
+          <p className="text-sm leading-tight mb-2">
+            {item.title}
+          </p>
 
+          <Image
+            src={item.icon}
+            alt={item.title}
+            className="w-21 h-auto object-contain"
+          />
+        </>
+      ) : (
+        <>
+          <Image
+            src={item.icon}
+            alt={item.title}
+            className="w-9 h-9 shrink-0"
+          />
+
+          <div className="min-w-0">
+            <p className="font-semibold text-lg leading-tight">
+              {item.count}
+            </p>
+
+            <p className="text-sm leading-tight">
+              {item.title}
+            </p>
+          </div>
+        </>
+      )}
+    </li>
+ ))}
+</ul>
+        </div>
 
             <div className="flex justify-start">
               <button
@@ -681,7 +778,117 @@ export default function Template() {
           </div>
         </div>
       </section>
-    <div className=" hidden md:block relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 lg:pb-0 bg-[#F5FAFF]">
+      <section className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F5FAFF] md:hidden">
+        <div>
+        <ul className="ml-0 mt-5 grid grid-cols-2 md:flex gap-4 w-full">
+  {bannercont
+  .filter((item) => item.showOn !== "desktop")
+  .map((item) => (
+    <li
+      key={item.title}
+      className={`text-[#000000] font-medium flex-1 min-w-0 px-2 py-2 rounded-xl border border-[#dee0e4] flex-1 ${
+        item.hideCount
+          ? "flex flex-col items-center justify-center text-center"
+          : "flex items-center gap-3"
+      }`}
+    >
+      {item.hideCount ? (
+        <>
+          <p className="text-sm leading-tight mb-2">
+            {item.title}
+          </p>
+
+          <Image
+            src={item.icon}
+            alt={item.title}
+            className="w-21 h-auto object-contain"
+          />
+        </>
+      ) : (
+        <>
+          <Image
+            src={item.icon}
+            alt={item.title}
+            className="w-9 h-9 shrink-0"
+          />
+
+          <div className="min-w-0">
+            <p className="font-semibold text-base leading-tight">
+              {item.count}
+            </p>
+
+            <p className="text-sm leading-tight">
+              {item.title}
+            </p>
+          </div>
+        </>
+      )}
+    </li>
+  ))}
+</ul>
+        </div>
+      </section>
+      <section className="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
+  <h2 className="text-center text-3xl font-semibold mb-9">
+    Our Track Record
+  </h2>
+
+  <div className="grid grid-cols-1 md:grid-cols-4">
+    {ourtrakrecord.map((item, idx) => (
+      <div
+        key={idx}
+        className={`flex items-center justify-center px-4  relative ${
+          idx !== ourtrakrecord.length - 1
+            ? "md:border-r-2 md:border-dashed md:border-[#A7C9FF]"
+            : ""
+        }`}
+      >
+        {/* First 2 Cards */}
+        {item.title && item.heading ? (
+          <div className="flex items-start gap-4">
+            <Image
+              src={item.icon}
+              alt={item.heading}
+              className="w-12 h-12 object-contain shrink-0"
+            />
+
+            <div>
+              <p className="text-base leading-tight">
+                {item.title}
+              </p>
+
+              <h3 className="text-xl font-semibold mt-1">
+                {item.heading}
+              </h3>
+            </div>
+          </div>
+        ) : item.heading ? (
+          /* 4th Card */
+          <div className="flex flex-col items-center text-center">
+            <h3 className="text-xl font-semibold mt-3">
+              {item.heading}
+            </h3>
+            <Image
+              src={item.icon}
+              alt={item.heading}
+              className="w-28 h-auto object-contain"
+            />
+
+           
+          </div>
+        ) : (
+          /* 3rd Card */
+          <Image
+            src={item.icon}
+            alt="track-record"
+            className="w-28 h-auto object-contain"
+          />
+        )}
+      </div>
+    ))}
+  </div>
+</section>
+    {/* <div className=" hidden md:block relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 lg:pb-0 bg-[#F5FAFF]">
         <div className="grid md:grid-cols-3 grid-cols-1 gap-6 items-center">
           <div className="col-span-1 lg:col-span-1">
             <div className="flex justify-start gap-5 items-center">
@@ -802,12 +1009,12 @@ export default function Template() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     <div className="block md:hidden relative w-full ">
         <div className="flex flex-col">
 
           <div className="text-end flex justify-center gap-3 items-center">
-            <div className="">
+            <div>
               <div className="  w-20 h-20 p-3 rounded-full flex justify-center items-center">
 
 
@@ -894,12 +1101,12 @@ export default function Template() {
           </div>
         </div>
       </div>
-       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
+       <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5  bg-[#E5EFFF]">
         <h2 className="text-center text-3xl font-base mb-9 ">What You’ll Learn in Our <span className="block font-semibold"> Data Analytics Course</span>
           </h2>
         <div className="hidden md:flex grid md:grid-cols-2 gap-8 mx-auto">
           <div className="bg-[#CEE6FF] rounded-2xl overflow-hidden ">
-            <div className="bg-[#155DFC] text-white p-4 text-center">
+            <div className="p-4 text-center">
               <h3 className="text-2xl font-semibold ">Core Modules</h3>
             </div>
             <div className="p-4">
@@ -942,7 +1149,7 @@ export default function Template() {
 
           <div className="bg-white rounded-2xl overflow-hidden">
             <div className="bg-[#CEE6FF] rounded-2xl shadow-2xl overflow-hidden ">
-              <div className="bg-[#155DFC] text-white p-4 text-center">
+              <div className="p-4 text-center">
                 <h3 className="text-2xl font-semibold">Value-Added Modules</h3>
               </div>
               <div className="p-4">

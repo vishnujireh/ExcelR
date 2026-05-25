@@ -185,8 +185,16 @@ export default function CoursePage({ courseData, error }: PageProps) {
     layout2: Layout2,
   };
 
-  const layoutType = courseData.template === '1' ? 'layout1' : 'layout2';
-  const LayoutComponent = layouts[layoutType] || Layout1;
+const layoutType = 
+  String(courseData.template) === '1' ? 'layout1' : 
+  String(courseData.template) === '3' ? 'layout2' : 
+  'layout2';
+const LayoutComponent = layouts[layoutType] || Layout1;
+
+// ✅ Debug logging
+console.log('Course Template Value:', courseData.template, 'Type:', typeof courseData.template);
+console.log('Layout Type Selected:', layoutType);
+console.log('Layout Component:', LayoutComponent.name);
 
   return (
     <>

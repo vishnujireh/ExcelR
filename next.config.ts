@@ -33,9 +33,19 @@ const nextConfig = {
         hostname: 'excelrcom.b-cdn.net',
         pathname: '/assets/**',
       },
-       {
+      {
         protocol: 'https',
         hostname: 'www.excelr.com',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'demo3.excelr.com',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'demo.excelr.com',
         pathname: '/uploads/**',
       },
     ],

@@ -1,5 +1,5 @@
 import React from "react";
-import CourseBanner from "../../components/course/CourseBanner";
+import CourseBanner from "../../components/course/CourseBannerTemp2";
 import CoursePrice from "../../components/course/CoursePrice";
 import CourseBenefit from "../../components/course/CourseBenefit";
 import { CourseData } from "../../../redux/slices/courseSlice"; // ✅ import type
@@ -13,8 +13,8 @@ export default function Layout2({ data }: LayoutProps) {
     <div>
       {/* ✅ Pass course data properly */}
       <CourseBanner data={data} />
-      <CoursePrice data={data} />
       <CourseBenefit data={data} />
+      <CoursePrice data={data} />
        
     </div>
   );
