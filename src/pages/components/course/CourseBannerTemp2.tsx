@@ -49,8 +49,8 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
     //     backgroundPosition: "center",
     //   }}
     // >
-    <section className="course-banner  bg-[#05081b] md:bg-transparent relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white overflow-hidden  ">
-<div className="hidden md:block absolute inset-0 -z-10">
+    <section className="course-banner bg-transparent relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white overflow-hidden  ">
+<div className="block absolute inset-0 -z-10">
 <Image
     src={bannerImageUrl}
     alt={data.course_name}
@@ -81,14 +81,14 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
             </div>
             {/* ✅ CTA Button */}
           
-          <div className="flex justify-center">
+          {/* <div className="flex justify-center">
  <button
             onClick={() => openModal("Quick Enquiry", "default")}
             className="md:mt-8 mt-4 mx-auto md:mx-0 block px-6 py-3 bg-white text-black font-semibold text-sm border border-white cursor-pointer hover:bg-black hover:text-white rounded-lg"
           >
             Quick Enquiry
           </button>
-          </div>
+          </div> */}
           {/* ✅ CTA Button */}
          
         </div>
