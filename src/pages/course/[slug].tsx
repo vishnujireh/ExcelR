@@ -208,7 +208,9 @@ console.log('Layout Component:', LayoutComponent.name);
   schema={courseData.schema_field?.replace(/<\/?script[^>]*>/g, "")}
 />
       <LayoutComponent data={courseData} />
-      <Footer footerHtml={courseData.footer_course || null} />
+      <Footer footerHtml={courseData.footer_course || null}
+        template={courseData?.template}
+      />
     </>
   );
 }

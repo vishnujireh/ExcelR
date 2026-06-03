@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import parse from "html-react-parser";
 // import LazyLoad from "../../components/LazyLoadComponent";
@@ -88,12 +88,21 @@ function renderCMSContent(html: string) {
 
 
 export default function Layout1({ data }: LayoutProps) {
+   const [showDelayedSections, setShowDelayedSections] = useState(false);
   const stickySections = data?.sticky_section?.navigation || [];
   const contentSections = data?.sticky_section?.content_sections || [];
   const whyExcelr = data?.sticky_section?.why_excelr;
   const participants = data?.sticky_section?.participants;
   const testimonials = data?.sticky_section?.testimonials;
   const courseFaq = data?.sticky_section?.faqs;
+
+   useEffect(() => {
+  
+    const timer = setTimeout(() => {
+      setShowDelayedSections(true);
+    }, 8000); // 5 seconds delay
+    return () => clearTimeout(timer); 
+}, []);
 
   useEffect(() => {
     const accordions = document.querySelectorAll(
@@ -132,8 +141,16 @@ export default function Layout1({ data }: LayoutProps) {
       <CourseBanner data={data} />
 
       <CourseBenefit data={data} />
-      <CourseBatche courseName={data?.course_name ?? ""} />
+      {
+        showDelayedSections && (
+          <>
+           <CourseBatche courseName={data?.course_name ?? ""} />
       <CoursePrice data={data} />
+          </>
+          )
+      }
+      {/* <CourseBatche courseName={data?.course_name ?? ""} />
+      <CoursePrice data={data} /> */}
 
       {stickySections.length > 0 && (
         <StickyHeader sections={stickySections} />
@@ -177,12 +194,7 @@ export default function Layout1({ data }: LayoutProps) {
       <CourseGlobal />
       <Accolades data={data} />
       <OurClients />
-      {/* <LazyLoad
-      delay={25000} // 15 seconds
-  placeholder={
-    <div className="w-full h-[400px] bg-gray-200 animate-pulse rounded-lg" />
-  }
-></LazyLoad> */}
+       
   <CourseLocation data={data} />
     
   <PopularCourse data={data} />

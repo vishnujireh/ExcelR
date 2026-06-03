@@ -5,11 +5,9 @@ import parse from "html-react-parser";
 
 interface CourseLocationProps {
   data?: CourseData;
-  layout?: string;
 }
 
-export default function CourseLocation({ data,
-  layout, }: CourseLocationProps) {
+export default function CourseLocation({ data }: CourseLocationProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [shouldLoadMap, setShouldLoadMap] = useState(false);
 
@@ -37,7 +35,7 @@ export default function CourseLocation({ data,
   return (
     <div
       ref={containerRef}
-      className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#F4F7FF]"
+      className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-white"
     >
       {shouldLoadMap && (
         <>{parse(data.map ?? "")}</>

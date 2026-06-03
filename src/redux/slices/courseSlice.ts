@@ -114,6 +114,7 @@ export interface CourseData {
   base_url: string;
   course_image: string;
   brief_intro: string;
+  extra_info: string;
   duration: string;
   students_enroll: string;
   template: string;
@@ -154,6 +155,7 @@ interface ApiResponse {
       base_url: string;
       course_image: string;
       brief_intro: string;
+      extra_info: string;
       duration: string;
       category: string;
       students_enroll: string;

@@ -1,4 +1,4 @@
-@import url(tailwindcss);
+@import "tailwindcss";
 .area-bg_grad,
 .b-progress-list-2 {
     position: relative
@@ -479,6 +479,23 @@ pre {
     right: auto
 }
 
+.templatetwo .benfgtlist li::before {
+    background: url(https://www.excelr.com/assets/media/general/check-blue.svg) 0 0/cover;
+    list-style-position: outside;
+    text-align: left;
+    content: '';
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    left: 0;
+    top: 4px
+}
+.templatetwo .benfgtlist li{
+    padding-bottom:0.5rem;
+    font-size: 16px;
+    color: #171717;
+}
+
 .img-fluid {
     max-width: 100%;
     height: auto;
@@ -531,6 +548,21 @@ summary::before {
     font-size: 22px;
     line-height: 8px
 }
+#accordioncoremodule summary, #accorionvaluemodule summary {
+    position: relative;
+}
+#accordioncoremodule summary::before, #accorionvaluemodule summary::before {
+    display: none;
+}
+#accordioncoremodule summary::after, #accorionvaluemodule summary::after {
+    content: "+";
+    font-weight: 500;
+    color: #777777;
+    font-size: 22px;
+    line-height: 8px;
+        position: absolute;
+    right: 20px;
+}
 
 .list-type-circle {
     list-style-type: circle
@@ -547,7 +579,12 @@ details[open] summary {
 details[open] summary::before {
     content: "−"
 }
-
+#accordioncoremodule details[open] summary::before, #accorionvaluemodule details[open] summary::before {
+    display: none;
+}
+#accordioncoremodule details[open] summary::after, #accorionvaluemodule details[open] summary::after {
+    content: "−"
+}
 .coursetm2 details[open] summary::before {
     display: none;
 }
@@ -664,6 +701,67 @@ details > * {
     background: transparent;
 }
 
+.our-alumni-swiper .swiper-slide {
+  transform: scale(0.75) !important;
+  opacity: 0.5;
+  transition: all .35s ease;
+}
+
+.our-alumni-swiper .swiper-slide-active {
+  transform: scale(1) !important;
+  opacity: 1;
+  z-index: 10;
+}
+
+.our-alumni-swiper .swiper-slide-prev,
+.our-alumni-swiper .swiper-slide-next {
+  transform: scale(0.85) !important;
+  opacity: 0.8;
+}
+.alumni-swiper {
+  overflow: visible;
+}
+
+.alumni-swiper .swiper-wrapper {
+  align-items: center;
+}
+
+.alumni-swiper .swiper-slide {
+  transition: all 0.5s ease;
+}
+
+.alumni-swiper .swiper-slide-active {
+  z-index: 10;
+}
+.testimonial-swiper {
+  padding-top:40px;
+  padding-bottom:50px;
+}
+
+
+.testimonial-slide {
+  transform:scale(.85);
+  transition:all .3s ease;
+}
+
+
+/* center active card */
+
+.testimonial-slide.swiper-slide-active {
+
+ transform:scale(1);
+
+ z-index:10;
+
+}
+@media (min-width: 768px) {
+   .md-shadow-none {
+        box-shadow: none !important;
+    }
+    .md-w-10{
+        width: 2.5rem !important;
+    }
+}
 @media (min-width:1399px) and (max-width:1610px) {
     .b-progress-list-2 .b-progress-list__item:first-child {
         margin-top: 160px

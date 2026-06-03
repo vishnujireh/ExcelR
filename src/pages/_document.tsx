@@ -10,7 +10,7 @@ export default class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
-        <Head> 
+        <Head>
           <link rel="icon" type="image/png" href="/favicon.png" /> 
           <link rel="apple-touch-icon" href="/favicon.png" />
         </Head>

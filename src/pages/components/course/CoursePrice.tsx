@@ -11,6 +11,7 @@ import type { CourseData } from "@/redux/slices/courseSlice";
 import QuickEnquiry from "../QuickEnquiry"
 import ComboOffer from "../ComboOffer";
 import parse from "html-react-parser";
+import { RiArrowRightLine, RiArrowRightDoubleFill, RiBankCardFill } from "react-icons/ri";
 
 const isPrivateOrLocalIp = (ip: string) => {
   const v = (ip || "").trim().toLowerCase();
@@ -103,9 +104,10 @@ const isOnlineOrClassroomMode = (mode?: string) => {
 
 interface CoursePriceProps {
   data?: CourseData;
+  template?: string | number;
 }
 
-export default function CoursePrice({ data }: CoursePriceProps) {
+export default function CoursePrice({ data, template }: CoursePriceProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isQuickModalOpen, setIsQuickModalOpen] = useState(false);
 const [formName, setFormName] = useState("");
@@ -215,7 +217,13 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
 
   return (
     <>
-      <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#000000]">
+      <div className={`w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 ${String(template) === "3" ? "bg-white" : "bg-[#000000]"}`}>
+       {String(template) === "3" && (
+         <h2 className={`text-3xl font-semibold text-center mb-10`}>
+         Data Analyst Course Fees
+        </h2>)
+        }
+      
         <div className="w-full md:flex justify-center">
           <div className="flex flex-row justify-center flex-wrap gap-10">
             {priorityModes.map((mode) => {
@@ -224,12 +232,15 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
               return (
                 <div
                   key={mode.mode}
-                  className="bg-white rounded-2xl text-center p-6 max-w-sm"
+                  className={` rounded-2xl text-center p-6 max-w-sm ${String(template) === "3" ? "bg-[#EBF5FF] shadow-md border border-[#155DFC]" : "bg-white"}`}
                 >
-                  <h5 className="uppercase text-black text-md font-semibold tracking-wider pb-3">
+                  <h5 className={` text-black  font-semibold tracking-wider ${String(template) === "3" ? " pb-0 capitalize text-xl" : " pb-3 uppercase text-md"}`}>
                     {mode.mode}
                   </h5>
-
+                 {String(template) === "3" ? (
+                    <hr className="border-[#155DFC] my-5" />
+                 )
+                 :null }
                   {!mode.price_info ? (
                     <p className="text-sm text-red-600">
                       Pricing unavailable
@@ -278,15 +289,25 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                       </h6>
                     </>
                   ) : (
-                    <div className="flex justify-around mb-6 relative">
+                    <div className={` justify-around mb-6 relative ${String(template) === "3" ? "block" : "flex"}`}>
                       {mode.price_info.discount_amount ? (
                         <>
-                         <h6 className="dis-amt font-bold text-xl">
-                        <span className="disam"></span>{" "}
-                        {mode.price_info.currency}{" "}
-                        {formatPrice(mode.price_info.amount)}
+                         <h6 className={`dis-amt  ${String(template) === "3" ? "text-[#BDBDBD] text-base mb-3 font-medium" : "text-[#171717] text-xl font-bold mb-0"}`}>
+                      {String(template) === "3" ? (
+  <del>
+    {mode.price_info.currency}{" "}
+    {formatPrice(mode.price_info.amount)}
+  </del>
+) : (
+  <>
+    <span className="disam"></span>{" "}
+    {mode.price_info.currency}{" "}
+    {formatPrice(mode.price_info.amount)}
+  </>
+)}
+                       
                       </h6>
-                       <h6 className="font-bold text-xl text-[#ea9b0a]">
+                       <h6 className={` ${String(template) === "3" ? "text-3xl text-[#171717] font-semibold" : "font-bold text-xl text-[#ea9b0a]"}`}>
                           {mode.price_info.currency}{" "}
                           {formatPrice(mode.price_info.discount_amount)}
                         </h6>
@@ -299,17 +320,45 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                       )}
                     </div>
                   )}
-
-                  <hr className="border-gray-200 my-5" />
+                 
+                {String(template) !== "3" && (
+  <hr className="border-gray-200 my-5" />
+)}
 
                   {mode.benefits_html && (
                     <div
-                      className="text-[#666666] text-sm mb-5 text-left">
+                      className={` text-sm  text-left ${String(template) === "3" ? "text-[#171717] border-dashed border-[#ccc] border-b-2 mb-3 templatetwo" : "text-[#666666] mb-5"}`}>
                       {parse(mode.benefits_html ?? "")}
                     </div>
                   )}
 
-                 {!isSelfPaced  && (
+                 {String(template) === "3" ? (
+                  <>
+                  {!isSelfPaced  && (
+                    <button
+                      onClick={() => openModal(mode)}
+                      className="flex cursor-pointer mt-5 items-center justify-center text-center w-full text-[#007bff] font-medium text-sm transition"
+                    >
+                      Upcoming Batches <RiArrowRightDoubleFill  />
+                    </button>)}
+                    <div className="flex items-center justify-start gap-2 mt-5 bg-white p-3 rounded-lg">
+                      <RiBankCardFill  className="text-[#A9A3A3] text-lg"/> <p className="text-[#A9A3A3] text-sm font-medium">Pay in EMIs With ZERO% Interest Rate</p>
+                    </div>
+  <div className="flex flex-col gap-2 mt-5">
+                    {mode.upcoming_dates_preview?.[0]?.batch_id && (
+                      <Link
+                       // href={`/enroll_course/${mode.upcoming_dates_preview[0].batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
+                       href={mode.upcoming_dates_preview[0].enroll_url}
+                        className="flex items-center justify-center gap-3 border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-semibold text-base h-10 px-4 rounded-md capitalize transition"
+                      >
+                        {isSelfPaced ? "Buy Now" : "Enroll Now"}   <RiArrowRightLine className="text-lg" />
+                      </Link>
+                    )}
+                  </div>
+                  </>
+) : (
+  <>
+     {!isSelfPaced  && (
                   <div className="mt-5">
                     <h6 className="font-semibold mb-3">Upcoming Batches</h6>
 
@@ -329,17 +378,14 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     </div>
                   </div>
                  )}
-                  
-
-                  <div className="flex flex-col gap-2 mt-5">
-                    {!isSelfPaced  && (
+                 <div className="flex flex-col gap-2 mt-5">
+                  {!isSelfPaced  && (
                     <button
                       onClick={() => openModal(mode)}
                       className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
                     >
                       Show All Batches
                     </button>)}
-
                     {mode.upcoming_dates_preview?.[0]?.batch_id && (
                       <Link
                        // href={`/enroll_course/${mode.upcoming_dates_preview[0].batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
@@ -349,7 +395,13 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                         {isSelfPaced ? "Buy Now" : "Enroll Now"}
                       </Link>
                     )}
-                  </div>
+                 </div>
+  </>
+)}
+                 
+                  
+
+                  
                 </div>
               );
             })}

@@ -106,7 +106,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                     s.src = "https://salesiq.zohopublic.in/widget";
                     d.body.appendChild(s);
                   }
-                }, 5000);
+                }, 15000);
               `,
             }}
           />
