@@ -3,14 +3,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
-import { fetchBlogHome, Blog, CategoryBlogs, loadMoreBlogs, fetchSidebarCategories, fetchSearchSuggestions } from "@/redux/slices/blogSlice";
+import {
+  fetchBlogHome,
+  CategoryBlogs,
+  loadMoreBlogs,
+  fetchSidebarCategories,
+  fetchSearchSuggestions
+} from "@/redux/slices/blogSlice";
 import Breadcrumb from "../components/Breadcrumb";
-import Sidebar from "../components/Sidebar";
-import { LuChevronsDown, LuChevronsUp } from "react-icons/lu";
 import Image from "next/image";
 import Link from "next/link";
-import { FiSearch } from "react-icons/fi";
-import bannerImageUrl from "/public/blog_page.webp";
+import BlogHeroBanner from "../components/BlogHeroBanner";
+import BlogCategory from "../components/BlogCategory";
+import { RiArrowRightUpLine } from "react-icons/ri";
 
 function getBlogUrl(blog: any) {
   const category = blog.category_baseurl;
@@ -26,14 +31,13 @@ function getBlogUrl(blog: any) {
 
 export default function BlogList() {
   const dispatch = useDispatch<AppDispatch>();
-  const [search, setSearch] = useState("");
+  const [search,setSearch] = useState("");
+ 
   const {
     popularBlogs,
     categoryBlogs,
     loading,
     error,
-    searchSuggestions,
-    searchLoading,
   } = useSelector((state: RootState) => state.blogs);
 
   useEffect(() => {
@@ -41,6 +45,7 @@ export default function BlogList() {
     dispatch(fetchSidebarCategories());
   }, [dispatch]);
 
+ 
  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearch(value);
@@ -52,74 +57,29 @@ export default function BlogList() {
 
   if (loading) return <p>Loading blogs...</p>;
   if (error) return <p>Error: {error}</p>;
+
  
 
   return (
     <>
       <Breadcrumb />
-      <div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 lg:px-10 p-5 relative">
-         <div className="hidden md:block absolute inset-0 -z-10">
-        <Image
-            src={bannerImageUrl}
-            alt="Enroll Course Banner"
-            fill
-            priority
-            fetchPriority="high"
-            sizes="100vw"
-            className="object-cover -z-10"
-            quality={55}
-          />
-          </div>
-          <div className="hidden md:block absolute inset-0 bg-black/60 z-0" />
-        <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center z-50 relative text-white">
-          Blogs
-        </h1>
-      </div>
+      <BlogHeroBanner />
+      <BlogCategory  />
 
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid md:gap-6 md:grid-cols-4 grid-cols-1">
+      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5">
         <div className="col-span-3">
-          <div>
+           <div>
             <div className="relative items-center max-w-xl mx-auto mb-10">
-          <div className="flex items-center 2xl:min-w-xs mx-auto bg-white rounded-lg pr-3 border shadow border-gray-300">
-            <input
-              type="text"
-              placeholder="Search blogs..."
-               value={search}
-      onChange={handleSearchChange}
-              className="flex-grow px-4 pr-2 py-2.5 bg-transparent focus:outline-none rounded-full text-sm text-gray-800 placeholder-gray-400"
-            />
-            <span>
-              <FiSearch className="text-[#0071BC] text-lg" />
-            </span>
-          </div>
-          {/* AUTOCOMPLETE DROPDOWN */}
-  {search.length > 1 && searchSuggestions.length > 0 && (
-          <ul className="absolute bg-white w-full shadow-lg rounded mt-1 z-50 max-h-64 overflow-y-auto">
-            {searchSuggestions.map((item) => (
-              <li key={item.id}>
-                <Link
-                  href={`/${item.base_url}`}
-                  className="block px-4 py-2 hover:text-orange-500 cursor-pointer text-sm text-gray-600"
-                >
-                  {item.value}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {/* -----------------------------------
-            ⌛ Loading Suggestions
-        ----------------------------------- */}
-        {searchLoading && (
-          <p className="absolute left-0 mt-2 text-sm text-gray-500">Searching…</p>
-        )}
+           
+  
+ 
+         
         </div>
-          </div>
-          {popularBlogs && popularBlogs.length > 0 && (
+          </div> 
+           {popularBlogs && popularBlogs.length > 0 && (
     <section className="mb-10">
       <h2 className="text-xl font-bold mb-4 uppercase">Popular Blogs</h2>
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid md:grid-cols-3 gap-6">
         {popularBlogs.map((post) => {
           const blogImageUrl = post.blog_image
             ? `https://www.excelr.com/uploads/blog/${post.blog_image}`
@@ -128,19 +88,19 @@ export default function BlogList() {
           return (
             <div
               key={post.id}
-              className="md:flex rounded-lg overflow-hidden shadow p-4 bg-white"
+              className="overflow-hidden shadow p-4 bg-white"
             >
-              <div className="md:w-1/3 relative min-h-[140px]">
+              <div className="relative w-full aspect-[4/3] mb-4 rounded">
                 <Image
                   src={blogImageUrl}
                   alt={post.blog_title}
                   fill
                   style={{ objectFit: "cover" }}
-                  className="rounded"
                 />
               </div>
-              <div className="md:w-2/3 md:pl-4 pt-3 md:pt-0 flex flex-col">
-                <div className="flex-grow">
+              <div className="md:pl-4 pt-3 md:pt-0 ">
+                <div className="">
+                  <p></p>
                   <h3 className="font-semibold text-md mb-2 hover:text-orange-500 transition">
                     <Link href={getBlogUrl(post)}>
                       {post.blog_title}
@@ -168,149 +128,140 @@ export default function BlogList() {
         })}
       </div>
     </section>
-  )}
-          {categoryBlogs.map((category: CategoryBlogs) => (
-            <CategorySection
-              key={category.categoryId}
-              category={category.categoryName}
-              categoryId={category.categoryId}
-              posts={category.blogs}
-            />
-          ))}
+  )}  
+           
+         <AllBlogs
+  blogs={categoryBlogs}
+/>
+
+ 
         </div>
-        <div className="col-span-1 mt-5 md:mt-0">
+        {/* <div className="col-span-1 mt-5 md:mt-0">
           <Sidebar />
-        </div>
+        </div> */}
       </div>
     </>
   );
 }
+ 
 
-function CategorySection({
-  category,
-  categoryId,
-  posts,
+
+
+function AllBlogs({
+  blogs
 }: {
-  category: string;
-  categoryId: string;
-  posts: Blog[];
+  blogs: CategoryBlogs[];
 }) {
-  const dispatch = useDispatch<AppDispatch>();
-  const { categoryBlogs } = useSelector((state: RootState) => state.blogs);
-  const [visibleCount, setVisibleCount] = useState(2);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  if (!posts || posts.length === 0) return null;
+ const visibleBlogs = blogs.flatMap((category)=>{
 
-  const displayPosts = posts.slice(0, visibleCount);
+ return category.blogs.map(blog=>({
+   ...blog,
+   categoryName: category.categoryName
+ }));
 
-  // Find the current category's hasMore status
-  const currentCategory = categoryBlogs.find(cat => cat.categoryId === categoryId);
-  const hasMoreFromAPI = currentCategory?.hasMore ?? false;
+});
 
-  const handleShowMore = async () => {
-    const offset = posts.length; // load more starting from currently loaded posts
-    setIsLoadingMore(true);
-
-    try {
-      const result = await dispatch(
-        loadMoreBlogs({ categoryId, offset, count: 2 })
-      ).unwrap();
-
-      // Increase visible count by the number of new blogs returned
-      setVisibleCount((prev) => prev + result.blogs.length);
-    } catch (error) {
-      console.error("Failed to load more blogs:", error);
-    } finally {
-      setIsLoadingMore(false);
-    }
-  };
-
-  const handleShowLess = () => {
-    setVisibleCount(2);
-  };
-
-  // Show "Show More" only if:
-  // 1. There are more blogs already loaded than visible
-  // 2. Or API indicates more blogs are available
-  const hasMoreToShow =
-    visibleCount < posts.length || (hasMoreFromAPI && posts.length >= visibleCount);
-
-  const canShowLess = visibleCount > 2;
 
   return (
     <section className="mb-10">
-      <h2 className="text-xl font-bold mb-4 uppercase">{category}</h2>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        {displayPosts.map((post) => {
+      {/* <h2 className="text-xl font-bold mb-4 uppercase">
+        All Blogs
+      </h2>
+ */}
+
+      <div className="grid md:grid-cols-4 gap-6">
+
+        {visibleBlogs.map((post) => {
+
           const blogImageUrl = post.blog_image
             ? `https://www.excelr.com/uploads/blog/${post.blog_image}`
             : "/default-blog-image.jpg";
+            const authorImageUrl = post.author_image
+            ? `https://www.excelr.com/uploads/blog/${post.author_image}`
+            : "/default-author-image.jpg";
+
 
           return (
-            <div
-              key={post.id}
-              className="md:flex rounded-lg overflow-hidden shadow p-4 bg-white"
-            >
-              <div className="md:w-1/3 relative min-h-[140px]">
-                <Image
-                  src={blogImageUrl}
-                  alt={post.blog_title}
-                  fill
-                  style={{ objectFit: "cover" }}
-                  className="rounded"
-                />
-              </div>
-              <div className="md:w-2/3 md:pl-4 pt-3 md:pt-0 flex flex-col">
-                <div className="flex-grow">
-                  <h3 className="font-semibold text-md mb-2 hover:text-orange-500 transition">
-                    <Link href={getBlogUrl(post)}>
-                      {post.blog_title}
-                    </Link>
-                  </h3>
-                  <p className="text-sm text-gray-500 mb-4 italic">
-                    {new Date(post.created_at).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </p>
-                </div>
-                <div className="mt-auto text-end">
-                  <Link
-                    href={getBlogUrl(post )}
-                    className="text-orange-500 font-semibold text-sm"
-                  >
-                    Read more
-                  </Link>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+           <div
+  key={post.id}
+  className="overflow-hidden shadow p-4 bg-white flex flex-col h-full"
+>
 
-      <div className="text-end mt-4">
-        {hasMoreToShow ? (
-          <button
-            onClick={handleShowMore}
-            disabled={isLoadingMore}
-            className="flex items-center justify-center rounded border text-gray-700 hover:text-orange-500 transition ml-auto cursor-pointer shadow bg-white w-10 h-9 border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isLoadingMore ? <span className="text-xs">...</span> : <LuChevronsDown className="w-4 h-4" />}
-          </button>
-        ) : (
-          canShowLess && (
-            <button
-              onClick={handleShowLess}
-              className="flex items-center justify-center rounded border text-gray-700 hover:text-orange-500 transition ml-auto cursor-pointer shadow bg-white w-10 h-9 border-gray-200"
-            >
-              <LuChevronsUp className="w-4 h-4" />
-            </button>
-          )
-        )}
+  {/* Image */}
+  <div className="w-full relative min-h-42.5">
+    <Image
+      src={blogImageUrl}
+      alt={post.blog_title}
+      fill
+      className="object-cover"
+    />
+  </div>
+
+
+  {/* Content */}
+  <div className="pt-3 flex flex-col flex-1 justify-between">
+
+    {/* Top content */}
+    <div>
+      {/* Category */}
+      <p className="text-sm text-blue-500 font-semibold mb-2">
+        {post.categoryName}
+      </p>
+
+      <h3 className="font-semibold text-md mb-2 hover:text-orange-500 flex gap-3 justify-between">
+        <Link href={getBlogUrl(post)}>
+          {post.blog_title}
+        </Link>
+
+        <Link href={getBlogUrl(post)} className="shrink-0">
+          <RiArrowRightUpLine className="text-xl" />
+        </Link>
+      </h3>
+          {/* {parse(post.blog_description)} */}
+    </div>
+
+
+    {/* Author always bottom */}
+    <div className="mt-auto pt-5">
+      <div className="flex items-center gap-3">
+
+        <div className="relative w-10 h-10 rounded-full overflow-hidden">
+          <Image
+            src={authorImageUrl}
+            alt="test"
+            fill
+            className="rounded-full w-10 h-10"
+          />
+        </div>
+
+        <div>
+          <p className="text-[13px] font-semibold">
+           {post.author_name || "ExcelR Solutions"}
+          </p>
+
+          <p className="text-xs text-gray-500">
+            {new Date(post.created_at).toLocaleDateString("en-GB", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })}
+          </p>
+        </div>
+
       </div>
+    </div>
+
+  </div>
+
+</div>
+          );
+
+        })}
+ 
+          
+          </div>
     </section>
   );
 }

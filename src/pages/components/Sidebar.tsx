@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { SidebarCategory } from "@/redux/slices/blogSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState, AppDispatch } from "@/redux/store";
+import { SidebarCategory, fetchCategoryBlogsCount } from "@/redux/slices/blogSlice";
 import { LuChevronRight } from "react-icons/lu";
 
 interface SidebarProps {
@@ -13,11 +13,14 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ activeCategory, activeSubcategory }: SidebarProps) {
+  const dispatch = useDispatch<AppDispatch>();
   const sidebarCategories = useSelector(
     (state: RootState) => state.blogs.sidebarCategories
   );
 
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const [visibleCategories,setVisibleCategories] =
+useState<SidebarCategory[]>([]);
 
   // 🔥 Auto-expand category when on subcategory page
 useEffect(() => {
@@ -38,16 +41,68 @@ useEffect(() => {
 }, [activeCategory, activeSubcategory, sidebarCategories]);
 
 
+useEffect(()=>{
+
+
+const checkCategories = async()=>{
+
+
+const result = await Promise.all(
+
+ sidebarCategories.map(async(category)=>{
+
+
+  const res = await dispatch(
+    fetchCategoryBlogsCount(
+      category.baseurl
+    )
+  ).unwrap();
+
+
+  return {
+    ...category,
+    hasBlogs: res.hasBlogs
+  };
+
+
+ })
+
+);
+
+
+setVisibleCategories(
+ result.filter(
+  (item:any)=>item.hasBlogs
+ )
+);
+
+
+};
+
+
+if(sidebarCategories.length){
+
+ checkCategories();
+
+}
+
+
+},[
+ sidebarCategories,
+ dispatch
+]);
+
+
   const toggleCategory = (categorySlug: string) => {
     setExpandedCategory(prev => (prev === categorySlug ? null : categorySlug));
   };
 
   return (
-    <div className="sticky top-20 p-4 rounded-lg shadow bg-white z-10">
-      <h3 className="font-bold mb-3">Categories</h3>
+    <div className="sticky top-20 p-4 rounded-lg">
+      {/* <h3 className="font-bold mb-3">Categories</h3> */}
 
-      <ul className="space-y-2 text-sm text-gray-600">
-        {sidebarCategories.map((category: SidebarCategory) => {
+      <ul className="space-y-3 text-sm text-gray-600">
+        {visibleCategories.map((category: SidebarCategory) => {
           const hasSubCategories = category.subcategories.length > 0;
           const isExpanded = expandedCategory === category.baseurl;
           const isActiveCat = activeCategory === category.baseurl;
@@ -76,7 +131,7 @@ useEffect(() => {
 
               {/* Subcategories */}
               {hasSubCategories && isExpanded && (
-                <ul className="ml-4 mt-2 space-y-1 list-disc">
+                <ul className="ml-4 mt-2 space-y-1 list-disc text-sm">
                   {category.subcategories.map((sub) => {
                     const isActiveSub = activeSubcategory === sub.baseurl;
 

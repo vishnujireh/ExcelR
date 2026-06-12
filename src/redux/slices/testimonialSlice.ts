@@ -7,6 +7,7 @@ export interface Testimonial {
   author: string;
   designation: string;
   description: string;
+  job_description: string;
   image_url: string;
   linkedin_link: string;
 }

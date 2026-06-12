@@ -83,6 +83,7 @@ interface StickySection {
       author_designation: string;
       caption: string;
       description: string;
+      job_description?: string;
       rating: number;
       image: string;
       linkedin_link?: string;

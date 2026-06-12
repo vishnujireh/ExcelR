@@ -10,6 +10,8 @@ import { RootState, AppDispatch } from "@/redux/store";
 import { fetchBlogsBySubcategory, fetchSidebarCategories } from "@/redux/slices/blogSlice";
 import Sidebar from "../components/Sidebar";
 import { LuChevronsDown, LuChevronsUp } from "react-icons/lu";
+import BlogCategory from "../components/BlogCategory";
+import { RiArrowRightUpLine } from "react-icons/ri";
 
 function slugify(text: string) {
   return text
@@ -63,57 +65,94 @@ useEffect(() => {
   return (
     <>
       <Breadcrumb />
-
+<BlogCategory  />
       <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad">
         <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center z-50 relative text-white capitalize">
            {formatTitle(subcategory)}
         </h1>
       </div>
 
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid md:gap-6 md:grid-cols-4 grid-cols-1">
+      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid md:gap-6 md:grid-cols-1 grid-cols-1">
         <div className="col-span-3">
-          <div className="grid md:grid-cols-2 gap-6">
-            {blogsBySubcategory.map((blog) => (
-              <div key={blog.id} className="md:flex shadow rounded p-4 bg-white">
-                <div className="md:w-1/3">
-                  <Image src={blog.blog_image} alt={blog.blog_title} className="rounded w-full h-full" />
+          <div className="grid md:grid-cols-4 gap-6">
+              {blogsBySubcategory.map((blog) => {
+                 const authorImageUrl = blog.author_image
+         ? `https://www.excelr.com/uploads/blog/${blog.author_image}`
+         : "/default-author-image.jpg";
+ return (
+              <div key={blog.id} className="overflow-hidden shadow p-4 bg-white flex flex-col h-full">
+                 <div className="w-full relative min-h-42.5">
+                  <Image src={blog.blog_image} alt={blog.blog_title} fill className="object-cover" />
                 </div>
-                <div className="md:w-2/3 md:pl-4 pt-3 mt:pt-0 flex flex-col">
+                 <div className="pt-3 flex flex-col flex-1 justify-between">
                 <div>
-                   <h3 className="font-semibold hover:text-orange-500 transition">
+                   <h3 className="font-semibold text-md mb-2 hover:text-orange-500 flex gap-3 justify-between">
   <Link href={getBlogUrl(blog)}>
-    {blog.blog_title}
+    {blog.blog_title} 
   </Link>
+  <Link href={getBlogUrl(blog)} className="shrink-0">
+          <RiArrowRightUpLine className="text-xl" />
+        </Link>
 </h3>
-                   <p className="text-sm text-gray-500 mb-4 italic">
-                    {new Date(blog.created_at).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </p>
                 </div>
-                <div className="mt-auto text-end">
+                {/* Author */}
+                               <div className="mt-auto pt-5">
+                                  <div className="flex items-center gap-3">
+                                     <div className="
+                                        relative
+                                        w-10
+                                        h-10
+                                        rounded-full
+                                        overflow-hidden
+                                        ">
+                                        <Image
+                                           src={authorImageUrl}
+                                           alt="author"
+                                           fill
+                                           className="rounded-full"
+                                           />
+                                     </div>
+                                     <div>
+                                        <p className="text-[13px] font-semibold">
+                                           {blog.author_name || "ExcelR Solutions"}
+                                        </p>
+                                        <p className="text-xs text-gray-500">
+                                           {new Date(
+                                           blog.created_at
+                                           ).toLocaleDateString(
+                                           "en-GB",
+                                           {
+                                           day:"2-digit",
+                                           month:"short",
+                                           year:"numeric"
+                                           }
+                                           )}
+                                        </p>
+                                     </div>
+                                  </div>
+                               </div>
+                {/* <div className="mt-auto text-end">
                   <Link
                     href={getBlogUrl(blog)}
                     className="text-orange-500 font-semibold text-sm"
                   >
                     Read more
                   </Link>
-                </div>
+                </div> */}
                  
                 </div>
               </div>
-            ))}
+              );
+})}
           </div>
         </div>
 
-        <div className="col-span-1 mt-5 md:mt-0">
+        {/* <div className="col-span-1 mt-5 md:mt-0">
          <Sidebar 
             activeCategory={category as string} 
             activeSubcategory={subcategory as string} 
           />
-        </div>
+        </div> */}
       </div>
     </>
   );

@@ -22,30 +22,30 @@ export default function Layout2({ data }: LayoutProps) {
   const testimonials = data?.sticky_section?.testimonials;
     const courseFaq = data?.sticky_section?.faqs;
 
-     useEffect(() => {
-        const accordions = document.querySelectorAll(
-          "#accordion13, #accordion14, #accordion4, #accordionfaq, #accordion5, #accordioncoremodule, #accorionvaluemodule"
-        );
-    
-        accordions.forEach((accordion) => {
-          accordion.addEventListener("click", (event) => {
-            if ((event.target as HTMLElement).tagName.toLowerCase() === "summary") {
-              const details = (event.target as HTMLElement)
-                .parentNode as HTMLElement;
-    
-              accordion.querySelectorAll("details").forEach((el) => {
-                if (el !== details) el.removeAttribute("open");
-              });
-            }
-          });
+    useEffect(() => {
+  const accordions = document.querySelectorAll(
+    "#accordion13, #accordion14, #accordion4, #accordionfaq, #accordion5, #accordioncoremodule, #accorionvaluemodule, #accorionlocation"
+  );
+
+  accordions.forEach((accordion) => {
+    accordion.addEventListener("click", (event) => {
+      if ((event.target as HTMLElement).tagName.toLowerCase() === "summary") {
+        const details = (event.target as HTMLElement)
+          .parentNode as HTMLElement;
+
+        accordion.querySelectorAll("details").forEach((el) => {
+          if (el !== details) el.removeAttribute("open");
         });
-    
-        return () => {
-          accordions.forEach((accordion) => {
-            accordion.replaceWith(accordion.cloneNode(true));
-          });
-        };
-      }, [data]);
+      }
+    });
+  });
+
+  return () => {
+    accordions.forEach((accordion) => {
+      accordion.replaceWith(accordion.cloneNode(true));
+    });
+  };
+}, [data]);
 
   return (
     <div>

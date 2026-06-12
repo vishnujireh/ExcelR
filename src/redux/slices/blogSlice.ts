@@ -1,6 +1,7 @@
 // redux/slices/blogSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { apiGet, apiPost } from "../api/apiClient";
+import { count } from "console";
 
 export interface PostCommentPayload {
   blog_id: string;
@@ -23,6 +24,8 @@ export interface PostCommentResponse {
 export interface Blog {
   id: string;
   banner_title: string;
+  author_name: string;
+  author_image: string;
   banner_image: string;
   category: string;
   blog_category: string;
@@ -58,6 +61,7 @@ export interface SidebarCategory {
 export interface CategoryBlogs {
   categoryName: string;
   categoryId: string;
+
   blogs: Blog[];
   hasMore?: boolean; // Track if more blogs are available from API
 }
@@ -66,6 +70,8 @@ export interface BlogByCategory {
   blog_title: string;
   blog_image: string;
   created_at: string;
+  author_name: string;
+  author_image: string;
   category: string;
   subcategory: string;
   baseurl: string;
@@ -76,6 +82,8 @@ export interface BlogBySubcategory {
   blog_image: string;
   created_at: string;
   category: string;
+  author_name: string;
+  author_image: string;
   subcategory: string;
   baseurl: string;
 }
@@ -217,25 +225,63 @@ export const fetchSidebarCategories = createAsyncThunk<
   }
 });
 
+export const fetchCategoryBlogsCount = createAsyncThunk<
+  { category: string; hasBlogs: boolean },
+  string,
+  { rejectValue: string }
+>(
+  "blogs/fetchCategoryBlogsCount",
+  async (categorySlug, { rejectWithValue }) => {
+
+    try {
+
+      const response = await apiGet(
+        `/get_blog_by_category?category=${categorySlug}`
+      );
+
+
+      return {
+        category: categorySlug,
+        hasBlogs: response?.blogs?.length > 0
+      };
+
+
+    } catch(error:any){
+
+      return rejectWithValue(error.message);
+
+    }
+
+  }
+);
+
 export const loadMoreBlogs = createAsyncThunk(
   "blogs/loadMoreBlogs",
   async (
-    { categoryId, offset }: { categoryId: string; offset: number; count: number },
+    { categoryId, offset, count }: { categoryId: string; offset: number; count: number },
     { rejectWithValue }
   ) => {
     try {
       const response = await apiGet(
-        `/load_more_blogs?categoryId=${categoryId}&offset=${offset}&count=${offset}`
+        `/load_more_blogs?categoryId=${categoryId}&offset=${offset}&count=${count}`
       );
 
       if (!response.status) throw new Error("Failed to load more blogs");
 
+
+      const category = response.data.blogs.find(
+        (cat:any)=>cat.categoryId === categoryId
+      );
+
+
       return {
         categoryId,
-        blogs: response.data.blogs,
-        hasMore: response.data.available, // Get availability from API response
+        blogs: category?.blogs || [],
+        hasMore: response.data.available ?? true
       };
-    } catch (err: any) {
+
+
+    } catch (err:any) {
       return rejectWithValue(err.message);
     }
   }

@@ -12,6 +12,7 @@ import PostComment from "../components/PostCommentForm";
 import Image from "next/image";
 import { RiEyeFill, RiFacebookFill, RiTwitterXFill, RiLinkedinFill } from "react-icons/ri";
 import Link from "next/link"
+import BlogCategory from "../components/BlogCategory";
 
  
 
@@ -62,13 +63,13 @@ export default function BlogDetailPage() {
   return (
     <>
       <Breadcrumb />
-
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid md:gap-6 md:grid-cols-4 grid-cols-1 gap-0 bg-[#F4F7FF]">
+<BlogCategory  />
+      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid md:gap-6 md:grid-cols-1 grid-cols-1 gap-0 bg-[#F4F7FF]">
         {/* Content Section */}
-        <div className="col-span-3 ">
+        <div className="max-w-5xl mx-auto">
           <div className="bg-white shadow p-6 rounded-lg">
           {blogDetail.blog_image && (
-            <div className="mb-6 w-full aspect-[8/4] relative">
+            <div className="mb-6 w-full aspect-8/4 relative">
               <Image
                 src={blogDetail.blog_image}
                 alt={blogDetail.blog_title}
@@ -250,9 +251,9 @@ export default function BlogDetailPage() {
         </div>
 
         {/* Sidebar */}
-        <div className="col-span-1">
+        {/* <div className="col-span-1">
           <Sidebar activeCategory={category!} activeSubcategory={subcategory!} />
-        </div>
+        </div> */}
       </div>
     </>
   );

@@ -5,6 +5,7 @@ import { CourseData } from "@/redux/slices/courseSlice";
 import parse from "html-react-parser";
 import { RiArrowLeftSLine, RiArrowRightSLine } from "react-icons/ri";
 import { createRoot } from "react-dom/client";
+
 interface CourseFaqProps {
   data: CourseData;
 }
@@ -53,6 +54,76 @@ export default function CourseFaq({ data }: CourseFaqProps) {
 
 
     /**
+     * DYNAMIC ACCORDION
+     * Works for any number of admin tabs
+     */
+
+    const accordionHandlers: {
+      detail: HTMLDetailsElement;
+      handler: () => void;
+    }[] = [];
+
+
+    tabPanels.forEach((panel)=>{
+
+
+      const detailsList =
+        panel.querySelectorAll<HTMLDetailsElement>(
+          "details"
+        );
+
+
+      detailsList.forEach((detail)=>{
+
+
+        const handler = ()=>{
+
+
+          if(!detail.open) return;
+
+
+
+          detailsList.forEach((other)=>{
+
+
+            if(other !== detail){
+
+              other.removeAttribute(
+                "open"
+              );
+
+            }
+
+
+          });
+
+
+        };
+
+
+
+        detail.addEventListener(
+          "toggle",
+          handler
+        );
+
+
+        accordionHandlers.push({
+          detail,
+          handler
+        });
+
+
+      });
+
+
+    });
+
+
+
+
+
+    /**
      * MOBILE TAB SLIDER
      */
 
@@ -79,18 +150,21 @@ export default function CourseFaq({ data }: CourseFaqProps) {
         document.createElement("button");
 
 
-const leftRoot = createRoot(leftArrow);
-const rightRoot = createRoot(rightArrow);
+
+      const leftRoot = createRoot(leftArrow);
+      const rightRoot = createRoot(rightArrow);
 
 
-leftRoot.render(
-  <RiArrowLeftSLine size={22} />
-);
+
+      leftRoot.render(
+        <RiArrowLeftSLine size={22}/>
+      );
 
 
-rightRoot.render(
-  <RiArrowRightSLine size={22} />
-);
+      rightRoot.render(
+        <RiArrowRightSLine size={22}/>
+      );
+
 
 
       leftArrow.className =
@@ -171,6 +245,8 @@ rightRoot.render(
 
 
 
+
+
     const applyMobileSlider = ()=>{
 
 
@@ -222,6 +298,7 @@ rightRoot.render(
           "justify-center"
         );
 
+
       }
 
     };
@@ -240,9 +317,9 @@ rightRoot.render(
 
 
 
+
     /**
      * TAB CLICK
-     * Existing active/inactive logic
      */
 
     const handleTabClick = (
@@ -295,10 +372,12 @@ rightRoot.render(
 
 
 
+
       button.classList.remove(
         "bg-transparent",
         "text-[#171717]"
       );
+
 
 
       button.classList.add(
@@ -340,9 +419,8 @@ rightRoot.render(
 
 
 
-      // center selected tab on mobile
-
       if(window.innerWidth < 768){
+
 
         button.scrollIntoView({
           behavior:"smooth",
@@ -350,10 +428,12 @@ rightRoot.render(
           block:"nearest"
         });
 
+
       }
 
 
     };
+
 
 
 
@@ -382,6 +462,7 @@ rightRoot.render(
 
 
 
+
     return ()=>{
 
 
@@ -405,6 +486,20 @@ rightRoot.render(
 
 
 
+
+      accordionHandlers.forEach(
+        ({detail,handler})=>{
+
+          detail.removeEventListener(
+            "toggle",
+            handler
+          );
+
+        }
+      );
+
+
+
       leftArrow?.remove();
       rightArrow?.remove();
 
@@ -414,6 +509,7 @@ rightRoot.render(
 
 
   },[faqData.content_html]);
+
 
 
 

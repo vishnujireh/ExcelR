@@ -13,7 +13,7 @@ import {FaStar, FaArrowRight } from "react-icons/fa";
 import { RiLinkedinBoxFill } from "react-icons/ri";
 import companunylogo from "../../../../public/companylogo.png"
 import quralogo from "../../../../public/testimonial-Q-logo.png"
-
+import parse from "html-react-parser";
 interface TestimonialsProps {
   data: CourseData;
 }
@@ -21,9 +21,7 @@ interface TestimonialsProps {
 export default function Testimonials({ data }: TestimonialsProps) {
   // ✅ Safely extract testimonials
   const testimonials = data?.sticky_section?.testimonials?.testimonials || [];
-  const sectionTitle =
-    data?.sticky_section?.testimonials?.title || "Testimonials";
-  const sectionId = data?.sticky_section?.testimonials?.id || "wayp-5";
+  
 
   // ✅ Prevent rendering if no testimonials
   if (!testimonials.length) return null;
@@ -32,9 +30,24 @@ export default function Testimonials({ data }: TestimonialsProps) {
   const normalizeUrl = (url: string) =>
     url?.replace(/^http:\/\//, "https://") || "";
 
+  const RenderJobDescription = ({ html }: { html: string }) => {
+  const options = {
+    replace: (domNode: any) => {
+      if (
+        domNode.name === "p" &&
+        domNode.attribs?.class?.includes("fa-arrow-right")
+      ) {
+        return <FaArrowRight className="text-gray-600" size={18} />;
+      }
+    },
+  };
+
+  return <>{parse(html, options)}</>;
+};
+
   return (
     <div
-      id={sectionId}
+      
       className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 slidervbp relative slider-ful-hgt"
     >
        <div className="hidden md:block absolute inset-0 -z-10">
@@ -140,18 +153,11 @@ export default function Testimonials({ data }: TestimonialsProps) {
                 <p className="text-gray-700 text-sm leading-relaxed mb-4">
                   “{t.description}”
                 </p>
-
-                <div className="flex items-end mt-auto justify-between pt-3 ">
-                   <div className="mx-auto flex items-end gap-4">
-                     <div className="text-xs text-gray-500">Fresh</div>  
-                    <FaArrowRight className="text-gray-600" size={18} />
-
-                      <div className=" flex flex-col  gap-2">       <p className="text-xs text-gray-600">Data Analyst</p><Image src={companunylogo} alt="Company logo" className="object-contain" width={60} height={20} /></div>  
-                  </div> 
-                  <div className="flex-shrink-0">
-                     <Image src={quralogo} alt="Company logo ml-auto object-contain " width={30} height={30} />
-                  </div>
-                </div>
+{t.job_description && (
+  <div className="text-gray-600 text-xs mt-auto">
+    <RenderJobDescription html={t.job_description} />
+  </div>
+)}
               </div>
             </SwiperSlide>
           ))}

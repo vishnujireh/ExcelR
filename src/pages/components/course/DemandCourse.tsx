@@ -97,7 +97,7 @@ export default function PopularCourse({ data }: Props) {
                                   </div> */}
                                 </div>
                                 </div>
-                                <div className="px-4 text-left space-y-2 pb-4">
+                                <div className="px-4 text-left space-y-2 pb-4 min-h-20">
                                   <h3 className="font-semibold text-lg">{item.name}</h3>
                                   {/* <p className="text-sm text-gray-600">{item.desc}</p> */}
                                   </div>
