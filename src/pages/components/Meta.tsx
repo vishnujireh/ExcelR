@@ -13,6 +13,9 @@ interface MetaProps {
   ogImage?: string;
   noIndex?: boolean;
   schema?: string;
+  /** Raw URL of the LCP image. Emits a <link rel="preload"> so the image
+   *  fetch starts with the HTML, before JS hydration. */
+  preloadImage?: string;
 }
 
 const Meta: React.FC<MetaProps> = ({
@@ -23,6 +26,7 @@ const Meta: React.FC<MetaProps> = ({
   ogImage,
   noIndex = false,
   schema,
+  preloadImage,
 }) => {
   const pathname = usePathname();
   
@@ -217,6 +221,22 @@ useEffect(() => {
   return (
     <>
       <Head>
+        {/* LCP image preload — must be first in <head> so fetch starts with HTML */}
+        {preloadImage && (
+          <>
+            {/* Preload desktop size (1920w) via Next.js image optimization */}
+            <link
+              rel="preload"
+              as="image"
+              href={`/_next/image?url=${encodeURIComponent(preloadImage)}&w=1920&q=55`}
+              // @ts-ignore — imagesrcset/imagesizes are valid HTML but not yet in React types
+              imagesrcset={[640,750,828,1080,1200,1920].map(
+                w => `/_next/image?url=${encodeURIComponent(preloadImage)}&w=${w}&q=55 ${w}w`
+              ).join(', ')}
+              imagesizes="100vw"
+            />
+          </>
+        )}
         <meta charSet="utf-8" />
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />
         <title>{metaTitle}</title>

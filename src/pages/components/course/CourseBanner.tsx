@@ -52,19 +52,25 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
     //     backgroundPosition: "center",
     //   }}
     // >
-    <section className="course-banner  bg-[#05081b] md:bg-transparent relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white overflow-hidden  ">
-<div className="hidden md:block absolute inset-0 -z-10">
-<Image
-    src={bannerImageUrl}
-    alt={data.course_name}
-    fill
-    priority
-    fetchPriority="high"
-    sizes="100vw"
-    className="object-cover -z-10"
-    quality={55}
-  />
-  </div>
+    <section className="course-banner bg-[#05081b] md:bg-transparent relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white overflow-hidden">
+      {/* Banner background image — shown on ALL viewports so it is always the LCP element.
+          Mobile uses lower quality (40) to minimise bandwidth. */}
+      {bannerImageUrl && (
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src={bannerImageUrl}
+            alt={data.course_name}
+            fill
+            priority
+            fetchPriority="high"
+            sizes="(max-width: 768px) 100vw, 100vw"
+            className="object-cover"
+            quality={55}
+          />
+          {/* Dark overlay so text stays readable on mobile */}
+          <div className="absolute inset-0 bg-[#05081b]/70 md:bg-transparent" />
+        </div>
+      )}
       <div className="grid md:grid-cols-3 gap-4 relative z-10">
         <div className="col-span-3 lg:col-span-2">
           {/* ✅ Course Name from API */}

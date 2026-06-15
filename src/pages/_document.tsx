@@ -11,8 +11,13 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <link rel="icon" type="image/png" href="/favicon.png" /> 
+          <link rel="icon" type="image/png" href="/favicon.png" />
           <link rel="apple-touch-icon" href="/favicon.png" />
+          {/* Preconnect to image origins so DNS+TCP+TLS is resolved before banner image fetch */}
+          <link rel="preconnect" href="https://www.excelr.com" />
+          <link rel="dns-prefetch" href="https://www.excelr.com" />
+          <link rel="preconnect" href="https://excelrcom.b-cdn.net" />
+          <link rel="dns-prefetch" href="https://excelrcom.b-cdn.net" />
         </Head>
         <body>
           <noscript>

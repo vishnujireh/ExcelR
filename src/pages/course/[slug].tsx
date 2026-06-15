@@ -205,6 +205,8 @@ console.log('Layout Component:', LayoutComponent.name);
   canonicalUrl={courseData.canonical_url}
   ogImage={courseData.course_image ?
     `https://www.excelr.com/uploads/course/${courseData.course_image}` : undefined}
+  preloadImage={courseData.course_image ?
+    `https://www.excelr.com/uploads/course/${courseData.course_image}` : undefined}
   schema={courseData.schema_field?.replace(/<\/?script[^>]*>/g, "")}
 />
       <LayoutComponent data={courseData} />
