@@ -135,6 +135,47 @@ html {
     color: #94a3b8;
 }
 
+.blog-detail-theme.dark .drop-query-form {
+    background: #020814;
+    border: 1px solid #334155;
+    color: #e5e7eb;
+}
+
+.blog-detail-theme.dark .drop-query-form .form-reply {
+    color: #e5e7eb;
+}
+
+.blog-detail-theme.dark .drop-query-form input,
+.blog-detail-theme.dark .drop-query-form textarea,
+.blog-detail-theme.dark .drop-query-form select {
+    background: #0f172a !important;
+    border-color: #334155 !important;
+    color: #e2e8f0 !important;
+}
+
+.blog-detail-theme.dark .drop-query-form input::placeholder,
+.blog-detail-theme.dark .drop-query-form textarea::placeholder {
+    color: #94a3b8 !important;
+}
+
+.blog-detail-theme.dark .drop-query-form .submit-button {
+    border-color: #2563eb;
+    background: #2563eb;
+}
+
+.blog-detail-theme.dark .drop-query-form .submit-button:hover {
+    background: #1d4ed8;
+}
+
+.blog-detail-theme.dark .drop-query-form h2,
+.blog-detail-theme.dark .drop-query-form p {
+    color: #d1d5db;
+}
+
+.blog-detail-theme.dark .drop-query-form h2 {
+    color: #f8fafc;
+}
+
 .blog-detail-theme.dark .slidervbp {
     background: transparent;
 }

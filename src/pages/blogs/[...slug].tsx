@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchBlogDetail, fetchSidebarCategories } from "@/redux/slices/blogSlice";
@@ -13,6 +13,7 @@ import { RiEyeFill, RiFacebookFill, RiTwitterXFill, RiLinkedinFill } from "react
 import Link from "next/link"
 import BlogCategory from "../components/BlogCategory";
 import BlogQueryForm from "../components/BlogQueryForm";
+import Providers from "../providers";
 import { createRoot } from "react-dom/client";
 
 export default function BlogDetailPage() { 
@@ -32,104 +33,38 @@ export default function BlogDetailPage() {
 
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+  useLayoutEffect(() => {
+    if (!blogDetail) return;
 
-    const savedTheme = window.localStorage.getItem("blog-detail-theme");
-    if (savedTheme === "dark" || savedTheme === "light") {
-      setTheme(savedTheme);
-      return;
-    }
+    const container =
+      document.querySelector(".blog-description-container") || document.body;
 
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    setTheme(prefersDark ? "dark" : "light");
-  }, []);
+    const handleQueryContainerClick = (event: Event) => {
+      const target = event.target as HTMLElement;
+      const button = target.closest(".show-query-form") as HTMLElement | null;
+      if (!button) return;
+      event.preventDefault();
 
-  
-  useEffect(() => {
+      const section = button.closest(".sub-section");
+      if (!section) return;
 
- if(!blogDetail) return;
+      const wrapper = document.createElement("div");
+      section.replaceWith(wrapper);
 
+      const root = createRoot(wrapper);
+      root.render(
+        <Providers>
+          <BlogQueryForm />
+        </Providers>
+      );
+    };
 
- const container = document.querySelector(
-   ".blog-description-container"
- );
+    container.addEventListener("click", handleQueryContainerClick);
 
-
- if(!container) return;
-
-
-
- const buttons = container.querySelectorAll(
-   ".show-query-form"
- );
-
-
- buttons.forEach((button)=>{
-
-
-   button.addEventListener(
-    "click",
-    handleQueryClick
-   );
-
-
- });
-
-
-
- return ()=>{
-
-  buttons.forEach((button)=>{
-
-   button.removeEventListener(
-    "click",
-    handleQueryClick
-   );
-
-  });
-
- };
-
-
-},[blogDetail]);
-
-
-
-const handleQueryClick = (e:any)=>{
-
-
- const button = e.currentTarget;
-
-
- const section =
- button.closest(".sub-section");
-
-
-
- if(!section) return;
-
-
-
- // create placeholder inside same section
- const wrapper =
- document.createElement("div");
-
-
- section.replaceWith(wrapper);
-
-
-
- const root =
- createRoot(wrapper);
-
-
- root.render(
-   <BlogQueryForm />
- );
-
-
-};
+    return () => {
+      container.removeEventListener("click", handleQueryContainerClick);
+    };
+  }, [blogDetail]);
 
   const toggleTheme = () => {
     setTheme((current) => {
@@ -182,13 +117,14 @@ const handleQueryClick = (e:any)=>{
             <button
           type="button"
           onClick={toggleTheme}
-          className={`theme-toggle-btn cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition ${
+          className={`theme-toggle-btn cursor-pointer rounded-lg border px-4 py-2 text-sm font-medium transition ${
             theme === "dark"
               ? "border-slate-600 bg-slate-800 text-slate-100 hover:bg-slate-700"
               : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
           }`}
+          title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
         >
-          {theme === "dark" ? "Light Mode" : "Dark Mode"}
+          {theme === "dark" ? "Light Mode ☀️" : "Dark Mode 🌙"}
         </button>
           </div>
            
