@@ -9,11 +9,18 @@ import {
 } from "react-icons/ri";
 
 const SEARCH_TAGS = [
-"Data Science",
-"Six Sigma",
-"Tableau",
-"Data Analytics",
+  "Data Science",
+  "Project Management",
+  "Tableau",
+  "Data Analytics",
 ];
+
+const TAG_TO_CATEGORY: Record<string, string> = {
+  "Data Science": "/blog-category/data-science",
+  "Project Management": "/blog-category/project-management",
+  "Tableau": "/blog-category/tableau",
+  "Data Analytics": "/blog-category/data-analytics",
+};
 export default function HeroBanner() {
  
 const dispatch = useDispatch<AppDispatch>();
@@ -130,7 +137,7 @@ background:
    <p
       className="
       text-white/70
-      max-w-xl mb-10
+      max-w-xl mb-5
       "
       >
       The latest industry news, interviews,
@@ -191,7 +198,7 @@ w-full max-w-2xl flex-col
             />
             </button>
          </div>
-         <button
+         {/* <button
             className="
             px-6 rounded-xl
             bg-[#134792]
@@ -199,7 +206,7 @@ w-full max-w-2xl flex-col
             "
             >
          Search
-         </button>
+         </button> */}
       </div>
       {/* Trending always visible */}
       {/* Search Suggestions */}
@@ -265,15 +272,16 @@ Searching...
 
 )
 }
-      <div className="mt-4 flex gap-2 justify-center">
+      <div className="mt-4 flex gap-2 justify-center flex-wrap">
          {
          SEARCH_TAGS.map(tag => (
-         <button
+         <Link
             key={tag}
-            className="rounded-full px-3 py-1.5 text-xs cursor-pointer font-semibold transition bg-white/10 text-white/40 border border-white/20 hover:bg-white/20 hover:text-white flex items-center gap-1"
+            href={TAG_TO_CATEGORY[tag] || "/blogs"}
+            className="rounded-full px-3 py-1.5 text-xs font-semibold transition bg-white/10 text-white/40 border border-white/20 hover:bg-white/20 hover:text-white flex items-center gap-1"
             >
          {tag}
-         </button>
+         </Link>
          ))
          }
       </div>

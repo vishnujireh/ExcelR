@@ -191,7 +191,7 @@ else if (segments[0] === "blogs" && segments.length > 1) {
   }
 
   return (
-    <div className="w-full md:mx-auto md:py-3 2xl:px-25 xl:px-20 lg:px-10 p-3">
+    <div className="breadcrumb-wrapper w-full md:mx-auto md:py-3 2xl:px-25 xl:px-20 lg:px-10 p-3">
       <nav aria-label="breadcrumb" className="text-sm">
         <ol className="items-center space-x-2">
           <li className="inline-block">

@@ -41,17 +41,127 @@ html {
     color-scheme: light;
 }
 
-.course-faq-content * {
-    color: #0b0b0b !important;
+.blog-detail-theme.dark {
+    background: #05080f;
+    color: #f8fafc;
 }
 
-.course-faq-content p,
-.course-faq-content li {
-    color: #4b5563 !important;
+.blog-detail-theme.dark .page-card {
+    background: #030710;
+    color: #e5e7eb;
 }
 
-.course-faq-content details {
-    background: #fff;
+.blog-detail-theme.dark .page-card h1,
+.blog-detail-theme.dark .page-card h2,
+.blog-detail-theme.dark .page-card h3,
+.blog-detail-theme.dark .page-card h4,
+.blog-detail-theme.dark .page-card h5,
+.blog-detail-theme.dark .page-card h6,
+.blog-detail-theme.dark .page-card strong,
+.blog-detail-theme.dark .page-card b {
+    color: #f8fafc;
+}
+
+.blog-detail-theme.dark .page-card .prose,
+.blog-detail-theme.dark .page-card .prose p,
+.blog-detail-theme.dark .page-card .prose li,
+.blog-detail-theme.dark .page-card .prose span,
+.blog-detail-theme.dark .page-card .prose blockquote {
+    color: #f8fafc !important;
+}
+
+.blog-detail-theme.dark .page-card .prose a {
+    color: #7dd3fc;
+}
+
+.blog-detail-theme.dark .page-card .share-button,
+.blog-detail-theme.dark .page-card .comment-box,
+.blog-detail-theme.dark .page-card .reply-box {
+    background: #1f2937;
+}
+
+.blog-detail-theme.dark .theme-toggle-btn {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.blog-detail-theme.dark .breadcrumb-wrapper a,
+.blog-detail-theme.dark .breadcrumb-wrapper a.text-blue-600,
+.blog-detail-theme.dark .breadcrumb-wrapper span,
+.blog-detail-theme.dark .breadcrumb-wrapper span.text-gray-500,
+.blog-detail-theme.dark .breadcrumb-wrapper li {
+    color: #f8fafc !important;
+}
+
+.blog-detail-theme.dark .breadcrumb-wrapper a:hover {
+    color: #7dd3fc !important;
+}
+
+.blog-detail-theme.dark .author-card {
+    background: #030710;
+    border: 1px solid #334155;
+    padding: 1.25rem;
+    border-radius: 0.5rem;
+}
+
+.blog-detail-theme.dark .author-card h2,
+.blog-detail-theme.dark .author-card a,
+.blog-detail-theme.dark .author-card p {
+    color: #e2e8f0 !important;
+}
+
+.blog-detail-theme.dark .author-card a:hover {
+    color: #7dd3fc !important;
+}
+
+.blog-detail-theme.dark #comment-form {
+    background: #030710;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+}
+
+.blog-detail-theme.dark #comment-form h2 {
+    color: #f8fafc;
+}
+
+.blog-detail-theme.dark #comment-form input,
+.blog-detail-theme.dark #comment-form textarea {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+.blog-detail-theme.dark #comment-form input::placeholder,
+.blog-detail-theme.dark #comment-form textarea::placeholder {
+    color: #94a3b8;
+}
+
+.blog-detail-theme.dark .slidervbp {
+    background: transparent;
+}
+
+.blog-detail-theme.dark .slidervbp h6,
+.blog-detail-theme.dark .slidervbp h3 {
+    color: #e2e8f0;
+}
+
+.blog-detail-theme.dark .slidervbp .bg-white {
+    background-color: #030710 !important;
+    color: #e2e8f0;
+}
+
+.blog-detail-theme.dark .slidervbp .bg-white .font-semibold,
+.blog-detail-theme.dark .slidervbp .bg-white .line-clamp-2 {
+    color: #f8fafc;
+}
+
+.blog-detail-theme.dark .comment-card p,
+.blog-detail-theme.dark .comment-reply-card p {
+    color: #d1d5db;
+}
+
+.blog-detail-theme.dark .comment-card p.font-semibold,
+.blog-detail-theme.dark .comment-reply-card p.font-semibold {
+    color: #f8fafc;
 }
 
 h1,

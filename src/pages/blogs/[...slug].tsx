@@ -7,16 +7,16 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { fetchBlogDetail, fetchSidebarCategories } from "@/redux/slices/blogSlice";
 import PopularCourse from "../components/PopularCourse";
 import Breadcrumb from "../components/Breadcrumb";
-import Sidebar from "../components/Sidebar";
 import PostComment from "../components/PostCommentForm";
 import Image from "next/image";
 import { RiEyeFill, RiFacebookFill, RiTwitterXFill, RiLinkedinFill } from "react-icons/ri";
 import Link from "next/link"
 import BlogCategory from "../components/BlogCategory";
+import BlogQueryForm from "../components/BlogQueryForm";
+import { createRoot } from "react-dom/client";
 
- 
+export default function BlogDetailPage() { 
 
-export default function BlogDetailPage() {
     const [replyTo, setReplyTo] = useState<{
   commentId: string;
   username: string;
@@ -30,18 +30,122 @@ export default function BlogDetailPage() {
     (state: RootState) => state.blogs
   );
 
-  // Determine category / subcategory / blogSlug
-  let category: string | null = null;
-  let subcategory: string | null = null;
+  const [theme, setTheme] = useState<"light" | "dark">("light");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const savedTheme = window.localStorage.getItem("blog-detail-theme");
+    if (savedTheme === "dark" || savedTheme === "light") {
+      setTheme(savedTheme);
+      return;
+    }
+
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    setTheme(prefersDark ? "dark" : "light");
+  }, []);
+
+  
+  useEffect(() => {
+
+ if(!blogDetail) return;
+
+
+ const container = document.querySelector(
+   ".blog-description-container"
+ );
+
+
+ if(!container) return;
+
+
+
+ const buttons = container.querySelectorAll(
+   ".show-query-form"
+ );
+
+
+ buttons.forEach((button)=>{
+
+
+   button.addEventListener(
+    "click",
+    handleQueryClick
+   );
+
+
+ });
+
+
+
+ return ()=>{
+
+  buttons.forEach((button)=>{
+
+   button.removeEventListener(
+    "click",
+    handleQueryClick
+   );
+
+  });
+
+ };
+
+
+},[blogDetail]);
+
+
+
+const handleQueryClick = (e:any)=>{
+
+
+ const button = e.currentTarget;
+
+
+ const section =
+ button.closest(".sub-section");
+
+
+
+ if(!section) return;
+
+
+
+ // create placeholder inside same section
+ const wrapper =
+ document.createElement("div");
+
+
+ section.replaceWith(wrapper);
+
+
+
+ const root =
+ createRoot(wrapper);
+
+
+ root.render(
+   <BlogQueryForm />
+ );
+
+
+};
+
+  const toggleTheme = () => {
+    setTheme((current) => {
+      const nextTheme = current === "light" ? "dark" : "light";
+      window.localStorage.setItem("blog-detail-theme", nextTheme);
+      return nextTheme;
+    });
+  };
+
+  // Determine blog slug from the URL segments
   let blogSlug: string | null = null;
 
   if (slugArray) {
     if (slugArray.length === 2) {
-      category = slugArray[0];
       blogSlug = slugArray[1];
     } else if (slugArray.length === 3) {
-      category = slugArray[0];
-      subcategory = slugArray[1];
       blogSlug = slugArray[2];
     }
   }
@@ -61,13 +165,38 @@ export default function BlogDetailPage() {
 
 
   return (
-    <>
-      <Breadcrumb />
-<BlogCategory  />
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid md:gap-6 md:grid-cols-1 grid-cols-1 gap-0 bg-[#F4F7FF]">
+    <div className={`blog-detail-theme ${theme}`}>
+      <div className="relative">
+        <Breadcrumb />
+        
+      </div>
+      <BlogCategory />
+      <div className={`w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid md:gap-6 md:grid-cols-1 grid-cols-1 gap-0 ${
+        theme === "dark" ? "bg-[#1f1f1f]" : "bg-[#F4F7FF]"
+      }
+      `}>
+       
         {/* Content Section */}
         <div className="max-w-5xl mx-auto">
-          <div className="bg-white shadow p-6 rounded-lg">
+          <div className="relative mb-5 text-end">
+            <button
+          type="button"
+          onClick={toggleTheme}
+          className={`theme-toggle-btn cursor-pointer items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition ${
+            theme === "dark"
+              ? "border-slate-600 bg-slate-800 text-slate-100 hover:bg-slate-700"
+              : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+          }`}
+        >
+          {theme === "dark" ? "Light Mode" : "Dark Mode"}
+        </button>
+          </div>
+           
+          <div className={`shadow p-6 rounded-lg page-card ${
+            theme === "dark"
+              ? "bg-[#030710] text-slate-100 shadow-[0_4px_20px_2px_rgba(0,0,0,0.35)]"
+              : "bg-white text-slate-900"
+          }`}>
           {blogDetail.blog_image && (
             <div className="mb-6 w-full aspect-8/4 relative">
               <Image
@@ -95,14 +224,23 @@ export default function BlogDetailPage() {
 
           <div>
             <h1 className="md:text-4xl font-bold">{blogDetail.blog_title}</h1>
-            <div
-              className="prose max-w-none"
-              dangerouslySetInnerHTML={{ __html: blogDetail.blog_description }}
-            />
+            <div>
+
+ <div
+className="blog-description-container prose max-w-none"
+dangerouslySetInnerHTML={{
+__html:blogDetail.blog_description
+}}
+/>
+
+</div>
           </div>
+          <Link href="https://www.excelr.com/uploads/ics_files/Selenium_Brochure_EDL_1.pdf" target="_blank" className="inline-block mt-4 px-4 py-2 font-semibold text-sm bg-[#FFAA33] text-white rounded-lg hover:bg-[#ffaa33e1]">
+            Download pdf
+          </Link>
             </div>
           {blogDetail.author && (
-            <div className="mt-10">
+            <div className="mt-10 author-card">
               <h2 className="text-xl font-semibold mb-2">About the Author</h2>
               <div className="w-12 h-1 bg-[#197b9f] mb-4"></div>
               <div className="flex items-start gap-4 ">
@@ -176,7 +314,7 @@ export default function BlogDetailPage() {
       <div key={comment.id} className="space-y-4">
         
         {/* 🔹 Comment Box */}
-        <div className="bg-white p-4 rounded-lg shadow">
+        <div className={`comment-card p-4 rounded-lg shadow ${theme === "dark" ? "bg-[#030710] shadow-none" : "bg-white"}`}>
           <p className="font-semibold capitalize">{comment.username}</p>
           <p className="text-gray-600 text-xs mb-3">{comment.created_at}</p>
           <p className="text-gray-700 text-sm">{comment.message}</p>
@@ -201,7 +339,7 @@ export default function BlogDetailPage() {
             {comment.replies.map((reply) => (
               <div
                 key={reply.id}
-                className="bg-white p-3 rounded-lg shadow"
+                className={`comment-reply-card p-3 rounded-lg shadow ${theme === "dark" ? "bg-slate-900 shadow-none" : "bg-white"}`}
               >
                 <p className="font-semibold capitalize">{reply.username}</p>
                 <p className="text-gray-600 text-xs mb-3">{reply.created_at}</p>
@@ -235,7 +373,7 @@ export default function BlogDetailPage() {
               <span className="absolute left-0 top-0 bg-orange-500 text-white font-semibold text-sm px-4 py-2 z-10 rounded-br-lg">
                 READ NEXT
               </span>
-              <div className="w-full aspect-[10/3] overflow-hidden">
+              <div className="w-full aspect-10/3 overflow-hidden">
                 <Image
                 fill
                   src={blogDetail.nextblog.Image}
@@ -255,6 +393,6 @@ export default function BlogDetailPage() {
           <Sidebar activeCategory={category!} activeSubcategory={subcategory!} />
         </div> */}
       </div>
-    </>
+    </div>
   );
 }

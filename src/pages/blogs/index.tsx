@@ -65,18 +65,9 @@ export default function BlogList() {
       <Breadcrumb />
       <BlogHeroBanner />
       <BlogCategory  />
-
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5">
+      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 2xl:pt-0 xl:pt-0 md:pt-0">
         <div className="col-span-3">
-           <div>
-            <div className="relative items-center max-w-xl mx-auto mb-10">
-           
-  
- 
-         
-        </div>
-          </div> 
-           {popularBlogs && popularBlogs.length > 0 && (
+           {/* {popularBlogs && popularBlogs.length > 0 && (
     <section className="mb-10">
       <h2 className="text-xl font-bold mb-4 uppercase">Popular Blogs</h2>
       <div className="grid md:grid-cols-3 gap-6">
@@ -128,7 +119,7 @@ export default function BlogList() {
         })}
       </div>
     </section>
-  )}  
+  )}   */}
            
          <AllBlogs
   blogs={categoryBlogs}
