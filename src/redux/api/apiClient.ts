@@ -72,7 +72,10 @@ export async function apiPost<T = any>(
 // ======================================================
 export async function serverApiGet<T = any>(
   endpoint: string,
-  params?: Record<string, any>
+  params?: Record<string, any>,
+  /** Seconds to cache the response in Next.js's server-side fetch cache.
+   *  Pass 0 (default) to opt out of caching (previous behaviour). */
+  revalidate: number = 0
 ): Promise<T> {
   const url = new URL(`${BASE_URL}${endpoint}`);
   url.searchParams.append('api_key', API_KEY);
@@ -83,10 +86,14 @@ export async function serverApiGet<T = any>(
     });
   }
 
+  const fetchOptions: RequestInit & { next?: { revalidate: number } } =
+    revalidate > 0
+      ? { method: 'GET', headers: { 'Content-Type': 'application/json' }, next: { revalidate } }
+      : { method: 'GET', headers: { 'Content-Type': 'application/json' }, cache: 'no-store' };
+
   const res = await fetch(url.toString(), {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    cache: 'no-store',
+    ...fetchOptions,
+    // (cache / next already set above — kept for legacy callers)
   });
 
   if (!res.ok) {

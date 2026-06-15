@@ -63,6 +63,16 @@ const nextConfig = {
         ],
       },
       {
+        // Long-lived cache for third-party CSS served from public/
+        source: '/css/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
         source: '/_next/static/:path*',
         headers: [
           {

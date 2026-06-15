@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { AppProps } from "next/app";
 import "./globals.css";
-import "intl-tel-input/build/css/intlTelInput.css";
-import "react-photo-view/dist/react-photo-view.css";
+// intlTelInput and react-photo-view CSS loaded lazily after hydration
+// so they do NOT block the initial render / FCP.
 import Providers from "./providers";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
@@ -39,9 +39,25 @@ const openSans = Open_Sans({
 //   preload: true,
 // });
 
+/** Inject a stylesheet non-render-blockingly after hydration */
+function useLazyStylesheet(href: string) {
+  useEffect(() => {
+    if (document.querySelector(`link[href="${href}"]`)) return; // already loaded
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = href;
+    document.head.appendChild(link);
+  }, [href]);
+}
+
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const isCoursePage = router.pathname.startsWith("/course/");
+
+  // Load these after hydration so they never block FCP.
+  // Files are copied to public/css/ at build time so the path is stable.
+  useLazyStylesheet("/css/intlTelInput.css");
+  useLazyStylesheet("/css/react-photo-view.css");
 
   /* URLs where Zoho should NOT load */
   const excludedUrls = [
