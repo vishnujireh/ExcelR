@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, FormEvent, useEffect } from "react";
+import React, { useState, FormEvent, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { postBlogComment, postBlogReply } from "@/redux/slices/blogSlice";
+import { postBlogComment, postBlogReply,
+ resetCommentStatus } from "@/redux/slices/blogSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 
 
@@ -34,6 +35,8 @@ export default function PostComment({
     subject: "",
     message: "",
   });
+  const [localErrors, setLocalErrors] = useState<{ username?: string; useremail?: string; message?: string }>({});
+  const messageRef = useRef<HTMLTextAreaElement | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -42,45 +45,83 @@ export default function PostComment({
   };
 
   const handleSubmit = (e: FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (isReply && parentCommentId) {
-    dispatch(
-      postBlogReply({
-        comment_id: parentCommentId,
-        username: formData.username,
-        useremail: formData.useremail,
-        subject: formData.subject,
-        message: formData.message,
-      })
-    );
-  } else {
-    dispatch(
-      postBlogComment({
-        blog_id: String(blogId),
-        username: formData.username,
-        useremail: formData.useremail,
-        subject: formData.subject,
-        message: formData.message,
-      })
-    );
-  }
-};
+    // Client-side validation
+    const errors: { username?: string; useremail?: string; message?: string } = {};
+    if (!formData.username.trim()) errors.username = "Name is required.";
+    if (!formData.useremail.trim()) errors.useremail = "Email is required.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.useremail.trim())) errors.useremail = "Enter a valid email.";
+    if (!formData.message.trim()) errors.message = "Message is required.";
+
+    setLocalErrors(errors);
+    if (Object.keys(errors).length) return;
+
+    if (isReply && parentCommentId) {
+      dispatch(
+        postBlogReply({
+          comment_id: parentCommentId,
+          username: formData.username,
+          useremail: formData.useremail,
+          subject: formData.subject,
+          message: formData.message,
+        })
+      );
+    } else {
+      dispatch(
+        postBlogComment({
+          blog_id: String(blogId),
+          username: formData.username,
+          useremail: formData.useremail,
+          subject: formData.subject,
+          message: formData.message,
+        })
+      );
+    }
+  };
 
 
-  // Reset form & close reply after success
-  useEffect(() => {
-    if (postCommentSuccess) {
-      setFormData({
-        username: "",
-        useremail: "",
-        subject: "",
-        message: "",
-      });
+ useEffect(() => {
+
+ if(postCommentSuccess){
+
+   setFormData({
+     username:"",
+     useremail:"",
+     subject:"",
+     message:"",
+   });
+
+   setLocalErrors({});
+
+
+   const timer=setTimeout(()=>{
 
       onSuccess?.();
+
+      dispatch(resetCommentStatus());
+
+   },2000);
+
+
+   return ()=>clearTimeout(timer);
+ }
+
+
+},[
+ postCommentSuccess,
+ onSuccess,
+ dispatch
+]);
+
+  // Autofocus reply textarea when reply mode is active
+  useEffect(() => {
+    if (isReply) {
+      setTimeout(() => {
+        messageRef.current?.focus();
+      }, 50);
     }
-  }, [postCommentSuccess, onSuccess]);
+  }, [isReply]);
 
   return (
     <div
@@ -104,6 +145,7 @@ export default function PostComment({
             className="border-b border-gray-200 text-gray-900 bg-white text-sm w-full p-3"
             required
           />
+          {localErrors.username && <p className="mt-1 text-sm text-red-600">{localErrors.username}</p>}
 
           {/* Email */}
           <input
@@ -115,6 +157,7 @@ export default function PostComment({
             className="border-b border-gray-200 text-gray-900 bg-white text-sm w-full p-3"
             required
           />
+          {localErrors.useremail && <p className="mt-1 text-sm text-red-600">{localErrors.useremail}</p>}
 
           {/* Subject (only for main comment) */}
           {!isReply && (
@@ -137,9 +180,11 @@ export default function PostComment({
               placeholder="Your Comments *"
               value={formData.message}
               onChange={handleChange}
+              ref={messageRef}
               className="border-b border-gray-200 text-gray-900 bg-white text-sm w-full p-3"
               required
             />
+            {localErrors.message && <p className="mt-1 text-sm text-red-600">{localErrors.message}</p>}
           </div>
 
           {/* Submit */}
@@ -161,14 +206,14 @@ export default function PostComment({
 
       {/* Success Message */}
       {postCommentSuccess && postCommentMessage && (
-        <p className="text-green-600 mt-3 text-sm">
+        <p className="text-green-600 mt-3 text-sm font-medium">
           {postCommentMessage}
         </p>
       )}
 
       {/* Error Message */}
       {postCommentError && (
-        <p className="text-red-600 mt-3 text-sm">
+        <p className="text-red-600 mt-3 text-sm font-medium">
           {postCommentError}
         </p>
       )}

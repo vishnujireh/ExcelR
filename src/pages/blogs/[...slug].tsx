@@ -285,18 +285,26 @@ __html:blogDetail.blog_description
           </div>
         )}
 
+        {/* Inline reply form for this comment (keeps main post comment intact) */}
+        {replyTo?.commentId === comment.id && (
+          <div className="ml-8 mt-4">
+            <PostComment
+              blogId={blogDetail?.id}
+              parentCommentId={replyTo.commentId}
+              isReply={true}
+              onSuccess={() => setReplyTo(null)}
+            />
+          </div>
+        )}
+
       </div>
     ))}
   </div>
     </div>
-)}
+  )}
 
-
-        
-          <PostComment  blogId={blogDetail?.id}
-          parentCommentId={replyTo?.commentId}
-    isReply={Boolean(replyTo)}
-    onSuccess={() => setReplyTo(null)} />
+        {/* Main Post Comment form (always shown for new comments) */}
+          <PostComment blogId={blogDetail?.id} onSuccess={() => setReplyTo(null)} />
           </div>
 
           {/* Next Blog */}

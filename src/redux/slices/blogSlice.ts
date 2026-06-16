@@ -14,7 +14,7 @@ export interface PostReplyPayload {
   comment_id: string;
   username: string;
   useremail: string;
-  subject: string;
+  subject?: string;
   message: string;
 }
 export interface PostCommentResponse {
@@ -479,7 +479,16 @@ export const postBlogReply = createAsyncThunk<
 const blogSlice = createSlice({
   name: "blogs",
   initialState,
-  reducers: {},
+  reducers:{
+   resetCommentStatus(state){
+
+     state.postCommentLoading=false;
+     state.postCommentSuccess=false;
+     state.postCommentError="";
+     state.postCommentMessage="";
+
+   }
+ },
   extraReducers: (builder) => {
     builder
       .addCase(fetchBlogHome.pending, (state) => {
@@ -553,18 +562,53 @@ const blogSlice = createSlice({
   state.postCommentError = undefined;
   state.postCommentMessage = undefined;
 })
-.addCase(
-  postBlogComment.fulfilled,
-  (state, action: PayloadAction<PostCommentResponse>) => {
-    state.postCommentLoading = false;
-    state.postCommentSuccess = action.payload.status;
-    state.postCommentMessage = action.payload.message;
-  }
+.addCase(postBlogComment.fulfilled,
+(state,action)=>{
+
+ state.postCommentLoading=false;
+
+ state.postCommentSuccess=true;
+
+ state.postCommentError="";
+
+ state.postCommentMessage=
+ action.payload.message;
+
+}
 )
 .addCase(postBlogComment.rejected, (state, action) => {
   state.postCommentLoading = false;
   state.postCommentSuccess = false;
   state.postCommentError = action.payload as string;
+})
+.addCase(postBlogReply.pending, (state) => {
+  state.postCommentLoading = true;
+  state.postCommentSuccess = false;
+  state.postCommentError = undefined;
+  state.postCommentMessage = undefined;
+})
+
+.addCase(postBlogReply.fulfilled,
+(state,action)=>{
+
+ state.postCommentLoading=false;
+ state.postCommentSuccess=true;
+
+ state.postCommentError="";
+
+ state.postCommentMessage=action.payload.message;
+
+}
+)
+
+.addCase(postBlogReply.rejected, (state, action) => {
+
+  state.postCommentLoading = false;
+
+  state.postCommentSuccess = false;
+
+  state.postCommentError = action.payload as string;
+
 })
 .addCase(fetchSearchSuggestions.pending, (state) => {
     state.searchLoading = true;
@@ -598,5 +642,6 @@ const blogSlice = createSlice({
   },
 });
 
+export const { resetCommentStatus } = blogSlice.actions;
 
 export default blogSlice.reducer;
