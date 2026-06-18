@@ -221,21 +221,20 @@ useEffect(() => {
   return (
     <>
       <Head>
-        {/* LCP image preload — must be first in <head> so fetch starts with HTML */}
+        {/* LCP image preload — must be first in <head> so the browser's HTML
+            preload scanner fetches the course banner image before any JS runs.
+            React 18+ / React 19 natively supports imageSrcSet and imageSizes
+            (camelCase) on <link rel="preload" as="image"> — no @ts-ignore needed. */}
         {preloadImage && (
-          <>
-            {/* Preload desktop size (1920w) via Next.js image optimization */}
-            <link
-              rel="preload"
-              as="image"
-              href={`/_next/image?url=${encodeURIComponent(preloadImage)}&w=1920&q=55`}
-              // @ts-ignore — imagesrcset/imagesizes are valid HTML but not yet in React types
-              imagesrcset={[640,750,828,1080,1200,1920].map(
-                w => `/_next/image?url=${encodeURIComponent(preloadImage)}&w=${w}&q=55 ${w}w`
-              ).join(', ')}
-              imagesizes="100vw"
-            />
-          </>
+          <link
+            rel="preload"
+            as="image"
+            href={`/_next/image?url=${encodeURIComponent(preloadImage)}&w=1920&q=55`}
+            imageSrcSet={[640, 750, 828, 1080, 1200, 1920]
+              .map(w => `/_next/image?url=${encodeURIComponent(preloadImage)}&w=${w}&q=55 ${w}w`)
+              .join(", ")}
+            imageSizes="100vw"
+          />
         )}
         <meta charSet="utf-8" />
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />

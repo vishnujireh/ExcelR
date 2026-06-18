@@ -250,6 +250,16 @@ export async function getServerSideProps(context: any) {
       our_clients: response.data.our_clients || [],
     };
 
+    // Allow CDN / reverse-proxy to cache the rendered HTML for 5 minutes
+    // and serve stale for up to 10 minutes while revalidating in the background.
+    // Next.js SSR overrides Cache-Control to private/no-store by default;
+    // setting it here restores CDN cacheability so repeat visitors get
+    // near-zero TTFB instead of a fresh origin render on every request.
+    context.res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=300, stale-while-revalidate=600"
+    );
+
     return {
       props: {
         courseData,

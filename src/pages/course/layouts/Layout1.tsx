@@ -1,30 +1,35 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import parse from "html-react-parser";
 // import LazyLoad from "../../components/LazyLoadComponent";
-import CourseBanner from "../../components/course/CourseBanner";
-import CourseBenefit from "../../components/course/CourseBenefit";
-import CourseBatche from "../../components/course/CourseBatche";
-import CoursePrice from "../../components/course/CoursePrice";
-import ParticipantsPlaced from "../../components/course/ParticipantsPlaced";
-import Testimonials from "../../components/course/Testimonials";
-import CourseFaq from "../../components/course/CourseFaq";
-import CourseGlobal from "../../components/course/CourseGlobal";
-import Accolades from "../../components/course/Accolades";
-import OurClients from "../../components/OurClients";
-import CourseLocation from "../../components/course/CourseLocation";
-import PopularCourse from "../../components/course/PopularCourse";
-import CourseWhyExcelr from "../../components/course/CourseWhyExcelr";
-import StickyHeader from "../../components/course/StickyHeader";
-import CourseBreadcrumb from "../../components/course/CourseBreadcrumb";
-
+import CourseBanner from "../../components/course/CourseBanner";       // LCP — must be static
+import CourseBreadcrumb from "../../components/course/CourseBreadcrumb"; // above fold — static
+import StickyHeader from "../../components/course/StickyHeader";          // navigation — static
+import dynamic from "next/dynamic";
 import { CourseData } from "../../../redux/slices/courseSlice";
 
 interface LayoutProps {
   data: CourseData;
 }
+
+// ─── Below-fold components ────────────────────────────────────────────────────
+// All sections below the banner are dynamically imported so their JS is
+// code-split into separate chunks. The browser downloads and parses only the
+// banner + breadcrumb JS on first load, which directly reduces TBT and LCP.
+// ssr: true (default) keeps server-rendered HTML for SEO on course pages.
+// ─────────────────────────────────────────────────────────────────────────────
+const CourseBenefit      = dynamic(() => import("../../components/course/CourseBenefit"));
+const CourseBatche       = dynamic(() => import("../../components/course/CourseBatche"));
+const CoursePrice        = dynamic(() => import("../../components/course/CoursePrice"));
+const ParticipantsPlaced = dynamic(() => import("../../components/course/ParticipantsPlaced"));
+const Testimonials       = dynamic(() => import("../../components/course/Testimonials"));
+const CourseWhyExcelr    = dynamic(() => import("../../components/course/CourseWhyExcelr"));
+const CourseGlobal       = dynamic(() => import("../../components/course/CourseGlobal"));
+const Accolades          = dynamic(() => import("../../components/course/Accolades"));
+const OurClients         = dynamic(() => import("../../components/OurClients"));
+const CourseLocation     = dynamic(() => import("../../components/course/CourseLocation"));
+const PopularCourse      = dynamic(() => import("../../components/course/PopularCourse"));
+const CourseFaq          = dynamic(() => import("../../components/course/CourseFaq"));
 
 /**
  * Convert CMS <img> tags into Next.js <Image />
@@ -60,6 +65,7 @@ function renderCMSContent(html: string) {
               width={w ?? undefined}
               height={h ?? undefined}
               loading="lazy"
+              decoding="async"
               className={className}
               style={{ maxWidth: "100%", height: "auto" }}
             />
@@ -78,6 +84,7 @@ function renderCMSContent(html: string) {
                    650px"
             quality={70}
             loading="lazy"
+            decoding="async"
             className="mx-auto rounded-lg"
           />
         );

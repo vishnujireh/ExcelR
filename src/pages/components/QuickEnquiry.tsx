@@ -22,7 +22,6 @@ import {
   submitDropQuery, submitEnterpriseQuery, resetDropQueryState,
   type EnterprisePayload, type DropQueryPayload
 } from "@/redux/slices/dropQuerySlice";
-import intlTelInput from "intl-tel-input";
 import logo from "/public/logo.png";
 
 interface QuickEnquiryProps {
@@ -433,28 +432,51 @@ export default function QuickEnquiry({
     return { normalized, isValid: input.checkValidity() };
   };
 
-  useEffect(() => {
+  // ✅ AFTER
+useEffect(() => {
     const phoneInput = phoneInputRef.current;
     if (!phoneInput) return;
-    itiRef.current = intlTelInput(phoneInput, {
-      initialCountry: "in",
-      separateDialCode: true,
-      loadUtils: () => import("intl-tel-input/utils"),
-    });
-    const handlePhoneChange = () => {
-      const iti = itiRef.current;
-      if (!iti || !phoneInput) return;
-      const countryData = iti.getSelectedCountryData();
-      const dialCode = countryData?.dialCode || "";
-      const { normalized } = syncPhoneField();
-      setFormData((prev) => ({ ...prev, mobile: normalized, countryCode: dialCode }));
+
+    let destroyed = false;
+
+    const initIti = async () => {
+      // Dynamic import — runs only in browser, never on server
+      const { default: intlTelInput } = await import('intl-tel-input/intlTelInputWithUtils');
+
+      // Guard: if component unmounted before async resolved, skip
+      if (destroyed || !phoneInputRef.current) return;
+
+      itiRef.current = intlTelInput(phoneInput, {
+        initialCountry: "in",
+        separateDialCode: true,
+        loadUtils: () => import("intl-tel-input/utils"),
+      });
+
+      const handlePhoneChange = () => {
+        const iti = itiRef.current;
+        if (!iti || !phoneInput) return;
+        const countryData = iti.getSelectedCountryData();
+        const dialCode = countryData?.dialCode || "";
+        const { normalized } = syncPhoneField();
+        setFormData((prev) => ({ ...prev, mobile: normalized, countryCode: dialCode }));
+      };
+
+      phoneInput.addEventListener("input", handlePhoneChange);
+      phoneInput.addEventListener("countrychange", handlePhoneChange);
+
+      // Store cleanup on ref so return() below can access it
+      (itiRef as any)._cleanup = () => {
+        phoneInput.removeEventListener("input", handlePhoneChange);
+        phoneInput.removeEventListener("countrychange", handlePhoneChange);
+        itiRef.current?.destroy();
+      };
     };
-    phoneInput.addEventListener("input", handlePhoneChange);
-    phoneInput.addEventListener("countrychange", handlePhoneChange);
+
+    initIti();
+
     return () => {
-      phoneInput.removeEventListener("input", handlePhoneChange);
-      phoneInput.removeEventListener("countrychange", handlePhoneChange);
-      itiRef.current?.destroy();
+      destroyed = true;
+      (itiRef as any)._cleanup?.();
     };
   }, []);
 

@@ -8,8 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUpcomingBatch } from "@/redux/slices/upcomingBatchSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiPost } from "@/redux/api/apiClient";
-import bannerImageUrl from "/public/banerdc.webp";
-import intlTelInput from "intl-tel-input";
+import bannerImageUrl from "/public/banerdc.webp"; 
 
 const isPrivateOrLocalIp = (ip: string) => {
   const v = (ip || "").trim().toLowerCase();
@@ -103,7 +102,7 @@ export default function EnrollCourse() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const phoneInputRef = useRef<HTMLInputElement | null>(null);
-  const itiRef = useRef<ReturnType<typeof intlTelInput> | null>(null);
+  const itiRef = useRef<any>(null);
   const formStartRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -122,8 +121,14 @@ export default function EnrollCourse() {
       cancelled = true;
     };
   }, []);
-  useEffect(() => {
-    if (currentStep !== 2 || !phoneInputRef.current || itiRef.current) return;
+  // ✅ REPLACE the intlTelInput useEffect
+useEffect(() => {
+  if (currentStep !== 2 || !phoneInputRef.current || itiRef.current) return;
+  let destroyed = false;
+
+  const initIti = async () => {
+    const { default: intlTelInput } = await import("intl-tel-input/intlTelInputWithUtils");
+    if (destroyed || !phoneInputRef.current || itiRef.current) return;
 
     itiRef.current = intlTelInput(phoneInputRef.current, {
       initialCountry: "in",
@@ -133,14 +138,17 @@ export default function EnrollCourse() {
       autoPlaceholder: "polite",
       containerClass: "w-full",
     });
+  };
 
-    return () => {
-      if (itiRef.current) {
-        itiRef.current.destroy();
-        itiRef.current = null;
-      }
-    };
-  }, [currentStep]);
+  initIti();
+  return () => {
+    destroyed = true;
+    if (itiRef.current) {
+      itiRef.current.destroy();
+      itiRef.current = null;
+    }
+  };
+}, [currentStep]);
 
   useEffect(() => {
     if (currentStep === 2 && formStartRef.current === null) {

@@ -3,7 +3,6 @@ import React, { useEffect, useState, FormEvent, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { submitCareerForm, resetCareerFormState } from "@/redux/slices/careerFormSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
-import intlTelInput from "intl-tel-input";
 
 interface CareerApplyFormProps {
   title?: string;
@@ -199,8 +198,14 @@ export default function CareerApplyForm({
     }
   }, [success]);
 
-  useEffect(() => {
-    if (!phoneInputRef.current) return;
+  // ✅ REPLACE the intlTelInput useEffect
+useEffect(() => {
+  if (!phoneInputRef.current) return;
+  let destroyed = false;
+
+  const initIti = async () => {
+    const { default: intlTelInput } = await import("intl-tel-input/intlTelInputWithUtils");
+    if (destroyed || !phoneInputRef.current) return;
 
     itiRef.current = intlTelInput(phoneInputRef.current, {
       initialCountry: "in",
@@ -211,22 +216,21 @@ export default function CareerApplyForm({
     const handlePhoneChange = () => {
       if (!phoneInputRef.current) return;
       const { normalized } = syncPhoneField();
-
-      setFormData((prev) => ({
-        ...prev,
-        contact_no: normalized,
-      }));
+      setFormData((prev) => ({ ...prev, contact_no: normalized }));
     };
 
     phoneInputRef.current.addEventListener("input", handlePhoneChange);
     phoneInputRef.current.addEventListener("countrychange", handlePhoneChange);
-
-    return () => {
+    (itiRef as any)._cleanup = () => {
       phoneInputRef.current?.removeEventListener("input", handlePhoneChange);
       phoneInputRef.current?.removeEventListener("countrychange", handlePhoneChange);
       itiRef.current?.destroy();
     };
-  }, []);
+  };
+
+  initIti();
+  return () => { destroyed = true; (itiRef as any)._cleanup?.(); };
+}, []);
 
   useEffect(() => {
     return () => {

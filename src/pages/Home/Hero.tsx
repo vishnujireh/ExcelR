@@ -75,10 +75,11 @@ export default function Hero() {
 
     <div className="flex gap-4 mt-7 md:justify-start justify-center items-center sm:hidden">
       <div className="bg-white rounded-lg p-2">
-        <Image src={deloitte} alt="Deloitte"/>
+        {/* width/height prevent layout shift (CLS) while image loads */}
+        <Image src={deloitte} alt="Deloitte" width={125} height={50} />
       </div>
       <div className="bg-white rounded-lg p-2">
-        <Image src={nascom} alt="Nasscom"/>
+        <Image src={nascom} alt="Nasscom" width={125} height={50} />
       </div>
     </div>
 
@@ -105,7 +106,11 @@ export default function Hero() {
   {/* Second div takes 2 columns on small screens, 3 columns on large screens */}
   <div className="col-span-2 lg:col-span-4">
        <div className="col-span-2 lg:col-span-3 items-center justify-center hidden md:flex">
-      <Image src={heroImage} alt="Hero Image" className="img-fluid" />
+      {/* priority + fetchPriority ensure this above-the-fold desktop image
+          is fetched immediately alongside the banner, improving LCP on desktop.
+          width/height match the source asset dimensions (950×716) to prevent CLS. */}
+      <Image src={heroImage} alt="Hero Image" className="img-fluid"
+        width={950} height={716} priority fetchPriority="high" />
         </div>
   </div>
 </div>

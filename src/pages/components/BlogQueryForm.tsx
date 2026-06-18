@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { submitDropQuery } from "@/redux/slices/dropQuerySlice";
-import intlTelInput from "intl-tel-input";
 
 interface FormState {
   name: string;
@@ -61,9 +60,15 @@ export default function BlogQueryForm() {
     setFormData((prev) => ({ ...prev, mobile: normalized, countryCode: dialCode }));
   };
 
-  useEffect(() => {
-    const phoneInput = phoneInputRef.current;
-    if (!phoneInput) return;
+  // ✅ REPLACE the intlTelInput useEffect
+useEffect(() => {
+  const phoneInput = phoneInputRef.current;
+  if (!phoneInput) return;
+  let destroyed = false;
+
+  const initIti = async () => {
+    const { default: intlTelInput } = await import("intl-tel-input/intlTelInputWithUtils");
+    if (destroyed || !phoneInputRef.current) return;
 
     itiRef.current = intlTelInput(phoneInput, {
       initialCountry: "in",
@@ -74,13 +79,16 @@ export default function BlogQueryForm() {
     const handlePhoneChange = () => syncPhone();
     phoneInput.addEventListener("input", handlePhoneChange);
     phoneInput.addEventListener("countrychange", handlePhoneChange);
-
-    return () => {
+    (itiRef as any)._cleanup = () => {
       phoneInput.removeEventListener("input", handlePhoneChange);
       phoneInput.removeEventListener("countrychange", handlePhoneChange);
       itiRef.current?.destroy();
     };
-  }, []);
+  };
+
+  initIti();
+  return () => { destroyed = true; (itiRef as any)._cleanup?.(); };
+}, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -219,7 +227,7 @@ export default function BlogQueryForm() {
             </p>
           )}
         </form>
-      </div>
+        </div>
     </div>
-  );
-}
+    );
+    }

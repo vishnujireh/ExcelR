@@ -25,8 +25,6 @@ import {
   RiArrowUpSLine,
 } from "react-icons/ri";
 
-import "swiper/css";
-import "swiper/css/pagination";
 import Image from "next/image";
 import { RiPlayFill } from "react-icons/ri";
 

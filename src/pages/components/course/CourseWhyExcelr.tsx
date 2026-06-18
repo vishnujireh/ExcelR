@@ -3,8 +3,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
 import Image from "next/image";
 import { CourseData } from "@/redux/slices/courseSlice";
 import QuickEnquiry from "../QuickEnquiry";

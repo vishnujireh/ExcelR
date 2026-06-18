@@ -2,7 +2,6 @@
 import React from "react";
 import Image, { StaticImageData } from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
 import { Navigation, Autoplay } from "swiper/modules";
 
 // ✅ Correct image imports (from /public)

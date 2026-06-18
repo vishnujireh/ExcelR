@@ -1,6 +1,9 @@
 import React from "react";
 import type { AppProps } from "next/app";
 import "./globals.css";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import "intl-tel-input/build/css/intlTelInput.css";
 import Providers from "./providers";
 import dynamic from "next/dynamic";
@@ -8,6 +11,7 @@ import { useRouter } from "next/router";
 import { Open_Sans } from "next/font/google";
 import Script from "next/script";
 import type { CourseData } from "@/redux/slices/courseSlice";
+
 
 /* Dynamic Components */
 type CourseDataProps = { courseData?: CourseData | null };
@@ -28,15 +32,7 @@ const openSans = Open_Sans({
   display: "swap",
   preload: true,
 });
-
-/* Roboto */
-// const roboto = Roboto({
-//   variable: "--font-roboto",
-//   subsets: ["latin"],
-//   weight: ["300", "400", "500", "700"],
-//   display: "swap",
-//   preload: true,
-// });
+ 
 
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
@@ -85,7 +81,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         {shouldLoadZoho && (
           <Script
             id="zoho-salesiq-init"
-            strategy="afterInteractive"
+            strategy="lazyOnload"
             dangerouslySetInnerHTML={{
               __html: `
                 var $zoho = $zoho || {};
@@ -105,7 +101,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                     s.src = "https://salesiq.zohopublic.in/widget";
                     d.body.appendChild(s);
                   }
-                }, 5000);
+                }, 10000);
               `,
             }}
           />

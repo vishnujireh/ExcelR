@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['intl-tel-input', 'react-photo-view'], // ← Add this
    swcMinify: true,
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
@@ -8,10 +9,12 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
 
-  // ✅ Disable legacy browser transpilation
   experimental: {
-    legacyBrowsers: false,
-  },  
+    // Tree-shake react-icons so only the specific icons used are included
+    // in each page bundle instead of the entire icon set.
+    // Also applied to swiper to reduce its JS footprint.
+    optimizePackageImports: ["react-icons", "swiper"],
+  },
   compress: true,
   images: {
     formats: ['image/webp', 'image/avif'],
@@ -74,6 +77,15 @@ const nextConfig = {
       },
       {
         source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source:"/_next/static/(.*)",
         headers: [
           {
             key: 'Cache-Control',

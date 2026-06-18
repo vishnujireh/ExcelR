@@ -3,14 +3,21 @@ import { useAppSelector } from "@/redux/hooks";
 import { fetchHomeConfig } from "@/redux/slices/homeSlice";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "@/redux/store";
+import dynamic from "next/dynamic";
 import Meta from "./components/Meta";
-import Hero from "./Home/Hero";
-import GlobalLeaders from "./Home/GlobalLeadrs";
-import Resources from "./Home/Resources";
-import OurCourses from "./Home/OurCourses";
-import WhyExcelr from "./Home/WhyExcelr";
-import NewsEvent from "./Home/NewsEvent";
-import OurClients from "./components/OurClients";
+import Hero from "./Home/Hero"; // Above fold — keep static so LCP image loads immediately
+
+// All sections below the hero are dynamically imported with ssr:false.
+// This removes their JS from the critical bundle so the browser parses less
+// code before it can paint the LCP element (the hero banner).
+// The home page fetches all its data client-side anyway (useEffect dispatch),
+// so ssr:false has zero SEO impact here.
+const GlobalLeaders = dynamic(() => import("./Home/GlobalLeadrs"), { ssr: false });
+const Resources     = dynamic(() => import("./Home/Resources"),    { ssr: false });
+const OurCourses    = dynamic(() => import("./Home/OurCourses"),   { ssr: false });
+const WhyExcelr     = dynamic(() => import("./Home/WhyExcelr"),    { ssr: false });
+const NewsEvent     = dynamic(() => import("./Home/NewsEvent"),     { ssr: false });
+const OurClients    = dynamic(() => import("./components/OurClients"), { ssr: false });
 
 
 

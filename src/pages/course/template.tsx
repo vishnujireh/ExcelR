@@ -42,9 +42,6 @@ import {
 
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, Navigation } from "swiper/modules";
-
-import "swiper/css";
-import "swiper/css/pagination";
 import checkcircle from "../../../public/Check circle.svg";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 

@@ -2,8 +2,7 @@
 import React, { useEffect, useState, FormEvent, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { submitEveryDayLearning, resetEveryDayLearningState } from "@/redux/slices/everyDayLearningSlice";
-import type { AppDispatch, RootState } from "@/redux/store";
-import intlTelInput from "intl-tel-input";
+import type { AppDispatch, RootState } from "@/redux/store"; 
 
 const INITIAL_FORM_STATE = {
   name: "",
@@ -149,8 +148,14 @@ export default function EveryDayLearningForm() {
     }
   }, [success]);
 
-  useEffect(() => {
-    if (!phoneInputRef.current) return;
+  // ✅ REPLACE the intlTelInput useEffect
+useEffect(() => {
+  if (!phoneInputRef.current) return;
+  let destroyed = false;
+
+  const initIti = async () => {
+    const { default: intlTelInput } = await import("intl-tel-input/intlTelInputWithUtils");
+    if (destroyed || !phoneInputRef.current) return;
 
     itiRef.current = intlTelInput(phoneInputRef.current, {
       initialCountry: "in",
@@ -161,27 +166,24 @@ export default function EveryDayLearningForm() {
     const handlePhoneChange = () => {
       const iti = itiRef.current;
       if (!iti || !phoneInputRef.current) return;
-
       const countryData = iti.getSelectedCountryData();
       const dialCode = countryData?.dialCode || "";
       const { normalized } = syncPhoneField();
-
-      setFormData((prev) => ({
-        ...prev,
-        mobile_no: normalized,
-        country_code: dialCode ? `+${dialCode}` : "",
-      }));
+      setFormData((prev) => ({ ...prev, mobile_no: normalized, country_code: dialCode ? `+${dialCode}` : "" }));
     };
 
     phoneInputRef.current.addEventListener("input", handlePhoneChange);
     phoneInputRef.current.addEventListener("countrychange", handlePhoneChange);
-
-    return () => {
+    (itiRef as any)._cleanup = () => {
       phoneInputRef.current?.removeEventListener("input", handlePhoneChange);
       phoneInputRef.current?.removeEventListener("countrychange", handlePhoneChange);
       itiRef.current?.destroy();
     };
-  }, []);
+  };
+
+  initIti();
+  return () => { destroyed = true; (itiRef as any)._cleanup?.(); };
+}, []);
 
   useEffect(() => {
     return () => {
@@ -349,9 +351,8 @@ export default function EveryDayLearningForm() {
         </p>
       )}
     </div>
-
   </div>
-</form>
-     </>
+  </form>
+  </>
   );
 }

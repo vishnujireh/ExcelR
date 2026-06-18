@@ -32,8 +32,6 @@ import {
   RiArrowDownSLine,
 } from "react-icons/ri";
 
-import "swiper/css";
-import "swiper/css/navigation";
 
 interface OurClientsProps {
   title?: string;

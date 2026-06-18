@@ -7,8 +7,6 @@ import bgnhImageUrl from "../../../../public/bgogn.svg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, Navigation } from "swiper/modules";
 
-import "swiper/css";
-import "swiper/css/pagination";
 import {FaStar, FaArrowRight } from "react-icons/fa";
 import { RiLinkedinBoxFill } from "react-icons/ri";
 import companunylogo from "../../../../public/companylogo.png"

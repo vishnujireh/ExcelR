@@ -5,11 +5,9 @@ import {
   RiUserFill,
   RiMailOpenFill,
   RiPhoneFill,
-  RiCalendarFill,
   RiMapPin2Fill,
 } from "react-icons/ri";
 import { useSearchParams } from "next/navigation";
-import intlTelInput from "intl-tel-input";
 
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
@@ -158,8 +156,14 @@ console.log("Sending preferred_date:", formData.preferredDate);
     return { normalized, isValid: input.checkValidity() };
   };
 
-  useEffect(() => {
-    if (!phoneInputRef.current) return;
+  // ✅ REPLACE the intlTelInput useEffect
+useEffect(() => {
+  if (!phoneInputRef.current) return;
+  let destroyed = false;
+
+  const initIti = async () => {
+    const { default: intlTelInput } = await import("intl-tel-input/intlTelInputWithUtils");
+    if (destroyed || !phoneInputRef.current) return;
 
     itiRef.current = intlTelInput(phoneInputRef.current, {
       initialCountry: "in",
@@ -168,40 +172,26 @@ console.log("Sending preferred_date:", formData.preferredDate);
     });
 
     const handlePhoneChange = () => {
-  const iti = itiRef.current;
-  if (!iti || !phoneInputRef.current) return;
-
-  const countryData = iti.getSelectedCountryData();
-  const dialCode = countryData?.dialCode || "";
-  const { normalized } = syncPhoneField();
-
-  setFormData((prev) => ({
-    ...prev,
-    mobile: normalized,
-    countryCode: dialCode,
-  }));
-};
-
-
+      const iti = itiRef.current;
+      if (!iti || !phoneInputRef.current) return;
+      const countryData = iti.getSelectedCountryData();
+      const dialCode = countryData?.dialCode || "";
+      const { normalized } = syncPhoneField();
+      setFormData((prev) => ({ ...prev, mobile: normalized, countryCode: dialCode }));
+    };
 
     phoneInputRef.current.addEventListener("input", handlePhoneChange);
-    phoneInputRef.current.addEventListener(
-      "countrychange",
-      handlePhoneChange
-    );
-
-    return () => {
-      phoneInputRef.current?.removeEventListener(
-        "input",
-        handlePhoneChange
-      );
-      phoneInputRef.current?.removeEventListener(
-        "countrychange",
-        handlePhoneChange
-      );
+    phoneInputRef.current.addEventListener("countrychange", handlePhoneChange);
+    (itiRef as any)._cleanup = () => {
+      phoneInputRef.current?.removeEventListener("input", handlePhoneChange);
+      phoneInputRef.current?.removeEventListener("countrychange", handlePhoneChange);
       itiRef.current?.destroy();
     };
-  }, []);
+  };
+
+  initIti();
+  return () => { destroyed = true; (itiRef as any)._cleanup?.(); };
+}, []);
 
   /* ---------------- CHANGE HANDLER ---------------- */
   const handleChange = (
