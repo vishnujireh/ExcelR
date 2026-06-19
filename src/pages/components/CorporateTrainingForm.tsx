@@ -72,7 +72,12 @@ export default function CorporateTrainingForm() {
       }
     }
 
-    return { normalized, isValid: input.checkValidity() };
+    return {
+  normalized,
+  isValid: isIndia
+    ? normalized.length === 10
+    : normalized.length === 12
+};
   };
 
   const handleChange = (
@@ -90,49 +95,64 @@ export default function CorporateTrainingForm() {
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const nextErrors: Record<string, string> = {};
-    const emailOk = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(
-      formData.company_email.trim()
-    );
+  e.preventDefault();
 
-    if (!formData.name.trim()) {
-      nextErrors.name = "Name is required.";
-    }
-    if (!formData.company_email.trim()) {
-      nextErrors.company_email = "Email is required.";
-    } else if (!emailOk) {
-      nextErrors.company_email = "Enter a valid email.";
-    }
+  const nextErrors: Record<string, string> = {};
 
-    const phoneCheck = syncPhoneField();
-    const countryData = itiRef.current?.getSelectedCountryData?.();
-    const isIndia =
-      countryData?.iso2 === "in" || countryData?.dialCode === "91" || !countryData;
-    if (!formData.mobile_no || !phoneCheck.isValid) {
-      nextErrors.mobile_no = isIndia
-        ? "Please enter a 10-digit mobile number."
-        : "Please enter a 12-digit mobile number.";
-    }
-    if (!formData.hear_about_us) {
-      nextErrors.hear_about_us = "Please select an option.";
-    }
-    if (!formData.description.trim()) {
-      nextErrors.description = "Query is required.";
-    }
-    if (!agree) {
-      nextErrors.agree = "Please accept Terms and Conditions.";
-    }
+  const emailOk = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(
+    formData.company_email.trim()
+  );
 
-    setErrors(nextErrors);
-    if (Object.keys(nextErrors).length > 0) {
-      if (nextErrors.mobile_no) {
-        phoneInputRef.current?.focus();
-      }
-      return;
+  if (!formData.name.trim()) {
+    nextErrors.name = "Name is required.";
+  }
+
+  if (!formData.company_email.trim()) {
+    nextErrors.company_email = "Email is required.";
+  } else if (!emailOk) {
+    nextErrors.company_email = "Please enter a valid email address.";
+  }
+
+  const phoneCheck = syncPhoneField();
+
+  const countryData = itiRef.current?.getSelectedCountryData?.();
+
+  const isIndia =
+    countryData?.iso2 === "in" ||
+    countryData?.dialCode === "91" ||
+    !countryData;
+
+  if (!formData.mobile_no.trim()) {
+    nextErrors.mobile_no = "Mobile number is required.";
+  } else if (phoneCheck.normalized.length !== 10) {
+    nextErrors.mobile_no = isIndia
+      ? "Please enter a valid 10-digit mobile number."
+      : "Please enter a valid mobile number.";
+  }
+
+
+  if (!formData.description.trim()) {
+    nextErrors.description = "Query is required.";
+  }
+
+
+  // Required Terms checkbox
+  if (!agree) {
+    nextErrors.agree = "Please accept Terms and Conditions.";
+  }
+
+
+  setErrors(nextErrors);
+
+  if (Object.keys(nextErrors).length > 0) {
+    if (nextErrors.mobile_no) {
+      phoneInputRef.current?.focus();
     }
-    dispatch(submitCorporateTraining(formData));
-  };
+    return;
+  }
+
+  dispatch(submitCorporateTraining(formData));
+};
 
   useEffect(() => {
     if (success) {
@@ -140,7 +160,7 @@ export default function CorporateTrainingForm() {
       setErrors({});
       setAgree(false);
       if (phoneInputRef.current) {
-        phoneInputRef.current.value = "";
+        setFormData(INITIAL_FORM_STATE);
       }
     }
   }, [success]);
@@ -148,38 +168,69 @@ export default function CorporateTrainingForm() {
   // ✅ REPLACE the intlTelInput useEffect
 useEffect(() => {
   if (!phoneInputRef.current) return;
+
   let destroyed = false;
+  let iti: any;
 
   const initIti = async () => {
-    const { default: intlTelInput } = await import("intl-tel-input/intlTelInputWithUtils");
+
+    const { default: intlTelInput } =
+      await import("intl-tel-input/intlTelInputWithUtils");
+
+
     if (destroyed || !phoneInputRef.current) return;
 
-    itiRef.current = intlTelInput(phoneInputRef.current, {
+
+    iti = intlTelInput(phoneInputRef.current, {
       initialCountry: "in",
       separateDialCode: true,
       loadUtils: () => import("intl-tel-input/utils"),
     });
 
-    const handlePhoneChange = () => {
-      const iti = itiRef.current;
-      if (!iti || !phoneInputRef.current) return;
-      const countryData = iti.getSelectedCountryData();
-      const dialCode = countryData?.dialCode || "";
-      const { normalized } = syncPhoneField();
-      setFormData((prev) => ({ ...prev, mobile_no: normalized, country_code: dialCode ? `+${dialCode}` : "" }));
-    };
 
-    phoneInputRef.current.addEventListener("input", handlePhoneChange);
-    phoneInputRef.current.addEventListener("countrychange", handlePhoneChange);
-    (itiRef as any)._cleanup = () => {
-      phoneInputRef.current?.removeEventListener("input", handlePhoneChange);
-      phoneInputRef.current?.removeEventListener("countrychange", handlePhoneChange);
-      itiRef.current?.destroy();
-    };
+    itiRef.current = iti;
+
+
+    const handlePhoneChange = () => {
+  const countryData = iti.getSelectedCountryData();
+
+  const { normalized } = syncPhoneField();
+
+  setFormData(prev => ({
+    ...prev,
+    mobile_no: normalized,
+    country_code: countryData?.dialCode
+      ? `+${countryData.dialCode}`
+      : "",
+  }));
+
+  setErrors(prev => {
+    const next = { ...prev };
+    delete next.mobile_no;
+    return next;
+  });
+};
+
+
+    phoneInputRef.current.addEventListener(
+      "input",
+      handlePhoneChange
+    );
+
   };
 
+
   initIti();
-  return () => { destroyed = true; (itiRef as any)._cleanup?.(); };
+
+
+  return () => {
+    destroyed = true;
+
+    if (iti) {
+      iti.destroy();
+    }
+  };
+
 }, []);
 
   useEffect(() => {
@@ -193,8 +244,9 @@ useEffect(() => {
       <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 z-10 relative items-center">
         <div className="col-span-1 md:col-span-3 lg:col-span-4 lg:col-start-2">
           <div className="bg-white p-5 border-4 border-gray-200 rounded-md">
-            <form className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 cormobiln" onSubmit={handleSubmit} noValidate>
-              {/* Name */}
+            <form className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 cormobiln" onSubmit={handleSubmit}>
+              <div>
+{/* Name */}
               <input
                 type="text"
                 name="name"
@@ -202,10 +254,16 @@ useEffect(() => {
                 value={formData.name}
                 onChange={handleChange}
                 className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                required
+                 
               />
-              {errors.name && <p className="text-red-600 text-xs">{errors.name}</p>}
-
+              {errors?.name && (
+ <p className="text-red-600 text-xs mt-1">
+  {errors.name}
+ </p>
+)}
+              </div>
+              
+<div>
           {/* Company Name */}
               <input
                 type="text"
@@ -215,8 +273,9 @@ useEffect(() => {
                 onChange={handleChange}
                 className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
               />
-
-          {/* Email */}
+</div>
+<div>
+ {/* Email */}
               <input
                 type="email"
                 name="company_email"
@@ -224,26 +283,34 @@ useEffect(() => {
                 value={formData.company_email}
                 onChange={handleChange}
                 className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                required
+                 
               />
-              {errors.company_email && (
-                <p className="text-red-600 text-xs">{errors.company_email}</p>
-              )}
+              {errors?.company_email && (
+ <p className="text-red-600 text-xs mt-1">
+  {errors.company_email}
+ </p>
+)}
+</div>
+         
 
               {/* Mobile (intl-tel-input) */}
-              <input
-                ref={phoneInputRef}
-                name="mobile_no"
-                placeholder="Mobile No *"
-                type="tel"
-                required
-                inputMode="numeric"
-                autoComplete="tel"
-                className="border-b border-gray-200 text-gray-900 text-sm  block w-full ps-3 p-3 moblig"
-              />
-              {errors.mobile_no && (
-                <p className="text-red-600 text-xs">{errors.mobile_no}</p>
-              )}
+              <div className="phone-wrapper">
+  <input
+    ref={phoneInputRef}
+    name="mobile_no"
+    placeholder="Mobile No *"
+    type="tel"
+    inputMode="numeric"
+    autoComplete="tel"
+    className="border-b border-gray-200 text-gray-900 text-sm block w-full ps-3 p-3 moblig"
+  />
+  {errors?.mobile_no && (
+ <p className="text-red-600 text-xs mt-1">
+  {errors.mobile_no}
+ </p>
+)}
+</div>
+              
 
           {/* Location */}
               <input
@@ -284,7 +351,6 @@ useEffect(() => {
                   value={formData.hear_about_us}
                   onChange={handleChange}
                   className="border-b border-gray-200 bg-white text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                  required
                 >
                   <option value="">How did you hear about us</option>
                   <option value="Search Engine">Search Engine</option>
@@ -293,9 +359,7 @@ useEffect(() => {
                   <option value="Word of mouth">Word of mouth</option>
                   <option value="Others">Others</option>
                 </select>
-                {errors.hear_about_us && (
-                  <p className="text-red-600 text-xs">{errors.hear_about_us}</p>
-                )}
+                 
               </div>
 
           {/* Query */}
@@ -306,11 +370,13 @@ useEffect(() => {
                   value={formData.description}
                   onChange={handleChange}
                   className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
-                  required
+                   
                 />
-                {errors.description && (
-                  <p className="text-red-600 text-xs">{errors.description}</p>
-                )}
+                {errors?.description && (
+ <p className="text-red-600 text-xs mt-1">
+  {errors.description}
+ </p>
+)}
               </div>
 
           {/* Terms & Submit */}
@@ -320,7 +386,7 @@ useEffect(() => {
                     type="checkbox"
                     id="terms"
                     className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
-                    required
+                     
                     checked={agree}
                     onChange={(e) => {
                       setAgree(e.target.checked);
@@ -343,9 +409,11 @@ useEffect(() => {
                     of Excelr Solutions.
                   </label>
                 </div>
-                {errors.agree && (
-                  <p className="text-red-600 text-xs mt-2">{errors.agree}</p>
-                )}
+                {errors?.agree && (
+ <p className="text-red-600 text-xs mt-1">
+  {errors.agree}
+ </p>
+)}
 
                 <div className="text-center mt-5">
                   <button
@@ -357,13 +425,17 @@ useEffect(() => {
                   </button>
                 </div>
 
-                {success && message && (
-                  <p className="text-green-600 mt-3 text-sm">{message}</p>
-                )}
+                {success && (
+  <p className="text-green-600 mt-3 text-sm">
+    {message || "Your enquiry has been submitted successfully."}
+  </p>
+)}
 
-                {error && (
-                  <p className="text-red-600 mt-3 text-sm">{error}</p>
-                )}
+{!success && error && (
+  <p className="text-red-600 mt-3 text-sm">
+    {error || "Submission failed. Please try again."}
+  </p>
+)}
               </div>
             </form>
           </div>

@@ -17,7 +17,7 @@ export default function CorporateTraining(){
         <div>
         <Breadcrumb />
       </div>
-        <div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 lg:px-10 p-5 relative">
+        <div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 lg:px-10 p-5 relative bg-black md:bg-transparent">
                 <div className="hidden md:block absolute inset-0 -z-10">
                       <Image
                           src={bannerImageUrl}
@@ -31,9 +31,9 @@ export default function CorporateTraining(){
                         />
                         </div>
                         <div className="hidden md:block absolute inset-0 bg-black/60 z-0" />
-           <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center uppercase z-50 relative text-white">Corporate Training</h1>
-           <div className="w-10 bg-amber-500 h-1 mb-3 text-center mx-auto z-50 relative"></div>
-           <p className="z-50 relative text-white text-center italic text-shadow-black">Raising Excellence Then, Now and Forever</p>
+           <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center uppercase z-30 relative text-white">Corporate Training</h1>
+           <div className="w-10 bg-amber-500 h-1 mb-3 text-center mx-auto z-30 relative"></div>
+           <p className="z-30 relative text-white text-center italic text-shadow-black">Raising Excellence Then, Now and Forever</p>
          </div>
         
       <section className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
@@ -67,13 +67,13 @@ export default function CorporateTraining(){
 </div>
        </div>
        <section className="slidervbp">
-               <PopularCourse page_name="corporate-training" heading="Popular Courses" />
+               <PopularCourse page_name="corporate-training" heading="Popular Courses" variant="corporate" />
               </section>
         <section className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 ">
         <p className="text-2xl font-bold mb-1 text-center">Testimonials</p>
       <Testimonials />
        </section>
-      <OurClients />
+      <OurClients variant="corporate" />
         </>
     );
 }

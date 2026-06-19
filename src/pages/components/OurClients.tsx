@@ -36,11 +36,12 @@ import {
 interface OurClientsProps {
   title?: string;
   isGrid?: boolean;
+  variant?: "default" | "corporate"; // for styling variations
 }
 
 export default function OurClients({
   title = "Our Clients",
-  
+  variant="default",
   isGrid = false,
 }: OurClientsProps) {
 
@@ -94,12 +95,13 @@ export default function OurClients({
 
       {/* TITLE */}
 
+     {variant !== "corporate" &&(
       <div className="text-center mb-10">
         <h2 className={` ${isGrid ? "text-3xl font-semibold" : "text-2xl font-bold"}`}>
          {isGrid ? "Our Alumni Work At" : title}
         </h2>
       </div>
-
+     )}
       {/* =========================
           GRID VIEW
       ========================= */}

@@ -48,14 +48,16 @@ export const submitCareerForm = createAsyncThunk<
     });
 
     if (payload.resume_file) {
-      // Adjust field name here if backend expects a different key
-      formData.append("resume", payload.resume_file);
-    }
+  formData.append("resume_file", payload.resume_file);
+}
 
     return await apiPost("/job_portal_register", formData);
   } catch (err: any) {
-    return rejectWithValue(err.message);
-  }
+ console.log("Career API Error:", err.response?.data || err);
+ return rejectWithValue(
+   err.response?.data?.message || err.message
+ );
+}
 });
 
 const careerFormSlice = createSlice({

@@ -13,7 +13,7 @@ import { RootState, AppDispatch } from "@/redux/store";
 interface Props {
   heading: string;
   page_name: string; // "blog" | "home" | etc
-  variant?: "default" | "blog";
+  variant?: "default" | "blog" | "corporate"; // for styling variations
 }
 
 export default function PopularCarousel({ heading, page_name, variant="default"}: Props) {
@@ -81,7 +81,7 @@ export default function PopularCarousel({ heading, page_name, variant="default"}
               href={`/${course.base_url}`}
               className="bg-white shadow hover:shadow-lg transition rounded-lg overflow-hidden block mb-2.5"
             >
-              <div className="relative w-full aspect-[16/9]">
+              <div className="relative w-full aspect-video">
                 <Image
                   src={course.home_image}
                   alt={course.course_name}
@@ -90,12 +90,13 @@ export default function PopularCarousel({ heading, page_name, variant="default"}
                   className="object-cover"
                 />
               </div>
-
-              <div className="p-5">
-                <h3 className="font-semibold line-clamp-2 min-h-[48px]">
-                  {course.course_name}
-                </h3>
-              </div>
+              {variant !== "corporate" && (
+                <div className="p-5">
+                  <h3 className="font-semibold line-clamp-2 min-h-12">
+                    {course.course_name}
+                  </h3>
+                </div>
+              )}
             </Link>
           </SwiperSlide>
         ))}
