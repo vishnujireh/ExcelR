@@ -76,10 +76,11 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ courseName }) => {
 
   // =============================
 // BLOG DETAIL PAGE
-// /blogs/[category]/[slug]
-// /blogs/[category]/[subcategory]/[slug]
+// /blog/[category]/[slug]
+// /blog/[category]/[subcategory]/[slug]
+// Also handles legacy /blogs/... detail URLs
 // =============================
-else if (segments[0] === "blogs" && segments.length > 1) {
+else if ((segments[0] === "blog" || (segments[0] === "blogs" && segments.length > 1)) && segments.length > 1) {
   const categorySlug = segments[1];
   const hasSubcategory = segments.length === 4;
   const subcategorySlug = hasSubcategory ? segments[2] : null;

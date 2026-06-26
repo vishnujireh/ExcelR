@@ -1,16 +1,13 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
-import { blogPosts } from "@/data/blogData";
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
 import Breadcrumb from "../components/Breadcrumb";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "@/redux/store";
 import { fetchBlogsBySubcategory, fetchSidebarCategories } from "@/redux/slices/blogSlice";
-import Sidebar from "../components/Sidebar";
-import { LuChevronsDown, LuChevronsUp } from "react-icons/lu";
 import BlogCategory from "../components/BlogCategory";
+import bannerImageUrl from "/public/blog_page.webp";
 import { RiArrowRightUpLine } from "react-icons/ri";
 
 function slugify(text: string) {
@@ -30,10 +27,10 @@ function getBlogUrl(blog: any) {
     blog.blog_subcategory &&
     blog.blog_subcategory !== "0"
   ) {
-    return `/blogs/${category}/${subcategory}/${slug}`;
+    return `/blog/${category}/${subcategory}/${slug}`;
   }
 
-  return `/blogs/${category}/${slug}`;
+  return `/blog/${category}/${slug}`;
 }
 
 export default function SubCategoryBlogList() {
@@ -66,7 +63,20 @@ useEffect(() => {
     <>
       <Breadcrumb />
 <BlogCategory  />
-      <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 career-bg_grad">
+      <div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 bg-black sm:bg-transparent
+       lg:px-10 p-5 relative">
+      <div className="hidden md:block absolute inset-0 -z-10">
+         <Image
+            src={bannerImageUrl}
+            alt="Enroll Course Banner"
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+            className="object-cover -z-10"
+            quality={55}
+            />
+      </div>
         <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center z-50 relative text-white capitalize">
            {formatTitle(subcategory)}
         </h1>
@@ -81,7 +91,7 @@ useEffect(() => {
          : "/default-author-image.jpg";
  return (
               <div key={blog.id} className="overflow-hidden shadow p-4 bg-white flex flex-col h-full">
-                 <div className="w-full relative min-h-42.5">
+                 <div className="w-full relative min-h-36">
                   <Image src={blog.blog_image} alt={blog.blog_title} fill className="object-cover" />
                 </div>
                  <div className="pt-3 flex flex-col flex-1 justify-between">

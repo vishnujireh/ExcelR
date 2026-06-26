@@ -39,7 +39,7 @@ export async function middleware(req: NextRequest) {
     // BLOG
     if (data.type === 'blog') {
       return NextResponse.rewrite(
-        new URL(`/blogs/${slug}`, req.url)
+        new URL(`/blog/${slug}`, req.url)
       );
     }
 

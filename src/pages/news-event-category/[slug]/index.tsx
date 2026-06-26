@@ -52,7 +52,7 @@ useEffect(() => {
               {newsEvents.map((item) => (
                 <div
                   key={item.id}
-                  className="shadow mb-5 grid grid-cols-1 md:grid-cols-3 gap-4"
+                  className="shadow mb-5 grid grid-cols-1 md:grid-cols-3 gap-4 bg-white"
                 >
                   <div className="relative aspect-[6/3] w-full">
                     <Image
@@ -91,7 +91,7 @@ useEffect(() => {
             {/* ✅ RIGHT SIDEBAR */}
             <div className="md:col-span-1 space-y-6">
               {/* ✅ CATEGORY LIST */}
-              <div className="shadow p-4 md:p-5 rounded-lg">
+              <div className="shadow p-4 md:p-5 rounded-lg bg-white">
                 <h3 className="font-semibold mb-3 text-md">Categories</h3>
                 <ul className="space-y-2">
                   {categories.map((cat) => (

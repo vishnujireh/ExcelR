@@ -5,6 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "intl-tel-input/build/css/intlTelInput.css";
+import "react-photo-view/dist/react-photo-view.css";
 import Providers from "./providers";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";

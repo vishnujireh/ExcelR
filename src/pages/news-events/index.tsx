@@ -53,7 +53,7 @@ export default function NewsEvents() {
               {newsEvents.map((item) => (
                 <div
                   key={item.id}
-                  className="shadow hover:shadow-lg transition mb-5 grid grid-cols-1 md:grid-cols-3 gap-4"
+                  className="shadow hover:shadow-lg transition mb-5 grid grid-cols-1 md:grid-cols-3 gap-4 bg-white"
                 >
                   {/* ✅ Image */}
                   <div>
@@ -99,7 +99,7 @@ export default function NewsEvents() {
             {/* ✅ RIGHT SIDEBAR */}
             <div className="md:col-span-1 space-y-6">
               {/* ✅ CATEGORIES */}
-              <div className="shadow p-4 md:p-5 rounded-lg">
+              <div className="shadow p-4 md:p-5 rounded-lg bg-white">
                 <h3 className="font-semibold mb-3 text-md">Categories</h3>
                 <ul className="space-y-2">
                   {categories.map((cat) => (
@@ -149,9 +149,7 @@ export default function NewsEvents() {
             </div>
           </div>
         )}
-      </section>
-
-      <OurClients />
+      </section> 
     </>
   );
 }

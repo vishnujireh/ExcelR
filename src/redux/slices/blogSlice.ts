@@ -117,6 +117,8 @@ interface NextBlog {
   title: string;
   Image: string;
   url: string;
+  created_at: string;
+  author_name: string;
 }
 interface PopularCourse {
   id: number;
@@ -258,20 +260,20 @@ export const fetchCategoryBlogsCount = createAsyncThunk<
 export const loadMoreBlogs = createAsyncThunk(
   "blogs/loadMoreBlogs",
   async (
-    { categoryId, offset, count }: { categoryId: string; offset: number; count: number },
+    { categoryId, offset }: { categoryId: string; offset: number; count: number },
     { rejectWithValue }
   ) => {
     try {
       const response = await apiGet(
-        `/load_more_blogs?categoryId=${categoryId}&offset=${offset}&count=${count}`
+        `/load_more_blogs?categoryId=${categoryId}&offset=${offset}&count=${offset}`
       );
 
       if (!response.status) throw new Error("Failed to load more blogs");
 
 
       const category = response.data.blogs.find(
-        (cat:any)=>cat.categoryId === categoryId
-      );
+  (cat: any) => String(cat.categoryId) === String(categoryId)
+);
 
 
       return {
@@ -339,7 +341,7 @@ export const fetchSearchSuggestions = createAsyncThunk<
   }
 });
 
-export const fetchBlogDetail = createAsyncThunk<BlogDetail, string>(
+export const fetchBlogDetail = createAsyncThunk<BlogDetail, string, { rejectValue: string }>(
   "blogs/fetchBlogDetail",
   async (blogId, { rejectWithValue }) => {
     try {
@@ -396,7 +398,9 @@ export const fetchBlogDetail = createAsyncThunk<BlogDetail, string>(
             id: nextblog.id,
             title: nextblog.title,
             Image: nextblog.image,
-             url: nextblog.url,
+            created_at:nextblog.created_at,
+            url: nextblog.url,
+            author_name: nextblog.author_name,
           } : null,
 
           // POPULAR COURSES (fixed array)
@@ -517,20 +521,20 @@ const blogSlice = createSlice({
       state.error = action.payload as string;
     })
 
-      .addCase(loadMoreBlogs.fulfilled, (state, action: PayloadAction<any>) => {
-        const { categoryId, blogs, hasMore } = action.payload;
+      builder.addCase(loadMoreBlogs.fulfilled, (state, action) => {
+  const { categoryId, blogs } = action.payload;
 
-        const categoryIndex = state.categoryBlogs.findIndex(
-          (cat) => cat.categoryId === categoryId
-        );
+  const category = state.categoryBlogs.find(
+        c => c.categoryId === categoryId
+    );
 
-        if (categoryIndex !== -1) {
-          // Append new blogs (no duplicates)
-          state.categoryBlogs[categoryIndex].blogs.push(...blogs);
-          // Update hasMore status from API
-          state.categoryBlogs[categoryIndex].hasMore = hasMore;
-        }
-      })
+   if (!category) return;
+
+    category.blogs.push(...blogs);
+
+     category.hasMore = blogs.length === 4;
+  
+})
       .addCase(fetchBlogsByCategory.pending, (state) => {
         state.loadingCategory = true;
         state.errorCategory = undefined;

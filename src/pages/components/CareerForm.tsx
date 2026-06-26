@@ -288,7 +288,7 @@ export default function CareerApplyForm({
           name="referral_code"
           value={formData.referral_code}
           onChange={handleChange}
-          placeholder="EMP Name / Code *"
+          placeholder="EMP Name / Code"
           className="border border-gray-200 text-sm rounded-lg w-full p-3"
         />
          <small className="text-gray-400 block">
@@ -301,7 +301,7 @@ export default function CareerApplyForm({
           name="cover_letter"
           value={formData.cover_letter}
           onChange={handleChange}
-          placeholder="Cover Letter *"
+          placeholder="Cover Letter"
           className="border border-gray-200 text-sm rounded-lg w-full p-3"
           required
         /> 
@@ -323,7 +323,7 @@ export default function CareerApplyForm({
         </div>
         <div>
           {/* T&C */}
-        <div className="flex items-start gap-2 text-sm">
+        <div className="flex items-center gap-2 text-sm">
           <input
             type="checkbox"
             required

@@ -25,9 +25,9 @@ if (
 blog.blog_subcategory &&
 blog.blog_subcategory !== "0"
 ) {
-return `/blogs/${category}/${subcategory}/${slug}`;
+return `/blog/${category}/${subcategory}/${slug}`;
 }
-return `/blogs/${category}/${slug}`;
+return `/blog/${category}/${slug}`;
 }
 export default function CategoryBlogList() {
 const router = useRouter();
@@ -61,7 +61,8 @@ return (
 <>
 <Breadcrumb />
 <BlogCategory  />
-<div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 lg:px-10 p-5 relative">
+<div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 bg-black sm:bg-transparent
+ lg:px-10 p-5 relative">
 <div className="hidden md:block absolute inset-0 -z-10">
    <Image
       src={bannerImageUrl}

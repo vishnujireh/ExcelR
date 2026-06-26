@@ -117,9 +117,9 @@ background:
 
 <div
    className="
-   relative mx-auto w-full 
-   px-4 sm:px-8
-   pt-16 pb-36
+   relative mx-auto w-full
+   px-4 sm:px-8 pt-6 pb-10
+   sm:pt-16 sm:pb-36
    flex flex-col items-center text-center
    "
    >
@@ -147,7 +147,7 @@ background:
    <div
 className="
 relative
-hidden sm:flex
+ flex sm:flex
 w-full max-w-2xl flex-col
 "
 >

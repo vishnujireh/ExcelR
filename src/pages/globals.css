@@ -905,6 +905,47 @@ details > * {
  z-index:10;
 
 }
+
+.article-prose p,
+.article-prose li {
+  font-size: 17px;
+  line-height: 1.85;
+  margin-bottom: 1rem;
+}
+
+.article-prose h2 {
+  font-size: 30px;
+  line-height: 1.3;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-family: Lato, system-ui, sans-serif;
+}
+
+.article-prose h3 {
+  font-size: 24px;
+  line-height: 1.4;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-family: Lato, system-ui, sans-serif;
+}
+
+.article-prose ul,
+.article-prose ol {
+  margin: 1.5rem 0;
+  padding-left: 1.5rem;
+}
+.article-prose ul li{
+    list-style-type: disc;
+    font-size: 17px;
+    margin-bottom: 5px;
+}
+.article-prose img {
+  border-radius: 16px;
+  margin: 2rem auto;
+}
+ 
 @media (min-width: 768px) {
    .md-shadow-none {
         box-shadow: none !important;

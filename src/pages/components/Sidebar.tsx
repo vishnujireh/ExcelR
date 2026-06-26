@@ -111,21 +111,35 @@ if(sidebarCategories.length){
             <li key={category.id}>
               {/* Category Line */}
               <div
-                className={`flex items-center justify-between cursor-pointer hover:text-orange-500 ${
+                className={`flex items-center justify-between ${
                   isActiveCat ? "text-orange-500 font-medium" : ""
                 }`}
-                onClick={() => hasSubCategories && toggleCategory(category.baseurl)}
               >
-                <Link href={`/blog-category/${category.baseurl}`} className="flex-1">
+                {/* Category name — navigates only */}
+                <Link
+                  href={`/blog-category/${category.baseurl}`}
+                  className="flex-1 cursor-pointer hover:text-orange-500"
+                >
                   {category.name}
                 </Link>
 
+                {/* Arrow — toggles subcategories only, does not navigate */}
                 {hasSubCategories && (
-                  <LuChevronRight
-                    className={`w-4 h-4 transition-transform duration-200 ${
-                      isExpanded ? "rotate-90" : "rotate-0"
-                    }`}
-                  />
+                  <button
+                    type="button"
+                    aria-label={isExpanded ? "Collapse subcategories" : "Expand subcategories"}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleCategory(category.baseurl);
+                    }}
+                    className="p-1 cursor-pointer hover:text-orange-500 focus:outline-none"
+                  >
+                    <LuChevronRight
+                      className={`w-4 h-4 transition-transform duration-200 ${
+                        isExpanded ? "rotate-90" : "rotate-0"
+                      }`}
+                    />
+                  </button>
                 )}
               </div>
 

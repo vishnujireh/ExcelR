@@ -483,16 +483,16 @@ export default function Navbar({ courseData }: NavbarProps) {
  {/* --- DESKTOP RIGHT LINKS --- */}
       <ul className="hidden md:flex items-center space-x-6 text-sm font-semibold">
         <li>
-          <a href="blogs">Blog</a>
+          <Link href="/blogs">Blog</Link>
         </li>
         <li>
-          <a href="corporate-training">Corporate</a>
+          <Link href="/corporate-training">Corporate</Link>
         </li>
         <li>
-          <a href="every-day-learning">Institutions</a>
+          <Link href="/every-day-learning">Institutions</Link>
         </li>
         <li>
-          <a href="careers">Work With Us</a>
+          <Link href="/careers">Work With Us</Link>
         </li>
         <li>
           <button
@@ -559,18 +559,18 @@ export default function Navbar({ courseData }: NavbarProps) {
 
           {/* Other Links */}
           <div className="pt-4 border-t border-gray-200 space-y-3 text-sm font-semibold">
-            <a href="blogs" className="block">
+            <Link href="/blogs" className="block">
               Blog
-            </a>
-            <a href="corporate-training" className="block">
+            </Link>
+            <Link href="/corporate-training" className="block">
               Corporate
-            </a>
-            <a href="every-day-learning" className="block">
+            </Link>
+            <Link href="/every-day-learning" className="block">
               Institutions
-            </a>
-            <a href="careers" className="block">
+            </Link>
+            <Link href="/careers" className="block">
               Work With Us
-            </a>
+            </Link>
             {/* <Link
               href="tel:18002122121"
               className="block text-white bg-[#0071BC] text-center py-2 rounded-lg font-medium"

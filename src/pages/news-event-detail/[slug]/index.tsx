@@ -66,7 +66,7 @@ const IMAGE_BASE_URL = "https://demo3.excelr.com/";
         {/* ✅ LEFT CONTENT */}
         <div className="md:col-span-3">
           <div className="bg-white">
-          <div className="relative w-full aspect-[16/8] mb-6">
+          <div className="relative w-full aspect-16/8 mb-6">
             <Image
               src={`https://demo3.excelr.com/${newsDetail.image}`}
               alt={newsDetail.title}
@@ -74,7 +74,8 @@ const IMAGE_BASE_URL = "https://demo3.excelr.com/";
               className="object-cover"
             />
           </div>
-          <div className="p-5 pb-0">
+          <div className="p-5 pb-0 pt-2">
+            <h2 className="text-xl mb-2 font-semibold"> {newsDetail.title}</h2>
           <article 
             className="prose max-w-none"
             dangerouslySetInnerHTML={{
@@ -85,62 +86,77 @@ const IMAGE_BASE_URL = "https://demo3.excelr.com/";
           </div>
           {comments && comments.length > 0 && (
             <div className="mt-10">
-            <h2 className="text-xl font-semibold mb-2">Latest Comments</h2>
-            <div className="w-12 h-1 bg-[#197b9f] mb-4"></div>
-  <div className="space-y-6">
-    {comments.map((comment) => (
-      <div key={comment.id} className="space-y-4">
-        
-        {/* 🔹 Comment Box */}
-        <div className="bg-white p-4 rounded-lg shadow">
-          <p className="font-semibold capitalize">{comment.username}</p>
-          <p className="text-gray-600 text-xs mb-3">{comment.created}</p>
-          <p className="text-gray-700 text-sm">{comment.message}</p>
+              <h2 className="text-xl font-semibold mb-2">Latest Comments</h2>
+              <div className="w-12 h-1 bg-[#197b9f] mb-4"></div>
+              <div className="space-y-6">
+                {comments.map((comment) => (
+                  <div key={comment.id} className="space-y-3">
 
-          {/* Reply Button */}
-          <button
-            className="text-sm text-blue-500 mt-2 cursor-pointer ml-auto block"
-            onClick={() =>
-              setReplyTo({
-                commentId: comment.id,
-                username: comment.username,
-              })
-            }
-          >
-            Reply
-          </button>
-        </div>
+                    {/* 🔹 Main Comment Box */}
+                    <div className="bg-white p-4 rounded-lg shadow">
+                      <p className="font-semibold capitalize">{comment.username}</p>
+                      <p className="text-gray-600 text-xs mb-3">{comment.created}</p>
+                      <p className="text-gray-700 text-sm">{comment.message}</p>
 
-        {/* 🔹 Replies Container (separate div) */}
-        {comment.replies && comment.replies.length > 0 && (
-          <div className="ml-8 space-y-3">
-            {comment.replies.map((reply) => (
-              <div
-                key={reply.id}
-                className="bg-white p-3 rounded-lg shadow"
-              >
-                <p className="font-semibold capitalize">{reply.username}</p>
-                <p className="text-gray-600 text-xs mb-3">{reply.created}</p>
-                <p className="text-gray-700 text-sm">{reply.message}</p>
+                      {/* Reply toggle button */}
+                      <button
+                        className="text-sm text-blue-500 mt-2 cursor-pointer ml-auto block"
+                        onClick={() =>
+                          setReplyTo((prev) =>
+                            prev?.commentId === comment.id
+                              ? null
+                              : { commentId: comment.id, username: comment.username }
+                          )
+                        }
+                      >
+                        {replyTo?.commentId === comment.id ? "Cancel" : "Reply"}
+                      </button>
+                    </div>
+
+                    {/* 🔹 Existing Replies */}
+                    {comment.replies && comment.replies.length > 0 && (
+                      <div className="ml-8 space-y-3">
+                        {comment.replies.map((reply) => (
+                          <div
+                            key={reply.id}
+                            className="bg-white p-3 rounded-lg shadow"
+                          >
+                            <p className="font-semibold capitalize">{reply.username}</p>
+                            <p className="text-gray-600 text-xs mb-3">{reply.created}</p>
+                            <p className="text-gray-700 text-sm">{reply.message}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* 🔹 Inline Reply Form — only for the selected comment */}
+                    {replyTo?.commentId === comment.id && (
+                      <div className="ml-8">
+                        <EventPostCommentForm
+                          eventId={newsDetail.id}
+                          parentCommentId={comment.id}
+                          isReply={true}
+                          onSuccess={() => {
+                            setReplyTo(null);
+                            if (slug) dispatch(fetchNewsEventDetail(slug as string));
+                          }}
+                        />
+                      </div>
+                    )}
+
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          )}
 
-      </div>
-    ))}
-  </div>
-    </div>
-)}
-         <EventPostCommentForm
-  eventId={newsDetail.id}
-  parentCommentId={replyTo?.commentId}
-  isReply={Boolean(replyTo)}
-  onSuccess={() => {
-    setReplyTo(null);
-    if (slug) dispatch(fetchNewsEventDetail(slug as string));
-  }}
-/>
+          {/* 🔹 Main Comment Form — always at the bottom */}
+          <EventPostCommentForm
+            eventId={newsDetail.id}
+            onSuccess={() => {
+              if (slug) dispatch(fetchNewsEventDetail(slug as string));
+            }}
+          />
         </div>
 
         {/* ✅ RIGHT SIDEBAR */}

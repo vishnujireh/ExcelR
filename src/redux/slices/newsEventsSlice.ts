@@ -210,16 +210,25 @@ export const postEventComment = createAsyncThunk<
   try {
     const formData = new URLSearchParams();
 
-    Object.entries(payload).forEach(([k, v]) => {
-      if (v) formData.append(k, String(v));
+    Object.entries(payload).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, String(value));
+      }
     });
 
-    return await apiPost("/event_post_reply", formData, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    });
-  } catch (err: any) {
-    return rejectWithValue(err.message);
-  }
+    return await apiPost<PostCommentResponse>(
+          "/event_post_reply",
+          formData,
+          {
+
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+          }
+        );
+      } catch (error: any) {
+        return rejectWithValue(error.message || "Failed to post comment");
+      }
 });
 
 /* ============================
@@ -257,6 +266,11 @@ const newsEventsSlice = createSlice({
     clearNewsDetail(state) {
       state.newsDetail = null;
       state.comments = [];
+    },
+    resetCommentStatus(state) {
+      state.postCommentSuccess = false;
+      state.postCommentMessage = "";
+      state.postCommentError = "";
     },
   },
   extraReducers: (builder) => {
@@ -302,33 +316,52 @@ const newsEventsSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // COMMENT
+      // Post blog comment
       .addCase(postEventComment.pending, (state) => {
         state.postCommentLoading = true;
+        state.postCommentSuccess = false;
+        state.postCommentError = undefined;
+        state.postCommentMessage = undefined;
       })
-      .addCase(postEventComment.fulfilled, (state, action) => {
-        state.postCommentLoading = false;
-        state.postCommentSuccess = action.payload.status;
-        state.postCommentMessage = action.payload.message;
-      })
+      .addCase(postEventComment.fulfilled,
+      (state,action)=>{
+      
+       state.postCommentLoading=false;
+      
+       state.postCommentSuccess=true;
+      
+       state.postCommentError="";
+      
+       state.postCommentMessage=
+       action.payload.message;
+      
+      }
+      )
       .addCase(postEventComment.rejected, (state, action) => {
         state.postCommentLoading = false;
+        state.postCommentSuccess = false;
         state.postCommentError = action.payload as string;
       })
 
       // REPLY
       .addCase(postEventReply.pending, (state) => {
         state.postCommentLoading = true;
+        state.postCommentSuccess = false;
+        state.postCommentError = undefined;
+        state.postCommentMessage = undefined;
       })
       .addCase(postEventReply.fulfilled, (state, action) => {
         state.postCommentLoading = false;
-        state.postCommentSuccess = action.payload.status;
+        state.postCommentSuccess = true;
+        state.postCommentError = "";
         state.postCommentMessage = action.payload.message;
       })
       .addCase(postEventReply.rejected, (state, action) => {
         state.postCommentLoading = false;
+        state.postCommentSuccess = false;
         state.postCommentError = action.payload as string;
-      });
+      })
+     ;
   },
 });
 
@@ -336,5 +369,5 @@ const newsEventsSlice = createSlice({
 ✅ EXPORTS
 ============================ */
 
-export const { clearNewsDetail } = newsEventsSlice.actions;
+export const { clearNewsDetail, resetCommentStatus } = newsEventsSlice.actions;
 export default newsEventsSlice.reducer;
