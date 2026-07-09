@@ -539,10 +539,7 @@ export default function CourseFaq({ data }: CourseFaqProps) {
 
       <h2
         className="
-        text-center
-        text-3xl
-        font-semibold
-        mb-8
+        text-center md:text-3xl text-xl font-semibold md:mb-8 mb-4
         "
       >
         Frequently Asked Questions

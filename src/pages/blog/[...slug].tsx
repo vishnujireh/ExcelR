@@ -3,7 +3,7 @@
 import { Lato } from "next/font/google";
 import { useRouter } from "next/router";
 import { useEffect, useLayoutEffect, useState, useRef, useCallback } from "react";
-
+ 
 // Loaded only when this page is visited — zero impact on other pages.
 const lato = Lato({
   subsets: ["latin"],
@@ -24,6 +24,7 @@ import BlogCategory from "../components/BlogCategory";
 import BlogQueryForm from "../components/BlogQueryForm";
 import Providers from "../providers";
 import { createRoot } from "react-dom/client";
+import parse from "html-react-parser";
 
 export default function BlogDetailPage() { 
  const dispatch = useDispatch<AppDispatch>();
@@ -116,6 +117,31 @@ useEffect(() => {
     window.removeEventListener("scroll", handleScroll);
   };
 }, [toc]);
+
+useEffect(() => {
+    const accordions = document.querySelectorAll(
+      "#accordion13"
+    );
+
+    accordions.forEach((accordion) => {
+      accordion.addEventListener("click", (event) => {
+        if ((event.target as HTMLElement).tagName.toLowerCase() === "summary") {
+          const details = (event.target as HTMLElement)
+            .parentNode as HTMLElement;
+
+          accordion.querySelectorAll("details").forEach((el) => {
+            if (el !== details) el.removeAttribute("open");
+          });
+        }
+      });
+    });
+
+    return () => {
+      accordions.forEach((accordion) => {
+        accordion.replaceWith(accordion.cloneNode(true));
+      });
+    };
+  }, [blogDetail?.faq]);
 
 useLayoutEffect(() => {
     if (!blogDetail) return;
@@ -319,7 +345,9 @@ background:
           day: "2-digit",
           year: "numeric",
         })}</span>
-          <div className={`w-px h-8   hidden sm:block ${
+        {blogDetail.read_time && (
+            <>
+            <div className={`w-px h-8   hidden sm:block ${
             theme === "dark"
             ?"bg-[#6b7280]"
             :"bg-[#1118271a]"
@@ -330,8 +358,13 @@ background:
               : "text-[#6b7280]"
             }
             `}>
-            <RiTimer2Line size={14} /> {blogDetail.view_count} min read
+            <RiTimer2Line size={14} /> {blogDetail.read_time} minutes read
           </span>
+            </>
+        )
+
+        }
+          
           <div className={`w-px h-8   hidden sm:block ${
             theme === "dark"
             ?"bg-[#6b7280]"
@@ -383,6 +416,10 @@ __html:blogDetail.blog_description
 }}
 />
 </div>
+
+
+{parse(blogDetail.faq ?? "<p>No FAQ available.</p>")}
+
 {blogDetail.author && (
             <div className={`mt-10  dark:from-card dark:to-accent/10 rounded-2xl p-6 border border-[#eef2ff] ${
               theme === "dark"
@@ -554,7 +591,7 @@ __html:blogDetail.blog_description
           </div> */}
 
           {/* Next Blog */}
-           <div className="flex items-end justify-between mb-6">
+           <div className="flex items-end justify-between mb-6 mt-8 md:mt-0">
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-2">Keep Reading</p>
             <h2 className="text-2xl md:text-3xl font-semibold" >
@@ -565,10 +602,16 @@ __html:blogDetail.blog_description
             View All <RiArrowRightLine size={15} />
           </Link>
         </div>
-          {blogDetail?.nextblog && (
+         
             
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div
+            {blogDetail?.nextblog?.map((blog) => {
+               const authorImageUrl = blog.author_image
+                    ? `https://www.excelr.com/uploads/blog/${blog.author_image}`
+                    : "/default-author-image.jpg";
+
+                    return (
+                      <div key={blog.id}
                       
                       className={`overflow-hidden shadow p-4 flex flex-col h-full ${
                         theme === "dark"
@@ -579,8 +622,8 @@ __html:blogDetail.blog_description
                     >
                       <div className="w-full relative min-h-36">
                                               <Image
-                                                src={blogDetail.nextblog.Image}
-                  alt={blogDetail.nextblog.title}
+                                                src={blog.Image}
+                  alt={blog.title}
                                                 fill
                                                 className="object-cover"
                                               />
@@ -589,20 +632,20 @@ __html:blogDetail.blog_description
                                                                   <div className="pt-3 flex flex-col flex-1 justify-between">
                                                                     <div className="mb-3">
                                                                       {/* Category badge */}
-                                                                      {/* <p className="text-sm text-blue-500 font-semibold mb-2">
-                                                                        {blogDetail.nextblog.categoryName}
-                                                                      </p> */}
+                                                                       <p className="text-sm text-blue-500 font-semibold mb-2">
+                                                                        {blog.blog_category}
+                                                                      </p>  
                                             
                                                                       {/* Title */}
                                                                       <h3 className="font-semibold text-md mb-2 hover:text-orange-500 flex gap-3 justify-between">
-                                                                        <Link href={blogDetail.nextblog.url} className={`line-clamp-2 ${
+                                                                        <Link href={blog.url || "/"} className={`line-clamp-2 ${
                                                                           theme === "dark"
                                                                           ?"text-black"
                                                                           :"text-[#1f2937]"
                                                                         }`}>
-                                                                          {blogDetail.nextblog.title}
+                                                                          {blog.title}
                                                                         </Link>
-                                                                        <Link href={blogDetail.nextblog.url} className="shrink-0">
+                                                                        <Link href={blog.url || "/"} className="shrink-0">
                                                                           <RiArrowRightUpLine className="text-xl" />
                                                                         </Link>
                                                                       </h3>
@@ -619,19 +662,19 @@ __html:blogDetail.blog_description
                                                                     <div className="mt-auto pt-4 flex items-center justify-between gap-2">
                                                                       <div className="flex items-center gap-2">
                                                                         <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0">
-                                                                          {/* <Image
+                                                                          <Image
                                                                             src={authorImageUrl}
-                                                                            alt={blogDetail?.nextblog.author_name || "Author"}
+                                                                            alt={blog.author_name || "Author"}
                                                                             fill
                                                                             className="rounded-full object-cover"
-                                                                          /> */}
+                                                                          /> 
                                                                         </div>
                                                                         <div>
                                                                           <p className="text-[13px] font-semibold">
-                                                                            {blogDetail?.nextblog.author_name || "ExcelR Solutions"}
+                                                                            {blog.author_name || "ExcelR Solutions"}
                                                                           </p>
                                                                           <p className="text-xs text-gray-500">
-                                                                            {new Date(blogDetail?.nextblog.created_at).toLocaleDateString("en-GB", {
+                                                                            {new Date(blog.created_at).toLocaleDateString("en-GB", {
                                                                               day: "2-digit",
                                                                               month: "short",
                                                                               year: "numeric",
@@ -644,13 +687,18 @@ __html:blogDetail.blog_description
                                                                   </div>
 
                     </div>
+                    )})}
+            
+             <Link href="/blogs" className=" sm:hidden flex items-center justify-center gap-1.5 text-sm font-semibold text-blue-600 hover:opacity-80 transition-opacity">
+            View All <RiArrowRightLine size={15} />
+          </Link>
           </div>
-          )}
+         
            
           {/* {blogDetail?.nextblog && (
             <div>
             <Link
-              href={blogDetail.nextblog.url}
+              href={blogDetail.nextblog.url || "/"}
               className="relative block w-full mt-10 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition"
             >
               <span className="absolute left-0 top-0 bg-orange-500 text-white font-semibold text-sm px-4 py-2 z-10 rounded-br-lg">

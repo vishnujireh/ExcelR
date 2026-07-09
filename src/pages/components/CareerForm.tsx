@@ -58,42 +58,55 @@ export default function CareerApplyForm({
 
   // ─── Validate & normalise the phone value ─────────────────────────────────
   const syncPhoneField = () => {
-    const iti   = itiRef.current;
-    const input = phoneInputRef.current;
-    if (!iti || !input) return { normalized: "", isValid: true };
+  const iti = itiRef.current;
+  const input = phoneInputRef.current;
 
-    const countryData = iti.getSelectedCountryData();
-    const isIndia     = countryData?.iso2 === "in" || countryData?.dialCode === "91";
-    const digitsOnly  = (input.value || "").replace(/\D/g, "");
-    let   normalized  = digitsOnly;
+  if (!iti || !input) {
+    return { normalized: "", isValid: true };
+  }
 
-    if (isIndia) {
-      normalized = digitsOnly.slice(0, 10);
-      if (input.value !== normalized) input.value = normalized;
-      input.setCustomValidity(
-        normalized.length > 0 && normalized.length !== 10
-          ? "Please enter a 10-digit mobile number."
-          : ""
-      );
-    } else {
-      if (digitsOnly.length > 12) {
-        normalized = digitsOnly.slice(0, 12);
-        if (input.value !== normalized) input.value = normalized;
-      }
-      if (normalized.length > 0) {
-        const lengthOk = normalized.length === 12;
-        const isValid  =
-          typeof iti.isValidNumber === "function"
-            ? iti.isValidNumber() && lengthOk
-            : lengthOk;
-        input.setCustomValidity(isValid ? "" : "Please enter a 12-digit mobile number.");
-      } else {
-        input.setCustomValidity("");
-      }
-    }
+  const rawNumber = input.value || "";
+  const normalized = rawNumber.replace(/\D/g, "");
 
-    return { normalized, isValid: input.checkValidity() };
+  // Remove spaces, hyphens, etc.
+  if (input.value !== normalized) {
+    input.value = normalized;
+  }
+
+  const countryData = iti.getSelectedCountryData();
+  const isIndia = countryData?.iso2 === "in";
+
+  let isValid = false;
+
+  if (!normalized.length) {
+    input.setCustomValidity("");
+    return {
+      normalized,
+      isValid: false,
+    };
+  }
+
+  if (isIndia) {
+    // India -> exactly 10 digits
+    isValid = normalized.length === 10;
+
+    input.setCustomValidity(
+      isValid ? "" : "Please enter a 10-digit mobile number."
+    );
+  } else {
+    // Other countries -> validate according to selected country
+    isValid = iti.isValidNumber();
+
+    input.setCustomValidity(
+      isValid ? "" : "Please enter a valid mobile number."
+    );
+  }
+
+  return {
+    normalized,
+    isValid,
   };
+};
 
   // ─── Sync hidden fields when props change ─────────────────────────────────
   useEffect(() => {
@@ -133,16 +146,18 @@ export default function CareerApplyForm({
     if (!formData.email_id.trim())   nextErrors.email_id   = "Email is required.";
     else if (!emailOk)               nextErrors.email_id   = "Enter a valid email.";
 
-    const phoneCheck  = syncPhoneField();
-    const countryData = itiRef.current?.getSelectedCountryData?.();
-    const isIndia     =
-      countryData?.iso2 === "in" || countryData?.dialCode === "91" || !countryData;
+    const phoneCheck = syncPhoneField();
 
-    if (!formData.contact_no || !phoneCheck.isValid) {
-      nextErrors.contact_no = isIndia
-        ? "Please enter a 10-digit mobile number."
-        : "Please enter a 12-digit mobile number.";
-    } 
+const countryData = itiRef.current?.getSelectedCountryData?.();
+const isIndia = countryData?.iso2 === "in";
+
+if (!formData.contact_no.trim()) {
+  nextErrors.contact_no = "Mobile number is required.";
+} else if (!phoneCheck.isValid) {
+  nextErrors.contact_no = isIndia
+    ? "Please enter a valid 10-digit mobile number."
+    : "Please enter a valid mobile number.";
+}
     if (!formData.resume_file)          nextErrors.resume_file   = "Please upload your CV.";
     if (!agree)                         nextErrors.agree         = "Please accept Terms and Conditions.";
 

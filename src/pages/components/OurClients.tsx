@@ -97,7 +97,7 @@ export default function OurClients({
 
      {variant !== "corporate" &&(
       <div className="text-center mb-10">
-        <h2 className={` ${isGrid ? "text-3xl font-semibold" : "text-2xl font-bold"}`}>
+        <h2 className={` ${isGrid ? "md:text-3xl text-xl font-semibold" : "text-2xl font-bold"}`}>
          {isGrid ? "Our Alumni Work At" : title}
         </h2>
       </div>

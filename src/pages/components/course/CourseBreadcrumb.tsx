@@ -11,7 +11,7 @@ const CourseBreadcrumb: React.FC<CourseBreadcrumbProps> = ({ courseName, categor
 
   return (
     <div className="w-full md:mx-auto md:py-3 2xl:px-25 xl:px-20 lg:px-10 p-3">
-      <nav aria-label="breadcrumb" className="text-sm">
+      <nav aria-label="breadcrumb" className="md:text-sm text-xs">
         <ol className=" items-center space-x-1">
           <li className="inline-block">
             <a href="https://demo3.excelr.com/" className="text-[#0071BC]">

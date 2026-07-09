@@ -219,7 +219,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
     <>
       <div className={`w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 ${String(template) === "3" ? "bg-white" : "bg-[#000000]"}`}>
        {String(template) === "3" && (
-         <h2 className={`text-3xl font-semibold text-center mb-10`}>
+         <h2 className={`md:text-3xl text-xl font-semibold text-center md:mb-10 mb-4`}>
          Data Analyst Course Fees
         </h2>)
         }

@@ -211,7 +211,7 @@ function CapstoneProjects({
 
               </div>
 
-              <h3 className="text-lg font-semibold">
+              <h3 className="md:text-lg text-sm font-semibold">
                 {activeProject.title}
               </h3>
 
@@ -290,7 +290,7 @@ function CapstoneProjects({
 
                   </div>
 
-                  <p className="text-lg font-medium">
+                  <p className="md:text-lg text-base font-medium">
                     {project.title}
                   </p>
 
@@ -322,7 +322,7 @@ function AlumniVideosSlider({
   const swiperRef = useRef<SwiperType | null>(null);
   return (
     <section className="overflow-hidden w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 slidervbp relative slider-ful-hgt">
-      <h2 className="text-center text-3xl font-semibold mb-12">Hear From Our Alumni</h2>
+      <h2 className="text-center md:text-3xl text-xl font-semibold md:mb-12 mb-4">Hear From Our Alumni</h2>
       <Swiper
         modules={[Autoplay, Pagination]}
         onSwiper={(swiper) => {

@@ -119,6 +119,8 @@ interface NextBlog {
   url: string;
   created_at: string;
   author_name: string;
+  blog_category:string;
+  author_image: string
 }
 interface PopularCourse {
   id: number;
@@ -139,9 +141,11 @@ export interface BlogDetail {
   subcategory: string;
   base_url: string;
   view_count: number;
+  read_time: number;
+  faq?:string;
   author?: Author | null;
   comments?: Comments[];
-  nextblog?: NextBlog | null;
+  nextblog?: NextBlog[];
   popular_courses?: PopularCourse[];
   // optional SEO fields (your API may return these)
   meta_title?: string;
@@ -352,13 +356,15 @@ export const fetchBlogDetail = createAsyncThunk<BlogDetail, string, { rejectValu
       const data = response.blog || response.data;
       const author = response.author || null;
       const comments = response.comments || [];
-      const nextblog = response.next_blog || null;
+      const nextblog = response.next_blog || [];
       const popular_courses = response.popular_courses || [];
       return {
         id: data.id,
         blog_title: data.title,
         view_count: data.view_count || 0,
+        read_time: data.read_time || 0,
         blog_image: data.image,
+        faq: data.faq || "",
         blog_description: data.description,
         created_at: data.created_at || "",
         category: data.category || "",
@@ -393,15 +399,18 @@ export const fetchBlogDetail = createAsyncThunk<BlogDetail, string, { rejectValu
     }))
   : [],
         // ✔ add nextblog
-          nextblog: nextblog
-          ? {
-            id: nextblog.id,
-            title: nextblog.title,
-            Image: nextblog.image,
-            created_at:nextblog.created_at,
-            url: nextblog.url,
-            author_name: nextblog.author_name,
-          } : null,
+          nextblog: Array.isArray(nextblog)
+  ? nextblog.map((blog: any) => ({
+      id: blog.id,
+      title: blog.title,
+      Image: blog.image,
+      created_at: blog.created_at,
+      url: blog.url || blog.baseurl || blog.base_url || "",
+      author_name: blog.author_name,
+      author_image:blog.author_image,
+      blog_category:blog.blog_category
+    }))
+  : [],
 
           // POPULAR COURSES (fixed array)
         popular_courses: Array.isArray(popular_courses)

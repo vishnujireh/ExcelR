@@ -62,9 +62,9 @@ export default function PopularCourse({ data }: Props) {
   return (
     <div className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 bg-[#E5EFFF] slidervbp">
       <div className="text-center mb-6">
-        <p className="text-3xl font-semibold mb-2">In-Demand Courses</p>
+        <p className="text-center md:text-3xl text-xl font-semibold md:mb-2 mb-0">In-Demand Courses</p>
       </div>
-<div className="relative w-full px-5 max-w-5xl mx-auto pt-5">
+<div className="relative w-full px-5 max-w-5xl mx-auto md:pt-5 pt-0">
       <Swiper
         modules={[Navigation, Autoplay]}
         navigation

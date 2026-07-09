@@ -31,54 +31,55 @@ export default function CorporateTrainingForm() {
   const itiRef = useRef<any>(null);
 
   const syncPhoneField = () => {
-    const iti = itiRef.current;
-    const input = phoneInputRef.current;
-    if (!iti || !input) return { normalized: "", isValid: true };
+  const iti = itiRef.current;
+  const input = phoneInputRef.current;
 
-    const countryData = iti.getSelectedCountryData();
-    const isIndia = countryData?.iso2 === "in" || countryData?.dialCode === "91";
-    const rawNumber = input.value || "";
-    const digitsOnly = rawNumber.replace(/\D/g, "");
-    let normalized = digitsOnly;
+  if (!iti || !input) {
+    return { normalized: "", isValid: true };
+  }
 
-    if (isIndia) {
-      normalized = digitsOnly.slice(0, 10);
-      if (input.value !== normalized) {
-        input.value = normalized;
-      }
-      if (normalized.length > 0 && normalized.length !== 10) {
-        input.setCustomValidity("Please enter a 10-digit mobile number.");
-      } else {
-        input.setCustomValidity("");
-      }
-    } else {
-      if (digitsOnly.length > 12) {
-        normalized = digitsOnly.slice(0, 12);
-        if (input.value !== normalized) {
-          input.value = normalized;
-        }
-      }
-      if (normalized.length > 0) {
-        const lengthOk = normalized.length === 12;
-        const isValid =
-          typeof iti.isValidNumber === "function"
-            ? iti.isValidNumber() && lengthOk
-            : lengthOk;
-        input.setCustomValidity(
-          isValid ? "" : "Please enter a 12-digit mobile number."
-        );
-      } else {
-        input.setCustomValidity("");
-      }
-    }
+  const rawNumber = input.value || "";
+  const normalized = rawNumber.replace(/\D/g, "");
 
+  // Remove spaces, dashes, etc.
+  if (input.value !== normalized) {
+    input.value = normalized;
+  }
+
+  const countryData = iti.getSelectedCountryData();
+  const isIndia = countryData?.iso2 === "in";
+
+  let isValid = false;
+
+  if (!normalized.length) {
+    input.setCustomValidity("");
     return {
-  normalized,
-  isValid: isIndia
-    ? normalized.length === 10
-    : normalized.length === 12
-};
+      normalized,
+      isValid: false,
+    };
+  }
+
+  if (isIndia) {
+    // India -> exactly 10 digits
+    isValid = normalized.length === 10;
+
+    input.setCustomValidity(
+      isValid ? "" : "Please enter a 10-digit mobile number."
+    );
+  } else {
+    // Other countries -> validate using intl-tel-input
+    isValid = iti.isValidNumber();
+
+    input.setCustomValidity(
+      isValid ? "" : "Please enter a valid mobile number."
+    );
+  }
+
+  return {
+    normalized,
+    isValid,
   };
+};
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -115,20 +116,16 @@ export default function CorporateTrainingForm() {
 
   const phoneCheck = syncPhoneField();
 
-  const countryData = itiRef.current?.getSelectedCountryData?.();
+const countryData = itiRef.current?.getSelectedCountryData?.();
+const isIndia = countryData?.iso2 === "in";
 
-  const isIndia =
-    countryData?.iso2 === "in" ||
-    countryData?.dialCode === "91" ||
-    !countryData;
-
-  if (!formData.mobile_no.trim()) {
-    nextErrors.mobile_no = "Mobile number is required.";
-  } else if (phoneCheck.normalized.length !== 10) {
-    nextErrors.mobile_no = isIndia
-      ? "Please enter a valid 10-digit mobile number."
-      : "Please enter a valid mobile number.";
-  }
+if (!formData.mobile_no.trim()) {
+  nextErrors.mobile_no = "Mobile number is required.";
+} else if (!phoneCheck.isValid) {
+  nextErrors.mobile_no = isIndia
+    ? "Please enter a valid 10-digit mobile number."
+    : "Please enter a valid mobile number.";
+}
 
 
   if (!formData.description.trim()) {

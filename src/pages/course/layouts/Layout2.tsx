@@ -47,6 +47,8 @@ export default function Layout2({ data }: LayoutProps) {
   };
 }, [data]);
 
+
+
   return (
     <div>
       {/* ✅ Pass course data properly */}

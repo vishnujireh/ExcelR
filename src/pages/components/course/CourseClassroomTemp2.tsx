@@ -52,7 +52,7 @@ export default function CourseClassroom({
         "
       >
 
-        <h2 className="text-3xl font-semibold text-center mb-6">
+        <h2 className="md:text-3xl text-xl font-semibold text-center md:mb-6 mb-4">
           Classroom Tour
         </h2>
 
