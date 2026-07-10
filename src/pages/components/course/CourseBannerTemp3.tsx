@@ -33,7 +33,6 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
 
   // ✅ Extract association icon from brief_intro HTML if needed
  
-  const isTemplateThree = String(data?.template) === "3";
 
   // ✅ Build the banner image URL from course_image field
  const bannerImageUrl = data.course_image 
@@ -64,28 +63,22 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
   />
   </div>
       <div className="relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="col-span-2">
- <h1 className="text-3xl font-semibold">{data.course_name}</h1>
- {/* ✅ Short Description from API */}
+        <div>
+          {/* ✅ Course Name from API */}
+          {/* <h1 className="text-3xl font-semibold">{data.course_name}</h1>
+
+           */}
+
+          {/* ✅ Short Description from API */}
           <div className="text-lg banerdeclyt">
            <>{parse(data.brief_intro ?? "")}</>
           </div>
-          {data.course_syllabus && (
-            <div className="flex justify-start">
+<div className="flex justify-start">
               <button
-                className="md:mt-8 mt-4 mx-auto flex md:mx-0 items-center gap-2.5 px-6 py-3 bg-[#E5710B] text-[#ffffff] font-semibold text-sm border border-[#E5710B] cursor-pointer hover:bg-black hover:text-white rounded-lg"
+                className="md:mt-8 mt-4 mx-auto flex md:mx-0 items-center gap-2.5 px-6 py-3 bg-[#FFAA33] text-[#154994] font-semibold text-sm border border-[#154994] cursor-pointer hover:bg-black hover:text-white rounded-lg"
               >Download Brochure <RiArrowRightLine className="text-base" />
               </button>
             </div>
-          )}
-             
-          </div>
-          <div className="col-span-1">
-         {data?.extra_info && parse(data.extra_info)}
-          </div>
-          {/* ✅ Course Name from API */}
-           
             {/* ✅ CTA Button */}
           
           {/* <div className="flex justify-center">

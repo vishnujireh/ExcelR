@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import CourseBanner from "../../components/course/CourseBannerTemp2";
+import CourseBanner from "../../components/course/CourseBannerTemp3";
 import CoursePrice from "../../components/course/CoursePrice";
 import CourseBenefit from "../../components/course/CourseBenefit";
 import CourseDescription from "../../components/course/CourseDescriptionTemp2";
@@ -14,9 +14,6 @@ import CourseReview from "../../components/course/CourseReviewTemp2";
 import DemandCourse from "../../components/course/DemandCourse";
 import CourseLocation from "../../components/course/CourseLocationTemp2";
 import CourseBreadcrumb from "../../components/course/CourseBreadcrumb";
-import parse from "html-react-parser";
-import QuickEnquiry from "../../components/QuickEnquiry";
-import WebinarRegistrationForm from "../../components/WebinarRegistrationForm";
 interface LayoutProps {
   data: CourseData;
 }
@@ -60,39 +57,35 @@ export default function Layout2({ data }: LayoutProps) {
         category={data?.category}
       />
       <CourseBanner data={data} />
-
       <CourseBenefit data={data} />
-       <CoursePrice data={data} template={data?.template} />
-       {data?.template2_google_reviews && (
+      {/* ✅ Optimized CMS Content */}
+      <CourseDescription data={data} />
+       
+      {testimonials && (
+              <div id={testimonials.id} className="scroll-mt-10">
+                <Testimonials data={data} />
+              </div>
+            )}
+            <CoursePlacement data={data} />
+           
+      <div className="bg-[#E5EFFF]">
+       <OurClients isGrid={true} />
+       </div>
+      <CoursePrice data={data} template={data?.template} />
+        <CourseClassroom data={data} />
+        <CourseWhyExcelr data={data} />
+         {courseFaq && (
+                <div id={courseFaq.id} className="scroll-mt-10">
+                  <CourseFaq data={data} />
+                </div>
+              )}
+              {data?.template2_google_reviews && (
                 <div id="google-reviews" className="scroll-mt-10">
                   <CourseReview data={data} />
                 </div>
               )}
-
-      <section className="bg-[#1C92EC] w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 relative text-white"> 
-              {data?.footer_course && parse(data.footer_course)}
-              
-              <div className="max-w-md mx-auto mt-10">
-                <div className="bg-white rounded-lg">
-                  <div className="bg-gray-100 p-4 rounded-t-lg">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Register for the webinar
-                    </h3>
-                  </div>
-                  <WebinarRegistrationForm courseName={data?.course_name ?? ""} />
-                </div>
-              </div>
-      </section>
-      <footer className="bg-[#343a40] p-4 text-center">
-        <p className="text-sm text-white">
-              © {new Date().getFullYear()} ExcelR
-              Solutions. All rights reserved.
-            </p>
-      </footer>
-      {/* ✅ Optimized CMS Content */}
-      {/* <CourseDescription data={data} /> */}
-       
-           
+              <DemandCourse data={data} />
+                <CourseLocation data={data} />
     </div>
   );
 }

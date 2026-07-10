@@ -75,8 +75,13 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         <div className="pt-[73px] md:pt-0">
           <Component {...pageProps} />
         </div>
-        {!isCoursePage && <Footer />}
-        <FooterSticky courseData={pageProps?.courseData ?? null} />
+      {String(pageProps?.courseData?.template) !== "2" &&
+  !isCoursePage && <Footer />
+}
+
+{String(pageProps?.courseData?.template) !== "2" && (
+  <FooterSticky courseData={pageProps?.courseData ?? null} />
+)}
 		
         {/* Zoho SalesIQ Script */}
         {shouldLoadZoho && (

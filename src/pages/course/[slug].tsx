@@ -6,6 +6,7 @@ import { serverApiGet } from '../../redux/api/apiClient';
 import { CourseData } from '../../redux/slices/courseSlice';
 import Meta from '@/pages/components/Meta';
 import Footer from '@/pages/components/Footer';
+import Layout3 from './layouts/Layout3';
  
 interface LayoutProps {
   data: CourseData;
@@ -183,12 +184,14 @@ export default function CoursePage({ courseData, error }: PageProps) {
   const layouts: Record<string, React.ComponentType<LayoutProps>> = {
     layout1: Layout1,
     layout2: Layout2,
+    layout3: Layout3,
   };
 
 const layoutType = 
-  String(courseData.template) === '1' ? 'layout1' : 
-  String(courseData.template) === '3' ? 'layout2' : 
-  'layout2';
+  String(courseData.template) === '1' ? 'layout1' :
+  String(courseData.template) === '2' ? 'layout2' :
+  String(courseData.template) === '3' ? 'layout3' :
+  'layout1';
 const LayoutComponent = layouts[layoutType] || Layout1;
 
 // ✅ Debug logging
@@ -210,9 +213,11 @@ console.log('Layout Component:', LayoutComponent.name);
   schema={courseData.schema_field?.replace(/<\/?script[^>]*>/g, "")}
 />
       <LayoutComponent data={courseData} />
-      <Footer footerHtml={courseData.footer_course || null}
-        template={courseData?.template}
-      />
+      {String(courseData.template) !== "2" && (
+        <Footer footerHtml={courseData.footer_course || null}
+          template={courseData?.template}
+        />
+      )}
     </>
   );
 }
@@ -239,7 +244,6 @@ export async function getServerSideProps(context: any) {
       return { notFound: true };
     }
 
-    // ✅ Merge all needed sections into courseData
     const courseData: CourseData = {
       ...response.data.course_details[0],
       sticky_section: response.data.sticky_section,
@@ -249,6 +253,19 @@ export async function getServerSideProps(context: any) {
       popular_courses: response.data.popular_courses || [],
       our_clients: response.data.our_clients || [],
     };
+
+    const isPaidTemplate = String(response.data.course_details[0]?.template) === "2";
+    const currentPath = context?.resolvedUrl || context?.asPath || "";
+    const queryString = currentPath.includes("?") ? currentPath.slice(currentPath.indexOf("?")) : "";
+
+    if (isPaidTemplate && !currentPath.startsWith("/paid/")) {
+      return {
+        redirect: {
+          destination: `/paid/${slug}${queryString}`,
+          permanent: false,
+        },
+      };
+    }
 
     // Allow CDN / reverse-proxy to cache the rendered HTML for 5 minutes
     // and serve stale for up to 10 minutes while revalidating in the background.

@@ -119,7 +119,7 @@ export interface CourseData {
   duration: string;
   students_enroll: string;
   template: string;
-  layout_type?: 'layout1' | 'layout2';
+  layout_type?: 'layout1' | 'layout2' | 'layout3';
   meta_title?: string;
   meta_description?: string;
   meta_keyword?: string;
@@ -127,6 +127,7 @@ export interface CourseData {
   course_pmenu?: any[];
   status?: boolean;
   footer_course?: string;
+  course_syllabus?:string;
   category?: string;
   
   // ✅ These come from the root API response, not from course_details[0]
@@ -157,6 +158,7 @@ interface ApiResponse {
       course_image: string;
       brief_intro: string;
       extra_info: string;
+      course_syllabus: string;
       duration: string;
       category: string;
       students_enroll: string;
