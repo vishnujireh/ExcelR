@@ -74,6 +74,12 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
           {data.course_syllabus && (
             <div className="flex justify-start">
               <button
+              onClick={() => {
+  window.open(
+    `https://www.excelr.com/uploads/syllabus/${data.course_syllabus}`,
+    "_blank"
+  );
+}}
                 className="md:mt-8 mt-4 mx-auto flex md:mx-0 items-center gap-2.5 px-6 py-3 bg-[#E5710B] text-[#ffffff] font-semibold text-sm border border-[#E5710B] cursor-pointer hover:bg-black hover:text-white rounded-lg"
               >Download Brochure <RiArrowRightLine className="text-base" />
               </button>
