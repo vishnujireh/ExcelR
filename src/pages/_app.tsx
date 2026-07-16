@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { AppProps } from "next/app";
 import "./globals.css";
 import "swiper/css";
@@ -38,6 +38,7 @@ const openSans = Open_Sans({
 export default function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter();
   const isCoursePage = router.pathname.startsWith("/course/");
+  const isBlogPage = router.pathname.startsWith("/blog");
 
   /* URLs where Zoho should NOT load */
   const excludedUrls = [
@@ -63,9 +64,17 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 
   const currentPath = router.asPath.toLowerCase();
 
-  const shouldLoadZoho = !excludedUrls.some((url) =>
-    currentPath.includes(url)
-  );
+  const shouldLoadZoho =
+    !isBlogPage &&
+    !excludedUrls.some((url) => currentPath.includes(url));
+
+  /* Hide/show Zoho widget on SPA navigation to/from blog pages */
+  useEffect(() => {
+    const win = window as any;
+    const zoho = win.$zoho?.salesiq;
+    if (!zoho?.floatwindow) return;
+    zoho.floatwindow.visible(isBlogPage ? "hide" : "show");
+  }, [isBlogPage]);
 
   return (
     //  ${roboto.className}

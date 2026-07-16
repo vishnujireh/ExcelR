@@ -75,7 +75,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
           </div>
 <div className="flex justify-start">
               <button
-                className="md:mt-8 mt-4 mx-auto flex md:mx-0 items-center gap-2.5 px-6 py-3 bg-[#FFAA33] text-[#154994] font-semibold text-sm border border-[#154994] cursor-pointer hover:bg-black hover:text-white rounded-lg"
+                className="md:mt-0 mt-4 mx-auto flex md:mx-0 items-center gap-2.5 px-6 py-3 bg-[#FFAA33] text-[#154994] font-semibold text-sm border border-[#154994] cursor-pointer hover:bg-black hover:text-white rounded-lg"
               >Download Brochure <RiArrowRightLine className="text-base" />
               </button>
             </div>

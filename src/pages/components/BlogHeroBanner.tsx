@@ -6,6 +6,7 @@ import Link from "next/link";
 import {
   RiSearchLine,
   RiMicLine,
+  RiFireLine,
 } from "react-icons/ri";
 
 const SEARCH_TAGS = [
@@ -128,16 +129,15 @@ background:
    </div>
    <h1
       className="
-      text-white font-bold
-      text-4xl mb-5
-      "
+      text-white font-semibold md:font-bold
+      text-2xl md:text-4xl md:mb-5 mb-2"
       >
       Resources and insights
    </h1>
    <p
       className="
       text-white/70
-      max-w-xl mb-5
+      max-w-xl mb-5 text-sm md:text-base
       "
       >
       The latest industry news, interviews,
@@ -272,7 +272,19 @@ Searching...
 
 )
 }
-      <div className="mt-4 flex gap-2 justify-center flex-wrap">
+{/* Label row */}
+        <div className="flex items-center gap-2 mt-5 mb-3 justify-center">
+          <span className="h-px flex-1 max-w-[60px] bg-white/20" />
+          <div className="flex items-center gap-1.5">
+            <RiFireLine size={13} className="text-[#FFAA33]" />
+            <span className="text-white/50 text-[10px] font-bold uppercase tracking-[0.2em]">
+              Trending Topics
+            </span>
+          </div>
+          <span className="h-px flex-1 max-w-[60px] bg-white/20" />
+        </div>
+      <div className="mt-2 flex gap-2 justify-center flex-wrap">
+
          {
          SEARCH_TAGS.map(tag => (
          <Link
@@ -288,7 +300,7 @@ Searching...
    </div>
 </div>
 {/* Wave */}
-<div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen overflow-hidden">
+<div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen overflow-hidden hidden md:block">
    <svg
       viewBox="0 0 1440 120"
       preserveAspectRatio="none"

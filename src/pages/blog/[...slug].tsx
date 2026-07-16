@@ -418,8 +418,6 @@ __html:blogDetail.blog_description
 </div>
 
 
-{parse(blogDetail.faq ?? "<p>No FAQ available.</p>")}
-
 {blogDetail.author && (
             <div className={`mt-10  dark:from-card dark:to-accent/10 rounded-2xl p-6 border border-[#eef2ff] ${
               theme === "dark"
@@ -461,6 +459,9 @@ __html:blogDetail.blog_description
               </div>
             </div>
           )}
+          
+
+{parse(blogDetail.faq ?? "<p>No FAQ available.</p>")}
             </article>
             <aside className="hidden lg:block max-w-75 shrink-0">
   <div className="sticky top-20 space-y-5">

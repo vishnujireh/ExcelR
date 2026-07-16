@@ -851,7 +851,9 @@ details > * {
 .coursetm2 summary, .coursetm2 details {
     background: transparent;
 }
-
+.blogfaq details {
+    color: #6b7280;
+}
 .our-alumni-swiper .swiper-slide {
   transform: scale(0.75) !important;
   opacity: 0.5;
@@ -945,7 +947,23 @@ details > * {
   border-radius: 16px;
   margin: 2rem auto;
 }
- 
+pre {
+    background: #1f2937;
+    color: #f9fafb;
+    padding: 20px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 25px 0;
+    font-size: 15px;
+    line-height: 1.6;
+}
+ @media (max-width: 500px) {
+    pre {
+           margin: 15px 0;
+        font-size: 14px;
+        line-height: 1.4;
+    }
+}
 @media (min-width: 768px) {
    .md-shadow-none {
         box-shadow: none !important;
@@ -971,6 +989,16 @@ details > * {
 }
 
 @media(max-width:767px) {
+    .article-prose h2{
+        margin-bottom: .5rem;
+        margin-top: 2rem;
+    }
+    .article-prose ul, .article-prose ol {
+    margin: .5rem 0;
+    }
+    .article-prose p, .article-prose li {
+    margin-bottom: .7rem;
+}
     .slidervbp .swiper {
         padding-bottom: 40px;
     }

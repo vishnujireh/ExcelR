@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-// removed unused usePathname import
+import { useRouter } from "next/router";
 import {
   RiArrowDownSLine,
   RiArrowUpSLine,
@@ -23,7 +23,8 @@ interface NavbarProps {
 }
 
 export default function Navbar({ courseData }: NavbarProps) {
-  // pathname removed because it's not used; keep imports minimal
+  const router = useRouter();
+  const isBlogPage = router.pathname.startsWith("/blog");
   const dispatch = useAppDispatch();
   const { menu: categories = [], loading, error } = useAppSelector(
     (state) => state.courseMenu
@@ -224,26 +225,14 @@ export default function Navbar({ courseData }: NavbarProps) {
           </Link>
         </div>
         <div className="flex gap-1.5">
-          {/* <button
-            onClick={() => setSearchOpen(true)}
-            className="w-10 h-10 flex items-center justify-center border border-solid border-black bg-black text-white rounded-full"
-          >
-            <FiSearch className="text-lg" />
-          </button> */}
-          <Link
-
-            href="tel:18002122121"
-
- 
-
-            className="flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-[#f48f1c] to-[#e57709] text-white font-medium text-sm w-11 h-11 rounded-full"
-
-          >
- 
-
-            <LuPhoneCall className="text-lg" />
-
-          </Link>
+          {!isBlogPage && (
+            <Link
+              href="tel:18002122121"
+              className="flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-[#f48f1c] to-[#e57709] text-white font-medium text-sm w-11 h-11 rounded-full"
+            >
+              <LuPhoneCall className="text-lg" />
+            </Link>
+          )}
         </div>
       </div>
 
@@ -494,15 +483,15 @@ export default function Navbar({ courseData }: NavbarProps) {
         <li>
           <Link href="/careers">Work With Us</Link>
         </li>
-        <li>
-          <button
-            type="button"
-            onClick={openDropQuery}
-            className="flex items-center cursor-pointer gap-3 border border-solid border-[#0071BC] bg-[#0071BC] text-white hover:bg-[#4ba7de] font-medium text-sm py-2.5 px-4 rounded-lg"
-          >
-            <LuPhoneCall /> <span>Book a Call</span>
-          </button>
-        </li>
+         <li>
+            <button
+              type="button"
+              onClick={openDropQuery}
+              className="flex items-center cursor-pointer gap-3 border border-solid border-[#0071BC] bg-[#0071BC] text-white hover:bg-[#4ba7de] font-medium text-sm py-2.5 px-4 rounded-lg"
+            >
+              <LuPhoneCall /> <span>Book a Call</span>
+            </button>
+          </li> 
       </ul>
              </div>
 

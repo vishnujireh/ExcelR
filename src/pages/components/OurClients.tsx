@@ -72,7 +72,7 @@ export default function OurClients({
   // 4 cols × 3 rows = 12
   // =========================
 
-  const initialLimit = 12;
+  const initialLimit = 14;
 
   const visibleData = useMemo(() => {
 
@@ -111,7 +111,7 @@ export default function OurClients({
         <>
           {/* SMOOTH EXPAND / COLLAPSE */}
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-7 lg:grid-cols-7 xl:grid-cols-7 gap-6">
 
   {visibleData.map((item) => (
 
