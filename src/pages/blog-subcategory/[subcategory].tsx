@@ -62,7 +62,7 @@ useEffect(() => {
   return (
     <>
       <Breadcrumb />
-<BlogCategory  />
+{/* <BlogCategory  /> */}
       <div className="w-full md:mx-auto md:py-16 2xl:px-32 xl:px-20 bg-black sm:bg-transparent
        lg:px-10 p-5 relative">
       <div className="hidden md:block absolute inset-0 -z-10">

@@ -2,10 +2,10 @@ import Image from "next/image";
 import QuickEnquiry from "../QuickEnquiry";
 import { useState } from "react";
 import { CourseData } from "@/redux/slices/courseSlice";
-import parse from "html-react-parser";
+import parse, { domToReact } from "html-react-parser";
 import Link from "next/link";
 import { RiArrowRightLine } from "react-icons/ri";
-
+import { Element } from "domhandler";
 interface CourseBannerProps {
   data: CourseData;
 }
@@ -21,7 +21,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
   setIsModalOpen(true);
 }; 
   const closeModal = () => setIsModalOpen(false);
-
+console.log(data.brief_intro);
   if (!data) {
     return (
       <section className="course-banner p-10 text-center bg-gray-100">
@@ -49,7 +49,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
     //     backgroundPosition: "center",
     //   }}
     // >
-    <section className="course-banner bg-transparent relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white overflow-hidden  ">
+    <section className="course-banner bg-transparent relative w-full md:mx-auto md:py-16 md:pb-0 2xl:px-25 xl:px-20 lg:px-10 p-5  overflow-hidden  ">
 <div className="block absolute inset-0 -z-10">
 <Image
     src={bannerImageUrl}
@@ -62,7 +62,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
     quality={55}
   />
   </div>
-      <div className="relative z-10">
+      <div className="relative z-10 ">
         <div>
           {/* ✅ Course Name from API */}
           {/* <h1 className="text-3xl font-semibold">{data.course_name}</h1>
@@ -71,14 +71,43 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
 
           {/* ✅ Short Description from API */}
           <div className="text-lg banerdeclyt">
-           <>{parse(data.brief_intro ?? "")}</>
-          </div>
-<div className="flex justify-start">
+  {parse(data.brief_intro ?? "", {
+    replace: (domNode: any) => {
+      // Replace the custom icon
+      if (domNode.type === "tag" && domNode.name === "faarrowright") {
+        return <RiArrowRightLine className="text-base inline-block" />;
+      }
+
+      // Replace Download Brochure button
+      if (domNode.type === "tag" && domNode.name === "button") {
+        return (
+          <button
+            type="button"
+            className={domNode.attribs.class}
+            onClick={(e) => {
+              e.preventDefault();
+              openModal("Download Brochure", "default");
+            }}
+          >
+            {domToReact(domNode.children, {
+              replace: (child: any) => {
+                if (child.type === "tag" && child.name === "faarrowright") {
+                  return <RiArrowRightLine className="text-base inline-block" />;
+                }
+              },
+            })}
+          </button>
+        );
+      }
+    },
+  })}
+</div>
+{/* <div className="flex justify-start">
               <button
-                className="md:mt-0 mt-4 mx-auto flex md:mx-0 items-center gap-2.5 px-6 py-3 bg-[#FFAA33] text-[#154994] font-semibold text-sm border border-[#154994] cursor-pointer hover:bg-black hover:text-white rounded-lg"
+                className="md:mt-5 mt-4 mx-auto flex md:mx-0 items-center gap-2.5 px-6 py-3 bg-[#FFAA33] text-[#154994] font-semibold text-base border border-[#154994] cursor-pointer hover:bg-black hover:text-white rounded-lg lead"
               >Download Brochure <RiArrowRightLine className="text-base" />
               </button>
-            </div>
+            </div> */}
             {/* ✅ CTA Button */}
           
           {/* <div className="flex justify-center">

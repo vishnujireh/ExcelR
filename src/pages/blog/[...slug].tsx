@@ -296,7 +296,7 @@ background:
       <div className="relative">
         <Breadcrumb />
       </div>
-      <BlogCategory />
+      {/* <BlogCategory /> */}
 
  <div className={`blog-detail-theme ${theme} ${lato.variable}`}>
       <div className={`w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 grid md:gap-6 md:grid-cols-1 grid-cols-1 gap-0 

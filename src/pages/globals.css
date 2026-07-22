@@ -543,6 +543,22 @@ pre {
     left: 0;
     top: 5px
 }
+.banerdectmtree ul li{
+     padding-left: 25px;
+    margin-left: 10px;
+    font-size: 17px;
+}
+.banerdectmtree ul li:before {
+    background: url(https://www.excelr.com/assets/media/general/check.svg) 0 0/cover;
+    list-style-position: outside;
+    text-align: left;
+    content: '';
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    left: 0;
+    top: 5px
+}
 .courselist ul li:after {
     display: block;
     position: absolute;
@@ -587,7 +603,7 @@ pre {
     top: 3px;
 }
 .clsschdate,
-.disam {
+.disam, .disamtree {
     display: inline-block
 }
 
@@ -626,6 +642,13 @@ pre {
     background: url(https://www.excelr.com/assets/media/general/int.svg) 0 0/100% no-repeat;
     padding: 36px;
     top: 7px !important;
+    position: absolute;
+    right: auto
+}
+.disamtree {
+    background: url(https://www.excelr.com/assets/media/general/strick-line.svg) 0 0/100% no-repeat;
+        padding: 47px;
+    top: 10px !important;
     position: absolute;
     right: auto
 }

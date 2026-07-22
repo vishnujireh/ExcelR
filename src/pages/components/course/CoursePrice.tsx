@@ -238,7 +238,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     {mode.mode}
                   </h5>
                  {String(template) === "3" ? (
-                    <hr className="border-[#155DFC] my-5" />
+                    <hr className="border-[#155DFC] my-3" />
                  )
                  :null }
                   {!mode.price_info ? (
@@ -549,9 +549,13 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                   key={mode.mode}
                   className="bg-white rounded-2xl text-center p-6 max-w-sm"
                 >
-                  <h5 className="uppercase text-black text-md font-semibold tracking-wider pb-3">
+                  <h5 className={` text-black  font-semibold tracking-wider ${String(template) === "3" ? " pb-0 capitalize text-xl" : " pb-3 uppercase text-md"}`}>
                     {mode.mode}
                   </h5>
+                 {String(template) === "3" ? (
+                    <hr className="border-[#155DFC] my-3" />
+                 )
+                 :null }
 
                   {!mode.price_info ? (
                     <p className="text-sm text-red-600">
@@ -680,27 +684,40 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
             {hasComboOffer && (
               <div
                 key="combo-offer"
-                className="bg-white rounded-2xl text-center p-6 w-sm"
+                className={` rounded-2xl text-center p-6 max-w-sm ${String(template) === "3" ? "bg-[#EBF5FF] shadow-md border border-[#155DFC]" : "bg-white"}`}
               >
-                <h5 className="uppercase text-black text-md font-semibold tracking-wider pb-3">
-                  Combo Offer
-                </h5>
-
-                <hr className="border-gray-200 my-5" />
+                <h5 className={` text-black  font-semibold tracking-wider ${String(template) === "3" ? " pb-0 capitalize text-2xl" : " pb-3 uppercase text-md"}`}>
+                    Combo Offer
+                  </h5>
+                 {String(template) === "3" ? (
+                    <hr className="border-[#155DFC] my-3" />
+                 )
+                 :null } 
 
                 {/* Combo Items */}
                 {comboItems.map((item: any, idx: number) => (
-                  <div key={idx} className="mb-6 text-left">
+                  <div key={idx} className={`text-left ${String(template) === "3" ? "mb-3" : "mb-6"}`}>
                     {/* TITLE */}
-                    <h4 className="font-semibold text-[16px] mb-2">
+                    <h4 className={` text-[16px]  ${String(template) === "3" ? "text-[#171717] capitalize font-semibold" : "text-[#171717] font-semibold mb-2"}`}>
                       {item.name}
                     </h4>
                     
-                    <div className="flex justify-around mb-6 relative">
-                <h6 className="dis-amt font-bold text-lg">
-                 <span className='disam'></span> {item.currency} {formatPrice(item.mrp)}
+                    <div className={`flex relative ${String(template) === "3" ? "mt-1 justify-between items-center" : " mb-6 justify-around"}`}>
+                <h6 className={`dis-amt font-bold text-lg ${String(template) === "3" ? "text-[#BDBDBD] text-base mb-0 font-medium" : "text-[#171717] text-xl font-bold mb-0"}`}>
+              {String(template) === "3" ? (
+                <>
+  <span className="disamtree"></span>
+    {item.currency} {formatPrice(item.mrp)}
+</>
+) : (
+  <>
+    <span className="disam"></span>
+    {item.currency} {formatPrice(item.mrp)}
+  </>
+)}
+                
                 </h6>
-                <h6 className="font-bold text-lg text-[#ea9b0a]">
+                <h6 className={`font-bold  ${String(template) === "3" ? "text-[#171717] text-2xl mb-0 font-semibold" : "text-[#ea9b0a] text-lg font-bold mb-0"}`}>
                      {item.currency} {formatPrice (item.discount_price)}
                   </h6>
               </div>
@@ -719,16 +736,20 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                 <div className="flex flex-col gap-2 mt-5">
                 <button
                   onClick={() => openQuickEnquiryModal("Quick Enquiry", "default")}
-                  className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                  className={`flex cursor-pointer items-center justify-center border border-solid border-[#007bff]  hover:bg-[#2563EB] font-medium text-sm h-10 px-4 text-white transition ${String(template) === "3" ? "rounded-md bg-[#155DFC] gap-2" : "rounded-3xl uppercase bg-[#007bff]"}`}
                 >
-                 Enquire Now
+                 Enquire Now {String(template) === "3" ? (
+                  <RiArrowRightLine className="text-base inline-block" />
+                ) : null}
                 </button>
 
                 <button
                   onClick={() => setIsComboModalOpen(true)}
-                  className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                  className={`flex cursor-pointer items-center justify-center border border-solid border-[#007bff]  hover:bg-[#2563EB] font-medium text-sm h-10 px-4 text-white transition ${String(template) === "3" ? "rounded-md bg-[#155DFC] gap-2" : "rounded-3xl uppercase bg-[#007bff]"}`}
                 >
-                Enroll Now
+                Enroll Now {String(template) === "3" ? (
+                  <RiArrowRightLine className="text-base inline-block" />
+                ) : null}
                 </button>
               </div>
               </div>

@@ -25,6 +25,7 @@ import {
 import {
   Navigation,
   Autoplay,
+  Pagination
 } from "swiper/modules";
 
 import {
@@ -109,60 +110,67 @@ export default function OurClients({
       {isGrid ? (
 
         <>
-          {/* SMOOTH EXPAND / COLLAPSE */}
+        <div className="max-w-4xl mx-auto">
+         <Swiper
+          modules={[
+            Navigation,
+            Autoplay,
+          ]}
+          spaceBetween={20}
+          navigation
+          autoplay={{
+            delay: 2500,
+            disableOnInteraction: false,
+          }}
+          loop
+          observer
+          observeParents
+          breakpoints={{
+            320: {
+              slidesPerView: 1,
+            },
+            480: {
+              slidesPerView: 2,
+            },
+            640: {
+              slidesPerView: 3,
+            },
+            768: {
+              slidesPerView: 4,
+            },
+            1024: {
+              slidesPerView: 6,
+            },
+            1280: {
+              slidesPerView: 5,
+            },
+          }}
+        >
+          {data.map((item) => (
 
-          <div className="grid grid-cols-2 md:grid-cols-7 lg:grid-cols-7 xl:grid-cols-7 gap-6">
+            <SwiperSlide key={item.id}>
 
-  {visibleData.map((item) => (
+              <div className="flex justify-center items-center">
 
-    <div
-      key={item.id}
-      className="flex justify-center items-center bg-white rounded-xl p-4"
-    >
-      <div className="relative w-full aspect-[3/1] md:aspect-[6/3]">
+                <div className="relative w-full aspect-[3/1] md:aspect-[6/3] ">
 
-        <Image
-          src={item.image_url}
-          alt={item.name}
-          fill
-          className="object-contain"
-        />
+                  <Image
+                    src={item.image_url}
+                    alt={item.name}
+                    fill
+                    className="object-contain "
+                  />
 
-      </div>
-    </div>
+                </div>
 
-  ))}
+              </div>
 
+            </SwiperSlide>
+
+          ))}
+        </Swiper>
 </div>
-
-          {/* VIEW MORE / LESS */}
-
-          {data.length > initialLimit && (
-
-            <div className="flex justify-center mt-8">
-
-              <button
-                onClick={() =>
-                  setShowAll(!showAll)
-                }
-                className="flex items-center gap-1 px-6 py-3  text-black font-medium transition-all duration-300 cursor-pointer"
-              >
-                {showAll ? (
-                  <>
-                    View Less
-                    <RiArrowUpSLine size={20} />
-                  </>
-                ) : (
-                  <>
-                    View More
-                    <RiArrowDownSLine size={20} />
-                  </>
-                )}
-              </button>
-
-            </div>
-
-          )}
+          
         </>
 
       ) : (

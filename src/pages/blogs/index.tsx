@@ -59,7 +59,7 @@ export default function BlogList() {
     <>
       <Breadcrumb />
       <BlogHeroBanner />
-      <BlogCategory />
+      {/* <BlogCategory /> */}
 
       <div className="w-full md:mx-auto md:py-10 2xl:px-32 xl:px-20 lg:px-10 p-5 2xl:pt-0 xl:pt-0 md:pt-0">
         {categoryBlogs
