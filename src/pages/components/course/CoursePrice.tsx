@@ -225,14 +225,14 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
         }
       
         <div className="w-full md:flex justify-center">
-          <div className="flex flex-row justify-center flex-wrap gap-10">
+          <div className="flex flex-row justify-center flex-wrap gap-10 items-stretch">
             {priorityModes.map((mode) => {
               const isSelfPaced = isSelfPacedMode(mode.mode);
 
               return (
                 <div
                   key={mode.mode}
-                  className={` rounded-2xl text-center p-6 max-w-sm ${String(template) === "3" ? "bg-[#EBF5FF] shadow-md border border-[#155DFC]" : "bg-white"}`}
+                  className={`flex flex-col rounded-2xl text-center p-6 w-full sm:w-[380px] ${String(template) === "3" ? "bg-[#EBF5FF] shadow-md border border-[#155DFC]" : "bg-white"}`}
                 >
                   <h5 className={` text-black  font-semibold tracking-wider ${String(template) === "3" ? " pb-0 capitalize text-xl" : " pb-3 uppercase text-md"}`}>
                     {mode.mode}
@@ -333,7 +333,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                   )}
 
                  {String(template) === "3" ? (
-                  <>
+                  <div className="mt-auto w-5/6 justify-center ml-auto mr-auto">
                   {!isSelfPaced  && (
                     <button
                       onClick={() => openModal(mode)}
@@ -342,20 +342,20 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                       Upcoming Batches <RiArrowRightDoubleFill  />
                     </button>)}
                     <div className="flex items-center justify-start gap-2 mt-5 bg-white p-3 rounded-lg">
-                      <RiBankCardFill  className="text-[#A9A3A3] text-lg"/> <p className="text-[#A9A3A3] text-sm font-medium">Pay in EMIs With ZERO% Interest Rate</p>
+                      <RiBankCardFill  className="text-[#A9A3A3] text-lg"/> <p className="text-[#A9A3A3] text-xs font-medium">Pay in EMIs With ZERO% Interest Rate</p>
                     </div>
   <div className="flex flex-col gap-2 mt-5">
                     {mode.upcoming_dates_preview?.[0]?.batch_id && (
                       <Link
                        // href={`/enroll_course/${mode.upcoming_dates_preview[0].batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
                        href={mode.upcoming_dates_preview[0].enroll_url}
-                        className="flex items-center justify-center gap-3 border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-semibold text-base h-10 px-4 rounded-md capitalize transition"
+                        className={`flex cursor-pointer items-center justify-center border border-solid border-[#007bff]  hover:bg-[#2563EB] font-medium text-sm h-10 px-4 text-white transition ${String(template) === "3" ? "rounded-md bg-[#155DFC] gap-2" : "rounded-3xl uppercase bg-[#007bff]"}`}
                       >
-                        {isSelfPaced ? "Buy Now" : "Enroll Now"}   <RiArrowRightLine className="text-lg" />
+                        {isSelfPaced ? "Buy Now" : "Enroll Now"}   <RiArrowRightLine className="text-base block" />
                       </Link>
                     )}
                   </div>
-                  </>
+                  </div>
 ) : (
   <>
      {!isSelfPaced  && (
@@ -390,7 +390,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                       <Link
                        // href={`/enroll_course/${mode.upcoming_dates_preview[0].batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
                        href={mode.upcoming_dates_preview[0].enroll_url}
-                        className="flex items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                        className={`flex cursor-pointer items-center justify-center border border-solid border-[#007bff]  hover:bg-[#2563EB] font-medium text-sm h-10 px-4 text-white transition ${String(template) === "3" ? "rounded-md bg-[#155DFC] gap-2" : "rounded-3xl uppercase bg-[#007bff]"}`}
                       >
                         {isSelfPaced ? "Buy Now" : "Enroll Now"}
                       </Link>
@@ -411,7 +411,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
               return (
                 <div
                   key={mode.mode}
-                  className="bg-white rounded-2xl text-center p-6 max-w-sm"
+                  className="flex flex-col bg-white rounded-2xl text-center p-6 w-full sm:w-[380px]"
                 >
                   <h5 className="uppercase text-black text-md font-semibold tracking-wider pb-3">
                     {mode.mode}
@@ -518,11 +518,11 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                  )}
                   
 
-                  <div className="flex flex-col gap-2 mt-5">
+                  <div className={`flex flex-col gap-2 mt-auto ${String(template) === "3" ? "w-5/6 justify-center" : ""}`}>
                     {!isSelfPaced  && (
                     <button
                       onClick={() => openModal(mode)}
-                      className="flex cursor-pointer items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                      className={`flex cursor-pointer items-center justify-center border border-solid border-[#007bff]  hover:bg-[#2563EB] font-medium text-sm h-10 px-4 text-white transition ${String(template) === "3" ? "rounded-md bg-[#155DFC] gap-2" : "rounded-3xl uppercase bg-[#007bff]"}`}
                     >
                       Show All Batches
                     </button>)}
@@ -531,7 +531,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                       <Link
                        // href={`/enroll_course/${mode.upcoming_dates_preview[0].batch_id}${courseSlug ? `?course=${courseSlug}` : ""}`}
                        href={mode.upcoming_dates_preview[0].enroll_url}
-                        className="flex items-center justify-center border border-solid border-[#007bff] bg-[#007bff] text-[#fff] hover:bg-[#2563EB] font-medium text-sm h-10 px-4 rounded-3xl uppercase transition"
+                        className={`flex cursor-pointer items-center justify-center border border-solid border-[#007bff]  hover:bg-[#2563EB] font-medium text-sm h-10 px-4 text-white transition ${String(template) === "3" ? "rounded-md bg-[#155DFC] gap-2" : "rounded-3xl uppercase bg-[#007bff]"}`}
                       >
                         {isSelfPaced ? "Buy Now" : "Enroll Now"}
                       </Link>
@@ -547,7 +547,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
               return (
                 <div
                   key={mode.mode}
-                  className="bg-white rounded-2xl text-center p-6 max-w-sm"
+                  className="flex flex-col bg-white rounded-2xl text-center p-6 w-full sm:w-[380px]"
                 >
                   <h5 className={` text-black  font-semibold tracking-wider ${String(template) === "3" ? " pb-0 capitalize text-xl" : " pb-3 uppercase text-md"}`}>
                     {mode.mode}
@@ -658,7 +658,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                  )}
                   
 
-                  <div className="flex flex-col gap-2 mt-5">
+                  <div className="flex flex-col gap-2 mt-auto">
                     {!isSelfPaced  && (
                     <button
                       onClick={() => openModal(mode)}
@@ -684,7 +684,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
             {hasComboOffer && (
               <div
                 key="combo-offer"
-                className={` rounded-2xl text-center p-6 max-w-sm ${String(template) === "3" ? "bg-[#EBF5FF] shadow-md border border-[#155DFC]" : "bg-white"}`}
+                className={`flex flex-col rounded-2xl text-center p-6 w-full sm:w-[380px] ${String(template) === "3" ? "bg-[#EBF5FF] shadow-md border border-[#155DFC]" : "bg-white"}`}
               >
                 <h5 className={` text-black  font-semibold tracking-wider ${String(template) === "3" ? " pb-0 capitalize text-2xl" : " pb-3 uppercase text-md"}`}>
                     Combo Offer
@@ -693,7 +693,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     <hr className="border-[#155DFC] my-3" />
                  )
                  :null } 
-
+            <div className="border-dashed border-[#ccc] border-b-2">
                 {/* Combo Items */}
                 {comboItems.map((item: any, idx: number) => (
                   <div key={idx} className={`text-left ${String(template) === "3" ? "mb-3" : "mb-6"}`}>
@@ -733,7 +733,8 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     </Link> */}
                   </div>
                 ))}
-                <div className="flex flex-col gap-2 mt-5">
+                </div>
+                <div className={`flex flex-col gap-2  ${String(template) === "3" ? "w-5/6 justify-center mx-auto mt-6 md:mt-auto" : "mt-auto"}`}>
                 <button
                   onClick={() => openQuickEnquiryModal("Quick Enquiry", "default")}
                   className={`flex cursor-pointer items-center justify-center border border-solid border-[#007bff]  hover:bg-[#2563EB] font-medium text-sm h-10 px-4 text-white transition ${String(template) === "3" ? "rounded-md bg-[#155DFC] gap-2" : "rounded-3xl uppercase bg-[#007bff]"}`}

@@ -1,56 +1,33 @@
 import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/router";
 import { AppDispatch, RootState } from "@/redux/store";
-import { fetchSearchSuggestions, fetchCategoryBlogsCount, SidebarCategory } from "@/redux/slices/blogSlice";
+import {
+  fetchCategoryBlogsCount,
+  SidebarCategory,
+} from "@/redux/slices/blogSlice";
 import Link from "next/link";
 import {
-  RiSearchLine,
-  RiMicLine,
-  RiFireLine,
   RiArrowDownSLine,
+  RiArrowRightSLine,
 } from "react-icons/ri";
+import { MdOutlineCategory } from "react-icons/md";
 
-const TRENDING_TOPICS = [
-  "Data Science",
-  "Machine Learning",
-  "Project Management",
-  "Tableau",
-];
-
-const TAG_TO_CATEGORY: Record<string, string> = {
-  "Data Science":       "/blog-category/data-science",
-  "Machine Learning":   "/blog-category/machine-learning",
-  "Project Management": "/blog-category/project-management",
-  "Tableau":            "/blog-category/tableau",
-  "Data Analytics":     "/blog-category/data-analytics",
-  "Business Analytics": "/blog-category/business-analytics",
-};
 
 export default function HeroBanner() {
-  const dispatch  = useDispatch<AppDispatch>();
-  const router    = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const [searchText, setSearchText] = useState("");
-  const [listening, setListening]   = useState(false);
-  const recognitionRef = useRef<any>(null);
+  const [catOpen, setCatOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const { searchSuggestions, searchLoading } = useSelector(
-    (state: RootState) => state.blogs
-  );
-
-  // Raw categories from Redux
   const sidebarCategories = useSelector(
     (state: RootState) => state.blogs.sidebarCategories
   );
-
-  // Only categories that actually have blog posts
   const [visibleCategories, setVisibleCategories] = useState<SidebarCategory[]>([]);
 
+  /* Filter categories that have at least one blog */
   useEffect(() => {
     if (!sidebarCategories.length) return;
-
-    const checkCategories = async () => {
+    const check = async () => {
       const results = await Promise.all(
         sidebarCategories.map(async (cat) => {
           try {
@@ -63,50 +40,33 @@ export default function HeroBanner() {
       );
       setVisibleCategories(results.filter((c) => c.hasBlogs));
     };
-
-    checkCategories();
+    check();
   }, [sidebarCategories, dispatch]);
 
-  /* ── Voice search ── */
-  const startVoice = () => {
-    if (!("webkitSpeechRecognition" in window)) {
-      alert("Speech recognition not supported");
-      return;
-    }
-    const SpeechRecognition = (window as any).webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
-    recognition.continuous    = false;
-    recognition.interimResults = false;
-    recognition.lang          = "en-US";
-    recognition.onstart  = () => setListening(true);
-    recognition.onresult = (e: any) => setSearchText(e.results[0][0].transcript);
-    recognition.onend    = () => setListening(false);
-    recognitionRef.current = recognition;
-    recognition.start();
-  };
+  /* Close dropdown on outside click */
+  useEffect(() => {
+    if (!catOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setCatOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, [catOpen]);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchText(value);
-    if (value.length > 1) dispatch(fetchSearchSuggestions(value));
-  };
 
-  /* ── Mobile category select ── */
-  const handleCategorySelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    if (val) router.push(`/blog-category/${val}`);
-  };
 
   return (
     <section
-      className="relative w-full overflow-hidden"
+      className="relative w-full"
       style={{
         background:
           "linear-gradient(160deg,#134792 0%,#1a5aab 40%,#2160c1 75%,#4d89d9 100%)",
       }}
     >
-      {/* Subtle grid overlay */}
-      <div className="pointer-events-none absolute inset-0">
+      {/* Grid overlay — overflow-hidden here, NOT on the section, so dropdown panel isn't clipped */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <svg className="absolute inset-0 w-full h-full opacity-[0.055]">
           <defs>
             <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
@@ -117,147 +77,138 @@ export default function HeroBanner() {
         </svg>
       </div>
 
-      <div className="relative mx-auto w-full px-4 sm:px-8 pt-6 pb-10 sm:pt-16 sm:pb-36 flex flex-col items-center text-center">
+      <div className="relative mx-auto w-full px-4 sm:px-8 pt-6 pb-10 sm:pt-14 sm:pb-36 flex flex-col items-center text-center">
 
         {/* Badge */}
-        <div className="mb-5 rounded-full px-4 py-2 bg-white/10 text-white text-sm">
-          Our blog
+        <div className="mb-4 rounded-full px-4 py-1.5 bg-white/10 text-white text-xs font-medium tracking-wide">
+          Our Blog
         </div>
 
         {/* Title */}
-        <h1 className="text-white font-semibold md:font-bold text-2xl md:text-4xl md:mb-5 mb-2">
+        <h1 className="text-white font-bold text-2xl md:text-4xl mb-2 md:mb-4">
           Resources and insights
         </h1>
 
         {/* Subtitle */}
-        <p className="text-white/70 max-w-xl mb-5 text-sm md:text-base">
+        <p className="text-white/65 max-w-xl mb-6 text-sm md:text-base">
           The latest industry news, interviews, technologies, and resources — curated for you.
         </p>
 
-        {/* ── DESKTOP: Search bar + Trending ── */}
-        <div className="hidden sm:flex w-full max-w-2xl flex-col relative">
+        {/* Main content block — max width container */}
+        <div className="w-full max-w-2xl flex flex-col gap-4">
 
-          {/* Search input */}
-          <div className="flex gap-3">
-            <div className="flex-1 flex items-center gap-2 rounded-xl px-4 py-3 bg-white/10 shadow">
-              <RiSearchLine className="text-white/40" size={17} />
-              <input
-                value={searchText}
-                onChange={handleSearchChange}
-                placeholder="Search articles..."
-                className="flex-1 bg-transparent outline-none text-white text-sm placeholder:text-white/40"
-              />
-              <span className="w-px h-4 bg-white/20" />
-              <button onClick={startVoice} className="relative cursor-pointer">
-                {listening && (
-                  <span className="absolute inset-0 rounded-full bg-[#FFAA33] opacity-40 animate-ping" />
-                )}
-                <RiMicLine
-                  size={18}
-                  className={listening ? "text-[#FFAA33]" : "text-white/50"}
-                />
-              </button>
-            </div>
-          </div>
 
-          {/* Search suggestions */}
-          {searchText.length > 1 && searchSuggestions.length > 0 && (
-            <ul className="absolute mt-12 w-full bg-white rounded-lg shadow-xl z-50 overflow-hidden text-left">
-              {searchSuggestions.map((item) => (
-                <li key={item.id}>
-                  <Link
-                    href={`/${item.base_url}`}
-                    className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    {item.value}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
+          {/* ── Category Dropdown — both mobile & desktop ── */}
+          <div ref={dropdownRef} className="relative w-full text-left">
 
-          {searchLoading && (
-            <p className="text-white/70 text-sm mt-2">Searching...</p>
-          )}
-
-          {/* Trending Topics */}
-          <div className="mt-7 w-full">
-            <div className="flex items-center gap-2 mb-3 justify-center">
-              <span className="h-px flex-1 max-w-[60px] bg-white/20" />
-              <div className="flex items-center gap-1.5">
-                <RiFireLine size={13} className="text-[#FFAA33]" />
-                <span className="text-white/50 text-[10px] font-bold uppercase tracking-[0.2em]">
-                  Trending Now
-                </span>
-              </div>
-              <span className="h-px flex-1 max-w-[60px] bg-white/20" />
-            </div>
-
-            <div className="flex gap-3 justify-center  pb-1" style={{ scrollbarWidth: "none" }}>
-              {TRENDING_TOPICS.map((tag) => (
-                <Link
-                  key={tag}
-                  href={TAG_TO_CATEGORY[tag] || "/blogs"}
-                  className="group shrink-0 flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/15 hover:border-white/30 rounded-xl px-4 py-2.5 transition-all duration-200"
-                >  <span className="text-white/80 group-hover:text-white text-xs sm:text-sm font-semibold whitespace-nowrap transition-colors">
-                    {tag}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* ── MOBILE: Category dropdown ── */}
-        <div className="flex sm:hidden w-full flex-col gap-3 mt-0">
-          <p className="text-white text-sm  mb-1">
-            Browse by Category
-          </p>
-
-          <div className="relative w-full">
-            <select
-              defaultValue=""
-              onChange={handleCategorySelect}
+            {/* Trigger */}
+            <button
+              onClick={() => setCatOpen((p) => !p)}
               className="
-                w-full appearance-none
-                bg-white/10 text-white
-                border border-white/25
-                rounded-xl px-4 py-3.5
-                text-sm font-medium
-                focus:outline-none focus:border-white/50
+                w-full flex items-center justify-between
+                px-4 py-3.5
+                bg-white/10 hover:bg-white/15
+                border border-white/20 hover:border-white/35
+                rounded-xl
+                text-white transition-all duration-200
                 cursor-pointer
               "
             >
-              <option value="" disabled className="text-gray-700 bg-white">
-                Select a category…
-              </option>
-              {visibleCategories.map((cat) => (
-                <option
-                  key={cat.id}
-                  value={cat.baseurl}
-                  className="text-gray-800 bg-white"
-                >
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-            <RiArrowDownSLine
-              size={20}
-              className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-white/60"
-            />
-          </div>
-        </div>
+              <span className="flex items-center gap-2.5">
+                <MdOutlineCategory size={18} className="text-[#FFAA33]" />
+                <span className="text-sm font-medium text-white/85">
+                  Browse by Category
+                </span>
+              </span>
+              <RiArrowDownSLine
+                size={20}
+                className={`text-white/50 transition-transform duration-300 ${catOpen ? "rotate-180" : ""}`}
+              />
+            </button>
 
+            {/* Panel */}
+            <div
+              className={`
+                absolute top-full left-0 right-0 mt-2 z-50
+                bg-white rounded-2xl shadow-2xl border border-gray-100
+                overflow-hidden
+                transition-all duration-300 ease-out origin-top
+                ${catOpen
+                  ? "opacity-100 scale-y-100 translate-y-0 pointer-events-auto"
+                  : "opacity-0 scale-y-95 -translate-y-2 pointer-events-none"}
+              `}
+            >
+              {/* Panel header */}
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-100 bg-gray-50">
+                <MdOutlineCategory size={15} className="text-[#0071BC]" />
+                <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+                  All Categories
+                </span>
+                <span className="ml-auto text-[11px] text-gray-400">
+                  {visibleCategories.length} topics
+                </span>
+              </div>
+
+              {/* Category grid */}
+              {visibleCategories.length === 0 ? (
+                <div className="px-4 py-6 text-center text-sm text-gray-400">
+                  Loading categories…
+                </div>
+              ) : (
+                <div className="p-3 grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+                  {visibleCategories.map((cat, i) => (
+                    <Link
+                      key={cat.id}
+                      href={`/blog-category/${cat.baseurl}`}
+                      onClick={() => setCatOpen(false)}
+                      className="
+                        group flex items-center gap-2.5
+                        px-3 py-2.5 rounded-xl
+                        bg-gray-50 hover:bg-blue-50
+                        border border-transparent hover:border-blue-100
+                        transition-all duration-150
+                      "
+                    >
+                      {/* Number */}
+                      <span className="text-sm font-black text-[#FFAA33] tabular-nums shrink-0">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      {/* Divider */}
+                      <span className="w-px h-3.5 bg-gray-200 group-hover:bg-blue-200 shrink-0 transition-colors" />
+                      {/* Name */}
+                      <span className="text-sm font-semibold text-gray-700 group-hover:text-[#0071BC] truncate transition-colors">
+                        {cat.name}
+                      </span>
+                      {/* Arrow */}
+                      <RiArrowRightSLine
+                        size={13}
+                        className="ml-auto shrink-0 text-gray-300 group-hover:text-[#0071BC] transition-colors"
+                      />
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              {/* Footer */}
+              {/* <div className="border-t border-gray-100 px-4 py-2.5">
+                <Link
+                  href="/blogs"
+                  onClick={() => setCatOpen(false)}
+                  className="text-xs font-semibold text-[#0071BC] hover:text-[#FFAA33] transition-colors"
+                >
+                  View all blogs →
+                </Link>
+              </div> */}
+            </div>
+          </div>
+
+
+        </div>
       </div>
 
       {/* Wave — desktop only */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-screen overflow-hidden hidden md:block">
-        <svg
-          viewBox="0 0 1440 120"
-          preserveAspectRatio="none"
-          className="w-full"
-          xmlns="http://www.w3.org/2000/svg"
-        >
+      <div className="absolute bottom-0 left-0 right-0 hidden md:block">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full" xmlns="http://www.w3.org/2000/svg">
           <path d="M0,55 C360,110 1080,0 1440,55 L1440,120 L0,120 Z" fill="white" />
         </svg>
       </div>

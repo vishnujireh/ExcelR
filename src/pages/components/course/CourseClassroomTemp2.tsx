@@ -131,8 +131,93 @@ export default function CourseClassroom({
           </div>
 
         </div>
+        {/* <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-3">
+   <div className="relative flex flex-col group">
+     <div className="hidden lg:block absolute top-10 left-[calc(100%)] w-8 h-px border-t-2 border-dashed border-orange-300 z-10"></div>
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3 h-full">
+         <div className="flex flex-col items-center gap-1 mb-5">
+            <div className="relative">
+               <div className="absolute inset-0 rounded-full left-0 bg-orange-400 opacity-25 blur-lg scale-150"></div>
+               <div className="relative w-18 h-18 rounded-full    flex items-center justify-center cursor-pointer select-none text-3xl  hover:scale-110 hover:shadow-orange-300/60 transition-all duration-200" title="Click to cycle emoji"><img alt="Get Trained" className="w-16" src="https://excelrcom.b-cdn.net/assets/admin/ckfinder/userfiles/images/2026_Uploads/da_img_2026/get-trained.svg" /></div>
+            </div>
+         </div>
+         <h3 className="text-sm font-semibold text-gray-800  cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Get Trained</h3>
+         <p className="text-xs text-gray-500 leading-relaxed cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Learn from industry experts through structured, hands-on training modules.</p>
+      </div>
+   </div>
+   <div className="relative flex flex-col group">
+      <div className="hidden lg:block absolute top-10 left-[calc(100%)] w-8 h-px border-t-2 border-dashed border-orange-300 z-10"></div>
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3 h-full">
+         <div className="flex flex-col items-center gap-1 mb-5">
+            <div className="relative">
+               <div className="absolute inset-0 rounded-full left-0 bg-orange-400 opacity-25 blur-lg scale-150"></div>
+               <div className="relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer select-none text-3xl ring-4 ring-orange-100 hover:scale-110 hover:shadow-orange-300/60 transition-all duration-200" title="Click to cycle emoji">
+			   <img alt="Get Trained" className="w-16" src="https://excelrcom.b-cdn.net/assets/admin/ckfinder/userfiles/images/2026_Uploads/da_img_2026/assignments.svg" /></div>
+            </div>
+         </div>
+         <h3 className="text-sm font-semibold text-gray-800  cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Submit Assignments</h3>
+         <p className="text-xs text-gray-500 leading-relaxed cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Reinforce your learning by completing and submitting practical assignments.</p>
+      </div>
+   </div>
+   <div className="relative flex flex-col group">
+      <div className="hidden lg:block absolute top-10 left-[calc(100%)] w-8 h-px border-t-2 border-dashed border-orange-300 z-10"></div>
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3 h-full">
+         <div className="flex flex-col items-center gap-1 mb-5">
+            <div className="relative">
+               <div className="absolute inset-0 rounded-full left-0 bg-orange-400 opacity-25 blur-lg scale-150"></div>
+               <div className="relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer select-none text-3xl ring-4 ring-orange-100 hover:scale-110 hover:shadow-orange-300/60 transition-all duration-200" title="Click to cycle emoji">
+			   <img alt="Get Trained" className="w-16" src="https://excelrcom.b-cdn.net/assets/admin/ckfinder/userfiles/images/2026_Uploads/da_img_2026/guidedprojects.svg" /></div>
+            </div>
+         </div>
+         <h3 className="text-sm font-semibold text-gray-800  cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Work on Guided Projects</h3>
+         <p className="text-xs text-gray-500 leading-relaxed cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Apply skills on real-world projects with mentor guidance every step.</p>
+      </div>
+   </div>
+   <div className="relative flex flex-col group">
+      <div className="hidden lg:block absolute top-10 left-[calc(100%)] w-8 h-px border-t-2 border-dashed border-orange-300 z-10"></div>
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3 h-full">
+         <div className="flex flex-col items-center gap-1 mb-5">
+            <div className="relative">
+               <div className="absolute inset-0 rounded-full left-0 bg-orange-400 opacity-25 blur-lg scale-150"></div>
+               <div className="relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer select-none text-3xl ring-4 ring-orange-100 hover:scale-110 hover:shadow-orange-300/60 transition-all duration-200" title="Click to cycle emoji">
+			   <img alt="Get Trained" className="w-16" src="https://excelrcom.b-cdn.net/assets/admin/ckfinder/userfiles/images/2026_Uploads/da_img_2026/certifieddata.svg" /></div>
+            </div>
+         </div>
+         <h3 className="text-sm font-semibold text-gray-800  cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Become a Certified Data Analyst</h3>
+         <p className="text-xs text-gray-500 leading-relaxed cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Earn an industry-recognised certification upon successful completion.</p>
+      </div>
+   </div>
+   <div className="relative flex flex-col group">
+      <div className="hidden lg:block absolute top-10 left-[calc(100%)] w-8 h-px border-t-2 border-dashed border-orange-300 z-10"></div>
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3 h-full">
+         <div className="flex flex-col items-center gap-1 mb-5">
+            <div className="relative">
+               <div className="absolute inset-0 rounded-full left-0 bg-orange-400 opacity-25 blur-lg scale-150"></div>
+               <div className="relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer select-none text-3xl ring-4 ring-orange-100 hover:scale-110 hover:shadow-orange-300/60 transition-all duration-200" title="Click to cycle emoji">
+			   <img alt="Get Trained" className="w-16" src="https://excelrcom.b-cdn.net/assets/admin/ckfinder/userfiles/images/2026_Uploads/da_img_2026/placementassistance.svg" /></div>
+            </div>
+         </div>
+         <h3 className="text-sm font-semibold text-gray-800  cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Avail Placement Assistance</h3>
+         <p className="text-xs text-gray-500 leading-relaxed cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Get dedicated support for resume building, mock interviews, and job referrals.</p>
+      </div>
+   </div>
+   <div className="relative flex flex-col group">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col gap-3 h-full">
+         <div className="flex flex-col items-center gap-1 mb-5">
+            <div className="relative">
+               <div className="absolute inset-0 rounded-full left-0 bg-orange-400 opacity-25 blur-lg scale-150"></div>
+               <div className="relative w-16 h-16 rounded-full flex items-center justify-center cursor-pointer select-none text-3xl ring-4 ring-orange-100 hover:scale-110 hover:shadow-orange-300/60 transition-all duration-200" title="Click to cycle emoji">
+			   <img alt="Get Trained" className="w-16" src="https://excelrcom.b-cdn.net/assets/admin/ckfinder/userfiles/images/2026_Uploads/da_img_2026/jobready.svg" /></div>
+            </div>
+         </div>
+         <h3 className="text-sm font-semibold text-gray-800  cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Get Job-Ready!</h3>
+         <p className="text-xs text-gray-500 leading-relaxed cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Step into your new career with confidence, skills, and a verified credential.</p>
+      </div>
+   </div>
+</div> */}
 
       </section>
+
 
 {/* <section class="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 ">
 <div>
