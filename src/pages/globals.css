@@ -763,8 +763,8 @@ details[open] summary::before {
     display: none;
 }
 .coursetm2 details[open] summary::after {
-    content: "+";
-    rotate: 315deg
+    content: "-";
+    /* rotate: 315deg */
 }
 
 details {

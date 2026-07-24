@@ -214,9 +214,9 @@ export default function CourseClassroom({
          <p className="text-xs text-gray-500 leading-relaxed cursor-text hover:bg-orange-50 rounded px-1 -mx-1 text-center transition-colors" title="Click to edit">Step into your new career with confidence, skills, and a verified credential.</p>
       </div>
    </div>
-</div> */}
-
-      </section>
+</div> 
+ */}
+  </section>
 
 
 {/* <section class="w-full md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 ">
