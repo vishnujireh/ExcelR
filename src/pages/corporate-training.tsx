@@ -42,7 +42,7 @@ export default function CorporateTraining(){
             <div>
               <h2 className="text-2xl font-bold mb-2 text-center md:text-left">We Help Brands To Connect & Grow</h2>
               <p className="text-[#666] text-sm leading-7 mb-1.5">The need to address the skill gap in the present tech-savvy world is more than ever. Addressing the weakness, improving employee performance, fostering innovation, and staying abreast with the latest developments in the field of technology, add up in the direction of improving your work environment, critical to the overall growth of your organization.</p>
-              <p className="text-[#666] text-sm leading-7">The need to address the skill gap in the present tech-savvy world is more than ever. Addressing the weakness, improving employee performance, fostering innovation, and staying abreast with the latest developments in the field of technology, add up in the direction of improving your work environment, critical to the overall growth of your organization.</p>
+              <p className="text-[#666] text-sm leading-7">With a firm global footprint in USA, UK, Malaysia and Australia, we at ExcelR are committed towards enhancing and fine-tuning your workforce by providing the best in-house corporate training. Our main forte is providing well experienced, certified and qualified faculty who are passionate about training. Our course curriculum is meticulously designed to suit your business requirements keeping in mind the global business needs of each and every organization.</p>
             </div>
           </div>
           <div className="col-span-1 lg:col-span-1">
@@ -73,7 +73,7 @@ export default function CorporateTraining(){
         <p className="text-2xl font-bold mb-1 text-center">Testimonials</p>
       <Testimonials />
        </section>
-      <OurClients variant="corporate" />
+      <OurClients variant="default" />
         </>
     );
 }

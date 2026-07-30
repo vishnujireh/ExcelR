@@ -69,12 +69,12 @@ export default function NewsEvents() {
 
                   {/* ✅ Content */}
                   <div className="md:col-span-2 p-4">
-                    {item.event_date && (
+                    {/* {item.event_date && (
                     <p className="text-xs text-[#666]">
                       {item.event_month} {item.event_day},{" "}
                       {item.event_date.slice(0, 4)}
                     </p>
-                    )}
+                    )} */}
                     <div className="line-clamp-3 min-h-20">
                       <h2 className="text-md font-semibold mb-1">
                         {item.title}
