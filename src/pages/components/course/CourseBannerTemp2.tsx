@@ -38,7 +38,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
   // ✅ Build the banner image URL from course_image field
  const bannerImageUrl = data.course_image 
    //  ? `https://www.excelr.com/uploads/course/${data.course_image}`
-   ? `https://demo3.excelr.com/uploads/course/${data.course_image}`
+   ? `https://www.excelr.com/uploads/course/${data.course_image}`
     : '';
 
   return (

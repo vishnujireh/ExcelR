@@ -14,13 +14,13 @@ const CourseBreadcrumb: React.FC<CourseBreadcrumbProps> = ({ courseName, categor
       <nav aria-label="breadcrumb" className="md:text-sm text-xs">
         <ol className=" items-center space-x-1">
           <li className="inline-block">
-            <a href="https://demo3.excelr.com/" className="text-[#0071BC]">
+            <a href="https://www.excelr.com/" className="text-[#0071BC]">
               Home
             </a>
           </li>
            <li className="inline-block">
                 <span className="mx-1">/</span>
-                <a href="https://demo3.excelr.com/" className="text-[#0071BC]">
+                <a href="https://www.excelr.com/" className="text-[#0071BC]">
                   {category}
                 </a>
               </li>

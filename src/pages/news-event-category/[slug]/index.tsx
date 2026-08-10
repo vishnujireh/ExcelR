@@ -56,7 +56,7 @@ useEffect(() => {
                 >
                   <div className="relative aspect-[6/3] w-full">
                     <Image
-                      src={`https://demo3.excelr.com/${item.image}`}
+                      src={`https://www.excelr.com/${item.image}`}
                       alt={item.title}
                       fill
                       className="object-cover"
@@ -64,12 +64,12 @@ useEffect(() => {
                   </div>
 
                   <div className="md:col-span-2 p-4">
-                    {item.event_date && (
+                    {/* {item.event_date && (
                     <p className="text-xs text-gray-600">
                       {item.event_month} {item.event_day},{" "}
                       {item.event_date?.slice(0, 4)}
                     </p>
-                    )}
+                    )} */}
 
                     <h2 className="text-md font-semibold">{item.title}</h2>
                     <p className="text-sm mt-2 text-gray-600">
@@ -119,7 +119,7 @@ useEffect(() => {
                   >
                    <div className="relative w-20 h-14 flex-shrink-0">
                       <Image
-                        src={`https://demo3.excelr.com/${post.image}`}
+                        src={`https://www.excelr.com/${post.image}`}
                         alt={post.title}
                         fill
                         className="object-cover rounded"

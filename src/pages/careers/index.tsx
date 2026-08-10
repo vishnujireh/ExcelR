@@ -157,12 +157,12 @@ export default function CareerList() {
               <h2 className="text-lg font-semibold mb-4">{job.title}</h2>
 
               <p className="text-gray-500 mb-2 flex gap-1 items-center">
-                <RiTimeLine className="w-8 text-[#327ac5]" />
+                <RiTimeLine className="w-8 text-[#327ac5] shrink-0 " />
                 {job.category}
               </p>
 
               <p className="text-gray-500 mb-2 flex gap-1 items-center">
-                <RiMapPinLine className="w-8 text-[#327ac5]" />
+                <RiMapPinLine className="w-8 text-[#327ac5] shrink-0" />
                 {job.location}
               </p>
 

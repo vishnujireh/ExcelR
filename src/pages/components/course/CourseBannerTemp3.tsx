@@ -37,7 +37,7 @@ console.log(data.brief_intro);
   // ✅ Build the banner image URL from course_image field
  const bannerImageUrl = data.course_image 
    //  ? `https://www.excelr.com/uploads/course/${data.course_image}`
-   ? `https://demo3.excelr.com/uploads/course/${data.course_image}`
+   ? `https://www.excelr.com/uploads/course/${data.course_image}`
     : '';
 
   return (
@@ -49,6 +49,30 @@ console.log(data.brief_intro);
     //     backgroundPosition: "center",
     //   }}
     // >
+//     <div className="grid lg:grid-cols-2 gap-8 items-center relative z-10"><!-- Left Content -->
+// <div>
+// <h1 className="md:text-3xl text-lg font-[200] mb-5 text-center md:text-left text-white leading-20"><span className="font-bold md:text-4xl text-2xl block md:mb-2 mb-0">Data Analyst Course</span> In Kochi | IIT Certification &amp; Job Help</h1>
+
+// <div className="banerdectmtree test-white">
+// <ul className="ml-0 md:space-y-5 space-y-2 text-base md:py-8 max-w-xl text-white">
+// 	<li className="relative pl-7">6 Months of Learning</li>
+// 	<li className="relative pl-7">Prestigious IIT Certificate</li>
+// 	<li className="relative pl-7">No Coding Background Required</li>
+// 	<li className="relative pl-7">Classroom &amp; Live Online Data Analyst Course Training</li>
+// 	<li className="relative pl-7">100 Hours of Theory, 40 Hours of Practice Assignments, and 2 Hands-on Capstone Projects</li>
+// </ul>
+// </div>
+
+// <div className="flex justify-start md:mb-12"><button className="md:mt-5 mt-7 mx-auto flex md:mx-0 items-center gap-2.5 px-6 py-3 bg-[#FFAA33] text-[#154994] font-semibold text-base border border-[#154994] cursor-pointer hover:bg-black hover:text-white rounded-lg lead">Download Brochure <faarrowright className="text-orange-400"> </faarrowright></button></div>
+// </div>
+
+// <div>
+// <div className="p-4 md:rounded-t-lg rounded-lg md:w-40 w-44 bg-white py-2 md:absolute bottom-3 relative mx-auto" style="bottom: 3px;">
+// <p className="text-sm pb-2">Award Winner</p>
+// <img alt="Learners " className="md:w-full h-auto object-contain icon" src="https://excelrcom.b-cdn.net/assets/admin/ckfinder/userfiles/images/2026_Uploads/da_img_2026/homt-deloitte.png" /></div>
+// </div>
+// </div>
+
     <section className="course-banner bg-transparent relative w-full md:mx-auto md:py-16 md:pb-0 2xl:px-25 xl:px-20 lg:px-10 p-5  overflow-hidden  ">
 <div className="block absolute inset-0 -z-10">
 <Image

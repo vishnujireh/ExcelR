@@ -20,7 +20,7 @@ export async function middleware(req: NextRequest) {
 
   try {
     const res = await fetch(
-      `https://demo3.excelr.com/api/get_page_type?api_key=sk_KcJ4OSav26Zm240UNRgZeFDgZZ6vKsiK&base_url=${slug}`,
+      `https://www.excelr.com/api/get_page_type?api_key=sk_KcJ4OSav26Zm240UNRgZeFDgZZ6vKsiK&base_url=${slug}`,
       { cache: 'no-store' }
     );
 

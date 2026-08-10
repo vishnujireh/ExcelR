@@ -44,7 +44,7 @@ export default function NewsEventDetail() {
   if (loading) return <p className="text-center py-10">Loading...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
   if (!newsDetail) return <p className="text-center py-10">No data found</p>;
-const IMAGE_BASE_URL = "https://demo3.excelr.com/";
+const IMAGE_BASE_URL = "https://www.excelr.com/";
   return (
     <>
       <Head>
@@ -68,7 +68,7 @@ const IMAGE_BASE_URL = "https://demo3.excelr.com/";
           <div className="bg-white">
           <div className="relative w-full aspect-16/8 mb-6">
             <Image
-              src={`https://demo3.excelr.com/${newsDetail.image}`}
+              src={`https://wwww.excelr.com/${newsDetail.image}`}
               alt={newsDetail.title}
               fill
               className="object-cover"

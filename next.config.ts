@@ -107,6 +107,32 @@ const nextConfig = {
   
   async rewrites() {
     return {
+       beforeFiles: [
+      {
+        source: "/sitemap",
+        destination: "/page/sitemap",
+      },
+      {
+        source:"/about-us",
+        destination:"/page/about-us",
+      },
+      {
+        source:"/terms-and-conditions",
+        destination:"/page/terms-and-conditions",
+      },
+      {
+        source:"/privacy-policy",
+        destination:"/page/privacy-policy",
+      },
+      {
+        source:"/refund-policy",
+        destination:"/page/refund-policy",
+      },
+      {
+        source:"/contact-us",
+        destination:"/page/contact-us",
+      }
+    ],
       fallback: [
         {
           source:

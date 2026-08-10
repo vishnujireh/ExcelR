@@ -59,7 +59,7 @@ export default function NewsEvents() {
                   <div>
                     <div className="relative aspect-[6/3] w-full">
                       <Image
-                        src={`https://demo3.excelr.com/${item.image}`}
+                        src={`https://www.excelr.com/${item.image}`}
                         alt={item.title}
                         fill
                         className="object-cover"
@@ -128,7 +128,7 @@ export default function NewsEvents() {
                     >
                       <div className="relative w-20 h-14 flex-shrink-0">
                         <Image
-                          src={`https://demo3.excelr.com/${post.image}`}
+                          src={`https://www.excelr.com/${post.image}`}
                           alt={post.title}
                           fill
                           className="object-cover rounded"

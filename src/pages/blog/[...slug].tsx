@@ -345,7 +345,7 @@ background:
           day: "2-digit",
           year: "numeric",
         })}</span>
-        {blogDetail.read_time && (
+        {Number(blogDetail.read_time) > 0 && (
             <>
             <div className={`w-px h-8   hidden sm:block ${
             theme === "dark"

@@ -21,7 +21,7 @@ const INITIAL_FORM_STATE = {
   industry: "",
   referral_code: "",
   cover_letter: "",
-  resume_file: null as File | null,
+  resume: null as File | null,
 };
 
 export default function CareerApplyForm({
@@ -129,8 +129,8 @@ export default function CareerApplyForm({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
-    setFormData((prev) => ({ ...prev, resume_file: file }));
-    setErrors((prev) => { const n = { ...prev }; delete n.resume_file; return n; });
+    setFormData((prev) => ({ ...prev, resume: file }));
+    setErrors((prev) => { const n = { ...prev }; delete n.resume; return n; });
   };
 
   // ─── Submit ───────────────────────────────────────────────────────────────
@@ -158,7 +158,7 @@ if (!formData.contact_no.trim()) {
     ? "Please enter a valid 10-digit mobile number."
     : "Please enter a valid mobile number.";
 }
-    if (!formData.resume_file)          nextErrors.resume_file   = "Please upload your CV.";
+    if (!formData.resume)          nextErrors.resume   = "Please upload your CV.";
     if (!agree)                         nextErrors.agree         = "Please accept Terms and Conditions.";
 
     setErrors(nextErrors);
@@ -332,8 +332,8 @@ if (!formData.contact_no.trim()) {
           className="border border-gray-200 text-sm rounded-lg w-full p-3"
           required
         />
-        {errors.resume_file && (
-          <p className="text-red-600 text-xs mt-1">{errors.resume_file}</p>
+        {errors.resume && (
+          <p className="text-red-600 text-xs mt-1">{errors.resume}</p>
         )}
         </div>
         <div>

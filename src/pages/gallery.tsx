@@ -20,7 +20,7 @@ export default function GalleryPage() {
     dispatch(fetchGallery());
   }, [dispatch]);
 
-  if (loading) return <p className="p-5">Loading gallery...</p>;
+  if (loading) return <p className="p-5 text-center">Loading gallery...</p>;
   if (error) return <p className="p-5 text-red-500">{error}</p>;
 
   // Flat list that mirrors the PhotoView order:

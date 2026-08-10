@@ -375,7 +375,7 @@ export const fetchBlogDetail = createAsyncThunk<BlogDetail, string, { rejectValu
           ? {
               name: author.name,
               image: author.image
-                ? `https://demo3.excelr.com/uploads/blog/${author.image}`
+                ? `https://www.excelr.com/uploads/blog/${author.image}`
                 : "",
               description: author.description,
               linkedin_url: author.linkedin_url,

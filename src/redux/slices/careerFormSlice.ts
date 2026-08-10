@@ -11,7 +11,7 @@ export interface CareerFormPayload {
   industry: string;
   referral_code: string;
   cover_letter: string;
-  resume_file?: File | null;
+  resume?: File | null;
 }
 
 export interface CareerFormResponse {
@@ -43,12 +43,12 @@ export const submitCareerForm = createAsyncThunk<
 
     Object.entries(payload).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
-      if (key === "resume_file") return;
+      if (key === "resume") return;
       formData.append(key, String(value));
     });
 
-    if (payload.resume_file) {
-  formData.append("resume_file", payload.resume_file);
+    if (payload.resume) {
+  formData.append("resume", payload.resume);
 }
 
     return await apiPost("/job_portal_register", formData);
