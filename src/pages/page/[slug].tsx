@@ -86,7 +86,7 @@ const CMSPage: NextPage = () => {
               />
         </div>
         <div className="hidden md:block absolute inset-0 bg-black/60 z-0" />
-           <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center uppercase z-50 relative text-white">{data.title}</h1>
+           <h1 className="text-3xl font-medium text-shadow-black mb-1.5 text-center uppercase z-40 relative text-white">{data.title}</h1>
          </div>
          <section className="w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5">
         <div className="grid md:grid-cols-1 grid-cols-1 gap-4 z-10 relative items-center">

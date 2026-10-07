@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import Image from "next/image";
 import parse from "html-react-parser";
-import { fetchHomeConfig } from "@/redux/slices/homeSlice";
+import { fetchFooterData } from "@/redux/slices/footerSlice";
 import Link from "next/link";
 
 const disclaimerList = [
@@ -46,7 +46,7 @@ export default function Footer({
   const dispatch = useDispatch<AppDispatch>();
 
   const { info, org, contact, footer_course } = useSelector(
-    (state: RootState) => state.home
+    (state: RootState) => state.footer
   );
 
   useEffect(() => {
@@ -59,7 +59,7 @@ export default function Footer({
       info.loading || org.loading || contact.loading;
 
     if (!hasColumnData && !isLoadingColumns) {
-      dispatch(fetchHomeConfig());
+      dispatch(fetchFooterData());
     }
   }, [
     contact.data.length,

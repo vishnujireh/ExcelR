@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, Children  } from "react";
 import parse, { domToReact } from "html-react-parser";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -76,6 +76,44 @@ const removeDivById = (html: string, id: string) => {
     cleanedHtml: `${html.slice(0, startIndex)}${html.slice(endIndex)}`,
     removedBlock: html.slice(startIndex, endIndex),
   };
+};
+
+const ShowMoreSection = ({
+  children,
+  count,
+  className,
+}: {
+  children: React.ReactNode;
+  count: number;
+  className?: string;
+}) => {
+  const [expanded, setExpanded] = useState(false);
+
+  const items = Children.toArray(children).filter((child) =>
+    React.isValidElement(child)
+  );
+
+  const visibleItems = expanded ? items : items.slice(0, count);
+  const hasMore = items.length > count;
+
+  return (
+    <div className={className}>
+      {visibleItems}
+
+      {hasMore && (
+        <div className="col-span-full flex justify-end mt-1 mb-5">
+          <button
+            type="button"
+            onClick={() => setExpanded((previous) => !previous)}
+            aria-expanded={expanded}
+            className="inline-flex items-center justify-center cursor-pointer rounded-lg  px-5 py-2.5 text-sm font-semibold text-[#ff9600] transition hover:opacity-90 focus:outline-none "
+          >
+            {expanded ? "Show Less >>" : "Show More >>"}
+          </button>
+        </div>
+      )}
+    </div>
+  );
 };
 
 const extractItemBlocks = (carouselHtml: string) => {
@@ -161,7 +199,164 @@ export default function CourseBenefit({ data }: CourseBenefitProps) {
   /* -------------------------------------------------------
      3️⃣ Replace IMG with Next Image (YOUR LOGIC PRESERVED)
   --------------------------------------------------------*/
+  // const replaceFn = (domNode: any) => {
+  //   if (domNode.name === "img" && domNode.attribs) {
+  //     const {
+  //       src,
+  //       alt,
+  //       class: classAttr,
+  //       className: classNameAttr,
+  //       width: widthAttr,
+  //       height: heightAttr,
+  //     } = domNode.attribs;
+
+  //     const altText = alt || "course image";
+  //     const imageSrc = sanitizeParsedUrl(src);
+  //     if (!imageSrc) return null;
+
+  //     const originalClass = (classAttr || classNameAttr || "").toString();
+  //     const isIcon = originalClass.split(/\s+/).includes("icon");
+
+  //     // ✅ YOUR EXISTING LOGIC (UNCHANGED)
+  //     const width = isIcon
+  //       ? 80
+  //       : widthAttr
+  //       ? Number(widthAttr) || 700
+  //       : 700;
+
+  //     const height = isIcon
+  //       ? 80
+  //       : heightAttr
+  //       ? Number(heightAttr) || 600
+  //       : 600;
+
+  //     const combinedClassName = ["mx-auto", originalClass]
+  //       .filter(Boolean)
+  //       .join(" ");
+
+  //     return (
+  //       <Image
+  //         src={imageSrc}
+  //         alt={altText}
+  //         width={width}
+  //         height={height}
+  //         quality={45}
+  //         priority
+  //         fetchPriority="high"
+  //         className={combinedClassName}
+  //         sizes="(max-width: 768px) 100vw, 700px"
+  //       />
+  //     );
+  //   }
+
+  //   if (domNode.name === "a" && domNode.attribs) {
+  //     const {
+  //       href,
+  //       onclick,
+  //       target,
+  //       rel,
+  //       class: classAttr,
+  //       className: classNameAttr,
+  //     } = domNode.attribs;
+
+  //     const safeHref = sanitizeParsedUrl(href);
+  //     const safeOnclick = sanitizeParsedUrl(onclick);
+  //     const dataVideo =
+  //       sanitizeParsedUrl(domNode.attribs["data-video"]) ||
+  //       sanitizeParsedUrl(domNode.attribs["data-video-url"]) ||
+  //       sanitizeParsedUrl(domNode.attribs["data-youtube"]);
+  //     const className = (classAttr || classNameAttr || "").toString();
+
+  //     const shouldOpenVideo =
+  //       /banner2_video\s*\(/i.test(safeOnclick) ||
+  //       /^javascript:\s*banner2_video\s*\(/i.test(safeHref) ||
+  //       ((safeHref === "javascript:void(0)" || safeHref === "javascript:void(0);") &&
+  //         !!dataVideo);
+
+  //     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  //       if (!shouldOpenVideo) return;
+
+  //       e.preventDefault();
+  //       const embed = toEmbedUrl(dataVideo || safeHref);
+  //       if (embed) {
+  //         setVideoUrl(embed);
+  //         setModalOpen(true);
+  //         return;
+  //       }
+
+  //       // fallback to global hook if admin relies on it
+  //       if (typeof window !== "undefined" && typeof (window as any).banner2_video === "function") {
+  //         (window as any).banner2_video(dataVideo || safeHref);
+  //       }
+  //     };
+
+  //     const safeRel = sanitizeParsedUrl(rel);
+  //     const safeTarget = sanitizeParsedUrl(target);
+
+  //     return (
+  //       <a
+  //         href={safeHref || "#"}
+  //         onClick={handleClick}
+  //         target={safeTarget || undefined}
+  //         rel={safeRel || undefined}
+  //         className={className || undefined}
+  //       >
+  //         {domToReact(domNode.children || [], { replace: replaceFn })}
+  //       </a>
+  //     );
+  //   }
+
+  //   return undefined;
+  // };
+
+  // const parsedContent = parse(cleanedHtml, { replace: replaceFn });
+
+  // if (!bannerHtml) return null;
+
+  /* -------------------------------------------------------
+     3️⃣ Replace IMG with Next Image (YOUR LOGIC PRESERVED)
+  --------------------------------------------------------*/
   const replaceFn = (domNode: any) => {
+    /*
+     * Admin-controlled Show More / Show Less
+     *
+     * Add this attribute to the grid/container in the admin HTML:
+     *
+     *   data-show-more-count="4"
+     *
+     * Example:
+     *   <div class="grid ..." data-show-more-count="4">
+     *     ...items...
+     *   </div>
+     *
+     * The Next.js component automatically adds the button and handles
+     * Show More / Show Less. Admin does not need to add JavaScript.
+     */
+    if (
+      domNode.attribs &&
+      domNode.attribs["data-show-more-count"] !== undefined
+    ) {
+      const rawCount = Number(
+        sanitizeParsedUrl(domNode.attribs["data-show-more-count"])
+      );
+      const count = Number.isFinite(rawCount) && rawCount > 0
+        ? Math.floor(rawCount)
+        : 4;
+
+      const {
+        class: classAttr,
+        className: classNameAttr,
+      } = domNode.attribs;
+
+      const className = (classAttr || classNameAttr || "").toString();
+
+      return (
+        <ShowMoreSection count={count} className={className}>
+          {domToReact(domNode.children || [], { replace: replaceFn })}
+        </ShowMoreSection>
+      );
+    }
+
     if (domNode.name === "img" && domNode.attribs) {
       const {
         src,

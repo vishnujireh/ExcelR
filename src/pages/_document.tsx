@@ -24,14 +24,13 @@ export default class MyDocument extends Document {
             We target the Next.js image-optimisation endpoint so the browser
             gets the same optimised asset that the <Image> component requests.
             ─────────────────────────────────────────────────────────────────── */}
-          <link
+          {/* <link
             rel="preload"
             as="image"
             href="/_next/image?url=%2Fhomebaner.webp&w=1920&q=75"
-            // @ts-ignore — imagesrcset/imagesizes are valid HTML but missing from React types
-            imagesrcset="/_next/image?url=%2Fhomebaner.webp&w=828&q=75 828w, /_next/image?url=%2Fhomebaner.webp&w=1200&q=75 1200w, /_next/image?url=%2Fhomebaner.webp&w=1920&q=75 1920w"
+             imagesrcset="/_next/image?url=%2Fhomebaner.webp&w=828&q=75 828w, /_next/image?url=%2Fhomebaner.webp&w=1200&q=75 1200w, /_next/image?url=%2Fhomebaner.webp&w=1920&q=75 1920w"
             imagesizes="100vw"
-          />
+          /> */}
 
           {/* Preconnect to image origins so DNS+TCP+TLS is resolved before banner image fetch */}
           <link rel="preconnect" href="https://www.excelr.com" />
