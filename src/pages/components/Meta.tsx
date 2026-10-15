@@ -202,13 +202,7 @@ useEffect(() => {
   return () => clearTimeout(timer);
 }, []);
 
-const [loadGTM, setLoadGTM] = useState(false);
 const [loadWebEngage, setLoadWebEngage] = useState(false);
-
-useEffect(() => {
-  const id = setTimeout(() => setLoadGTM(true), 20000);
-  return () => clearTimeout(id);
-}, []);
 
 useEffect(() => {
   const onScroll = () => {
@@ -373,10 +367,9 @@ useEffect(() => {
           )}
         </>
       )}
-{loadGTM && (
       <Script
         id="gtm-script"
-        strategy="lazyOnload"
+  strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: `
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -388,7 +381,6 @@ useEffect(() => {
           `,
         }}
       />
-)}
 
 {loadWebEngage && (
   <Script id="webengage-init" strategy="lazyOnload">
