@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUpcomingBatch } from "@/redux/slices/upcomingBatchSlice";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { apiPost } from "@/redux/api/apiClient";
+import { pushEnhancedConversion } from "@/utils/gtm";
 import bannerImageUrl from "/public/banerdc.webp"; 
 
 const isPrivateOrLocalIp = (ip: string) => {
@@ -391,6 +392,13 @@ useEffect(() => {
       accessInput.name = 'access_code';
       accessInput.value = accessCode;
       form.appendChild(accessInput);
+
+      // GTM Enhanced Conversion push before CCAvenue form submit
+      pushEnhancedConversion({
+        email: emailValue,
+        phone: mobileValue,
+        name: user_nameValue,
+      });
 
       document.body.appendChild(form);
       form.submit();

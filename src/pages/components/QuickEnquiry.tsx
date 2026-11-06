@@ -23,6 +23,7 @@ import {
   type EnterprisePayload, type DropQueryPayload
 } from "@/redux/slices/dropQuerySlice";
 import logo from "/public/logo.png";
+import { pushEnhancedConversion } from "@/utils/gtm";
 
 interface QuickEnquiryProps {
   closeModal: () => void;
@@ -384,6 +385,13 @@ if (!formData.mobile || !phoneCheck.isValid) {
 
       // FIX 2: handle status:false explicitly instead of silently doing nothing
       if (result?.status) {
+        // Push GTM Enhanced Conversion before redirect
+        pushEnhancedConversion({
+          email: formData.email,
+          phone: formData.countryCode ? `+${formData.countryCode}${formData.mobile}` : formData.mobile,
+          name: formData.name,
+        });
+
         // FIX 5: reset only the non-prefilled fields; clear enterprise-specific fields
         setFormData({
           name: "", email: "", mobile: "", enquiry: "",
@@ -400,7 +408,9 @@ if (!formData.mobile || !phoneCheck.isValid) {
         setErrors({});
         dispatch(resetDropQueryState());
         closeModal();
-        window.location.href = "https://www.excelr.com/thank-you";
+        setTimeout(() => {
+          window.location.href = "https://www.excelr.com/thank-you";
+        }, 300);
       } else {
         // FIX 2: surface the API's own error message to the user
         setSubmitError(result?.message || "Submission failed. Please try again.");

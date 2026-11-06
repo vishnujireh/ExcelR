@@ -1,0 +1,444 @@
+"use client";
+import React, { useEffect, useState, FormEvent, useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { submitCorporateTraining, resetCorporateTrainingState } from "@/redux/slices/corporateTrainingSlice";
+import type { AppDispatch, RootState } from "@/redux/store";
+
+const INITIAL_FORM_STATE = {
+  name: "",
+  company_name: "",
+  company_email: "",
+  mobile_no: "",
+  country_code: "+91",
+  location: "",
+  country: "",
+  course: "",
+  hear_about_us: "",
+  description: "",
+};
+
+export default function CorporateTrainingForm() {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { loading, success, message, error } = useSelector(
+    (state: RootState) => state.corporateTraining
+  );
+
+  const [formData, setFormData] = useState(INITIAL_FORM_STATE);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [agree, setAgree] = useState(false);
+  const phoneInputRef = useRef<HTMLInputElement | null>(null);
+  const itiRef = useRef<any>(null);
+
+  const syncPhoneField = () => {
+  const iti = itiRef.current;
+  const input = phoneInputRef.current;
+
+  if (!iti || !input) {
+    return { normalized: "", isValid: true };
+  }
+
+  const rawNumber = input.value || "";
+  const normalized = rawNumber.replace(/\D/g, "");
+
+  // Remove spaces, dashes, etc.
+  if (input.value !== normalized) {
+    input.value = normalized;
+  }
+
+  const countryData = iti.getSelectedCountryData();
+  const isIndia = countryData?.iso2 === "in";
+
+  let isValid = false;
+
+  if (!normalized.length) {
+    input.setCustomValidity("");
+    return {
+      normalized,
+      isValid: false,
+    };
+  }
+
+  if (isIndia) {
+    // India -> exactly 10 digits
+    isValid = normalized.length === 10;
+
+    input.setCustomValidity(
+      isValid ? "" : "Please enter a 10-digit mobile number."
+    );
+  } else {
+    // Other countries -> validate using intl-tel-input
+    isValid = iti.isValidNumber();
+
+    input.setCustomValidity(
+      isValid ? "" : "Please enter a valid mobile number."
+    );
+  }
+
+  return {
+    normalized,
+    isValid,
+  };
+};
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next[e.target.name];
+      return next;
+    });
+  };
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+
+  const nextErrors: Record<string, string> = {};
+
+  const emailOk = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(
+    formData.company_email.trim()
+  );
+
+  if (!formData.name.trim()) {
+    nextErrors.name = "Name is required.";
+  }
+
+  if (!formData.company_email.trim()) {
+    nextErrors.company_email = "Email is required.";
+  } else if (!emailOk) {
+    nextErrors.company_email = "Please enter a valid email address.";
+  }
+
+  const phoneCheck = syncPhoneField();
+
+const countryData = itiRef.current?.getSelectedCountryData?.();
+const isIndia = countryData?.iso2 === "in";
+
+if (!formData.mobile_no.trim()) {
+  nextErrors.mobile_no = "Mobile number is required.";
+} else if (!phoneCheck.isValid) {
+  nextErrors.mobile_no = isIndia
+    ? "Please enter a valid 10-digit mobile number."
+    : "Please enter a valid mobile number.";
+}
+
+
+  if (!formData.description.trim()) {
+    nextErrors.description = "Query is required.";
+  }
+
+
+  // Required Terms checkbox
+  if (!agree) {
+    nextErrors.agree = "Please accept Terms and Conditions.";
+  }
+
+
+  setErrors(nextErrors);
+
+  if (Object.keys(nextErrors).length > 0) {
+    if (nextErrors.mobile_no) {
+      phoneInputRef.current?.focus();
+    }
+    return;
+  }
+
+  dispatch(submitCorporateTraining(formData));
+};
+
+  useEffect(() => {
+    if (success) {
+      setFormData(INITIAL_FORM_STATE);
+      setErrors({});
+      setAgree(false);
+      if (phoneInputRef.current) {
+        setFormData(INITIAL_FORM_STATE);
+      }
+    }
+  }, [success]);
+
+  // ✅ REPLACE the intlTelInput useEffect
+useEffect(() => {
+  if (!phoneInputRef.current) return;
+
+  let destroyed = false;
+  let iti: any;
+
+  const initIti = async () => {
+
+    const { default: intlTelInput } =
+      await import("intl-tel-input/intlTelInputWithUtils");
+
+
+    if (destroyed || !phoneInputRef.current) return;
+
+
+    iti = intlTelInput(phoneInputRef.current, {
+      initialCountry: "in",
+      separateDialCode: true,
+      loadUtils: () => import("intl-tel-input/utils"),
+    });
+
+
+    itiRef.current = iti;
+
+
+    const handlePhoneChange = () => {
+  const countryData = iti.getSelectedCountryData();
+
+  const { normalized } = syncPhoneField();
+
+  setFormData(prev => ({
+    ...prev,
+    mobile_no: normalized,
+    country_code: countryData?.dialCode
+      ? `+${countryData.dialCode}`
+      : "",
+  }));
+
+  setErrors(prev => {
+    const next = { ...prev };
+    delete next.mobile_no;
+    return next;
+  });
+};
+
+
+    phoneInputRef.current.addEventListener(
+      "input",
+      handlePhoneChange
+    );
+
+  };
+
+
+  initIti();
+
+
+  return () => {
+    destroyed = true;
+
+    if (iti) {
+      iti.destroy();
+    }
+  };
+
+}, []);
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetCorporateTrainingState());
+    };
+  }, [dispatch]);
+
+  return(
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 z-10 relative items-center">
+        <div className="col-span-1 md:col-span-3 lg:col-span-4 lg:col-start-2">
+          <div className="bg-white p-5 border-4 border-gray-200 rounded-md">
+            <form className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-4 cormobiln" onSubmit={handleSubmit}>
+              <div>
+{/* Name */}
+              <input
+                type="text"
+                name="name"
+                placeholder="Name *"
+                value={formData.name}
+                onChange={handleChange}
+                className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+                 
+              />
+              {errors?.name && (
+ <p className="text-red-600 text-xs mt-1">
+  {errors.name}
+ </p>
+)}
+              </div>
+              
+<div>
+          {/* Company Name */}
+              <input
+                type="text"
+                name="company_name"
+                placeholder="Company Name  (Optional)"
+                value={formData.company_name}
+                onChange={handleChange}
+                className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              />
+</div>
+<div>
+ {/* Email */}
+              <input
+                type="email"
+                name="company_email"
+                placeholder="Email *"
+                value={formData.company_email}
+                onChange={handleChange}
+                className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+                 
+              />
+              {errors?.company_email && (
+ <p className="text-red-600 text-xs mt-1">
+  {errors.company_email}
+ </p>
+)}
+</div>
+         
+
+              {/* Mobile (intl-tel-input) */}
+              <div className="phone-wrapper">
+  <input
+    ref={phoneInputRef}
+    name="mobile_no"
+    placeholder="Mobile No *"
+    type="tel"
+    inputMode="numeric"
+    autoComplete="tel"
+    className="border-b border-gray-200 text-gray-900 text-sm block w-full ps-3 p-3 moblig"
+  />
+  {errors?.mobile_no && (
+ <p className="text-red-600 text-xs mt-1">
+  {errors.mobile_no}
+ </p>
+)}
+</div>
+              
+
+          {/* Location */}
+              <input
+                type="text"
+                name="location"
+                placeholder="Location"
+                value={formData.location}
+                onChange={handleChange}
+                className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              />
+
+          {/* Country */}
+              <input
+                type="text"
+                name="country"
+                placeholder="Country"
+                value={formData.country}
+                onChange={handleChange}
+                className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+              />
+
+          {/* Course */}
+              <div className="md:col-span-2">
+                <input
+                  type="text"
+                  name="course"
+                  placeholder="Course"
+                  value={formData.course}
+                  onChange={handleChange}
+                  className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+                />
+              </div>
+
+          {/* Enquiry */}
+              <div className="md:col-span-2">
+                <select
+                  name="hear_about_us"
+                  value={formData.hear_about_us}
+                  onChange={handleChange}
+                  className="border-b border-gray-200 bg-white text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+                >
+                  <option value="">How did you hear about us</option>
+                  <option value="Search Engine">Search Engine</option>
+                  <option value="Email">Email</option>
+                  <option value="LinkedIn post">LinkedIn post</option>
+                  <option value="Word of mouth">Word of mouth</option>
+                  <option value="Others">Others</option>
+                </select>
+                 
+              </div>
+
+          {/* Query */}
+              <div className="md:col-span-2">
+                <textarea
+                  name="description"
+                  placeholder="Query *"
+                  value={formData.description}
+                  onChange={handleChange}
+                  className="border-b border-gray-200 text-gray-900 bg-white text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+                   
+                />
+                {errors?.description && (
+ <p className="text-red-600 text-xs mt-1">
+  {errors.description}
+ </p>
+)}
+              </div>
+
+          {/* Terms & Submit */}
+              <div className="md:col-span-2">
+                <div className="flex items-start space-x-2 text-sm">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
+                     
+                    checked={agree}
+                    onChange={(e) => {
+                      setAgree(e.target.checked);
+                      setErrors((prev) => {
+                        const next = { ...prev };
+                        delete next.agree;
+                        return next;
+                      });
+                    }}
+                  />
+                  <label htmlFor="terms" className="text-gray-500">
+                    I hereby agree to the{" "}
+                    <a href="/terms" className="text-blue-600 underline" target="_blank">
+                      Terms and Conditions
+                    </a>{" "}
+                    and{" "}
+                    <a href="/privacy-policy" className="text-blue-600 underline" target="_blank">
+                      Privacy Policy
+                    </a>{" "}
+                    of Excelr Solutions.
+                  </label>
+                </div>
+                {errors?.agree && (
+ <p className="text-red-600 text-xs mt-1">
+  {errors.agree}
+ </p>
+)}
+
+                <div className="text-center mt-5">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="border border-[#0071BC] bg-[#0071BC] hover:bg-[#4ba7de] text-white font-medium text-sm py-2.5 px-5 rounded-lg cursor-pointer disabled:opacity-50"
+                  >
+                    {loading ? "Submitting..." : "Submit"}
+                  </button>
+                </div>
+
+                {success && (
+  <p className="text-green-600 mt-3 text-sm">
+    {message || "Your enquiry has been submitted successfully."}
+  </p>
+)}
+
+{!success && error && (
+  <p className="text-red-600 mt-3 text-sm">
+    {error || "Submission failed. Please try again."}
+  </p>
+)}
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+    

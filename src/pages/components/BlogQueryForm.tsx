@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
 import { submitDropQuery } from "@/redux/slices/dropQuerySlice";
+import { pushEnhancedConversion } from "@/utils/gtm";
 
 interface FormState {
   name: string;
@@ -136,6 +137,11 @@ useEffect(() => {
     try {
       const result = await dispatch(submitDropQuery(payload)).unwrap();
       if (result?.status) {
+        pushEnhancedConversion({
+          email: formData.email,
+          phone: formData.countryCode ? `+${formData.countryCode}${formData.mobile}` : formData.mobile,
+          name: formData.name,
+        });
         setSubmitMessage("Query submitted successfully.");
         setFormData({ name: "", email: "", mobile: "", course: "", location: "", countryCode: formData.countryCode });
         setErrors({});

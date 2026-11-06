@@ -120,6 +120,9 @@ export default function FooterSticky({ courseData }: FooterStickyProps) {
     if (window.sessionStorage.getItem(manualSessionKey) === "1") return;
     if (window.sessionStorage.getItem(autoSessionKey) === "1") return;
 
+    // No auto popup on the thank-you page
+    if (path === "/thank-you") return;
+
     const isMobileViewport = window.innerWidth <= MOBILE_BREAKPOINT_MAX_WIDTH;
     const popupDelay = isMobileViewport
       ? AUTO_POPUP_DELAY_MOBILE_MS

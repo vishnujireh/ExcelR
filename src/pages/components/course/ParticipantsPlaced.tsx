@@ -79,6 +79,7 @@ export default function ParticipantsPlaced({ data }: ParticipantsPlacedProps) {
                   <button
                     onClick={() => window.open(client.linkedin_link, "_blank")}
                     className="w-7 h-7 bg-[#0e76a8] flex justify-center items-center rounded"
+                    aria-label={`View ${client.name}'s LinkedIn profile`}
                   >
                     <RiLinkedinBoxFill className="text-white text-xl" />
                   </button>

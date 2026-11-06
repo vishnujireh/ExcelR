@@ -20,7 +20,17 @@ const isPrivateOrLocalIp = (ip: string) => {
   return false;
 };
 
+const IP_SESSION_KEY = "excelr_client_ip";
+
 const resolveClientIp = async () => {
+  // Return cached IP from sessionStorage — avoids external call on every page navigation
+  if (typeof window !== "undefined") {
+    const cached = sessionStorage.getItem(IP_SESSION_KEY);
+    if (cached && !isPrivateOrLocalIp(cached)) {
+      return cached;
+    }
+  }
+
   if (typeof window !== "undefined") {
     try {
       const localIpRes = await fetch("/nextapi/client-ip", {
@@ -31,6 +41,7 @@ const resolveClientIp = async () => {
         const localIpData = await localIpRes.json();
         const localIp = (localIpData?.ip || "").trim();
         if (localIp && !isPrivateOrLocalIp(localIp)) {
+          sessionStorage.setItem(IP_SESSION_KEY, localIp);
           return localIp;
         }
       }
@@ -48,6 +59,9 @@ const resolveClientIp = async () => {
       const ipData = await ipRes.json();
       const externalIp = (ipData?.ip || "").trim();
       if (externalIp && !isPrivateOrLocalIp(externalIp)) {
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem(IP_SESSION_KEY, externalIp);
+        }
         return externalIp;
       }
     }

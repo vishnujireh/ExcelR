@@ -11,6 +11,7 @@ import { useSearchParams } from "next/navigation";
 
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/redux/store";
+import { pushEnhancedConversion } from "@/utils/gtm";
 
 import {
   fetchCountries,
@@ -374,8 +375,17 @@ const pathname =
       }); 
       setErrors({});
 
+      // ✅ GTM Enhanced Conversion push before redirect
+      pushEnhancedConversion({
+        email: formData.email,
+        phone: formData.countryCode ? `+${formData.countryCode}${formData.mobile}` : formData.mobile,
+        name: formData.name,
+      });
+
       // ✅ Redirect (same as QuickEnquiry)
-      window.location.href = "https://www.excelr.com/thank-you";
+      setTimeout(() => {
+        window.location.href = "https://www.excelr.com/thank-you";
+      }, 300);
 
       // ✅ Reset redux state
       dispatch(resetLetUsKnowState());

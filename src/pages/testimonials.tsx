@@ -63,6 +63,7 @@ export default function Testimonials(){
                                     target="_blank"
                                     href={item.linkedin_link}
                                     className="w-7 h-7 bg-[#0e76a8] flex justify-center items-center rounded"
+                                    aria-label={`View ${item.author}'s LinkedIn profile`}
                                   >
                                     <RiLinkedinFill className="text-white text-lg" />
                                   </Link>

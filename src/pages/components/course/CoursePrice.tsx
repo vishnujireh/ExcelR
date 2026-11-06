@@ -137,6 +137,10 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
     (state: RootState) => state.upcomingBatch
   );
 
+  // Feature flag: set to false to re-enable IITM Pravartak sections and Combo Offer card on all pages
+  const hideIitmAndCombo = true;
+  const isDataSciencePage = hideIitmAndCombo;
+
   // Fetch IP
   useEffect(() => {
     let cancelled = false;
@@ -245,7 +249,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     <p className="text-sm text-red-600">
                       Pricing unavailable
                     </p>
-                  ) : mode.price_info.iitm_certificate_amount ? (
+                  ) : mode.price_info.iitm_certificate_amount && !isDataSciencePage ? (
                     <>
                       <p className="text-sm font-semibold pb-2.5">
                         Without IITM Pravartak Certification
@@ -270,7 +274,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                           {formatPrice(mode.price_info.amount)}
                         </h6>
                         )}
-                        
+
 
                         {/* {mode.price_info.discount_amount && (
                           <h6 className="font-bold text-xl text-[#ea9b0a]">
@@ -325,7 +329,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
   <hr className="border-gray-200 my-5" />
 )}
 
-                  {mode.benefits_html && (
+                  {!isDataSciencePage && mode.benefits_html && (
                     <div
                       className={` text-sm  text-left ${String(template) === "3" ? "text-[#171717] border-dashed border-[#ccc] border-b-2 mb-3 templatetwo" : "text-[#666666] mb-5"}`}>
                       {parse(mode.benefits_html ?? "")}
@@ -421,7 +425,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     <p className="text-sm text-red-600">
                       Pricing unavailable
                     </p>
-                  ) : mode.price_info.iitm_certificate_amount ? (
+                  ) : mode.price_info.iitm_certificate_amount && !isDataSciencePage ? (
                     <>
                       <p className="text-sm font-semibold pb-2.5">
                         Without IITM Pravartak Certification
@@ -446,7 +450,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                           {formatPrice(mode.price_info.amount)}
                         </h6>
                         )}
-                        
+
 
                         {/* {mode.price_info.discount_amount && (
                           <h6 className="font-bold text-xl text-[#ea9b0a]">
@@ -489,7 +493,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
 
                   <hr className="border-gray-200 my-5" />
 
-                  {mode.benefits_html && (
+                  {!isDataSciencePage && mode.benefits_html && (
                     <div
                       className="text-[#666666] text-sm mb-5 text-left">
                       {parse(mode.benefits_html ?? "")}
@@ -516,7 +520,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     </div>
                   </div>
                  )}
-                  
+
 
                   <div className={`flex flex-col gap-2 mt-auto ${String(template) === "3" ? "w-5/6 justify-center" : ""}`}>
                     {!isSelfPaced  && (
@@ -561,7 +565,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     <p className="text-sm text-red-600">
                       Pricing unavailable
                     </p>
-                  ) : mode.price_info.iitm_certificate_amount ? (
+                  ) : mode.price_info.iitm_certificate_amount && !isDataSciencePage ? (
                     <>
                       <p className="text-sm font-semibold pb-2.5">
                         Without IITM Pravartak Certification
@@ -586,7 +590,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                           {formatPrice(mode.price_info.amount)}
                         </h6>
                         )}
-                        
+
 
                         {/* {mode.price_info.discount_amount && (
                           <h6 className="font-bold text-xl text-[#ea9b0a]">
@@ -629,7 +633,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
 
                   <hr className="border-gray-200 my-5" />
 
-                  {mode.benefits_html && (
+                  {!isDataSciencePage && mode.benefits_html && (
                     <div
                       className="text-[#666666] text-sm mb-5 text-left">
                       {parse(mode.benefits_html ?? "")}
@@ -656,7 +660,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
                     </div>
                   </div>
                  )}
-                  
+
 
                   <div className="flex flex-col gap-2 mt-auto">
                     {!isSelfPaced  && (
@@ -681,7 +685,7 @@ const openQuickEnquiryModal = (name: string, type: "default" | "callback" = "def
               );
             })}
 
-            {hasComboOffer && (
+            {hasComboOffer && !isDataSciencePage && (
               <div
                 key="combo-offer"
                 className={`flex flex-col rounded-2xl text-center p-6 w-full sm:w-[380px] ${String(template) === "3" ? "bg-[#EBF5FF] shadow-md border border-[#155DFC]" : "bg-white"}`}

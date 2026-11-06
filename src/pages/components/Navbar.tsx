@@ -228,6 +228,7 @@ export default function Navbar({ courseData }: NavbarProps) {
           {!isBlogPage && (
             <Link
               href="tel:18002122121"
+              aria-label="Call us at 1800 212 2121"
               className="flex items-center cursor-pointer justify-center gap-3 bg-gradient-to-r from-[#f48f1c] to-[#e57709] text-white font-medium text-sm w-11 h-11 rounded-full"
             >
               <LuPhoneCall className="text-lg" />
@@ -472,16 +473,24 @@ export default function Navbar({ courseData }: NavbarProps) {
  {/* --- DESKTOP RIGHT LINKS --- */}
       <ul className="hidden md:flex items-center space-x-6 text-sm font-semibold">
         <li>
-          <Link href="/blogs">Blog</Link>
+          <Link href="/blogs" prefetch={false}>
+            Blog
+          </Link>
         </li>
         <li>
-          <Link href="/corporate-training">Corporate</Link>
+          <Link href="/corporate-training" prefetch={false}>
+            Corporate
+          </Link>
         </li>
         <li>
-          <Link href="/every-day-learning">Institutions</Link>
+          <Link href="/every-day-learning" prefetch={false}>
+            Institutions
+          </Link>
         </li>
         <li>
-          <Link href="/careers">Work With Us</Link>
+          <Link href="/careers" prefetch={false}>
+            Work With Us
+          </Link>
         </li>
          <li>
             <button
@@ -548,16 +557,16 @@ export default function Navbar({ courseData }: NavbarProps) {
 
           {/* Other Links */}
           <div className="pt-4 border-t border-gray-200 space-y-3 text-sm font-semibold">
-            <Link href="/blogs" className="block">
+            <Link href="/blogs" className="block" prefetch={false}>
               Blog
             </Link>
-            <Link href="/corporate-training" className="block">
+            <Link href="/corporate-training"  className="block" prefetch={false}>
               Corporate
             </Link>
-            <Link href="/every-day-learning" className="block">
+            <Link href="/every-day-learning" className="block" prefetch={false}>
               Institutions
             </Link>
-            <Link href="/careers" className="block">
+            <Link href="/careers" className="block" prefetch={false}>
               Work With Us
             </Link>
             {/* <Link

@@ -10,6 +10,7 @@ import {
   type DropQueryPayload,
 } from "@/redux/slices/dropQuerySlice";
 import { useSearchParams } from "next/navigation";
+import { pushEnhancedConversion } from "@/utils/gtm";
 
 interface WebinarRegistrationFormProps {
   /** Passed from the course page so we can pre-fill `course` in the payload */
@@ -230,7 +231,14 @@ export default function WebinarRegistrationForm({
       if (result?.status) {
         setSubmitSuccess(true);
         dispatch(resetDropQueryState());
-        window.location.href = "https://www.excelr.com/thank-you";
+        pushEnhancedConversion({
+          email: formData.email,
+          phone: formData.countryCode ? `+${formData.countryCode}${formData.mobile}` : formData.mobile,
+          name: formData.name,
+        });
+        setTimeout(() => {
+          window.location.href = "https://www.excelr.com/thank-you";
+        }, 300);
       } else {
         setSubmitError(
           result?.message || "Submission failed. Please try again."

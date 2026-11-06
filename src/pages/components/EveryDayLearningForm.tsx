@@ -2,7 +2,8 @@
 import React, { useEffect, useState, FormEvent, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { submitEveryDayLearning, resetEveryDayLearningState } from "@/redux/slices/everyDayLearningSlice";
-import type { AppDispatch, RootState } from "@/redux/store"; 
+import type { AppDispatch, RootState } from "@/redux/store";
+import { pushEnhancedConversion } from "@/utils/gtm";
 
 const INITIAL_FORM_STATE = {
   name: "",
@@ -199,6 +200,11 @@ if (!formData.mobile_no || !phoneCheck.isValid) {
 
   useEffect(() => {
     if (success) {
+      pushEnhancedConversion({
+        email: formData.company_email,
+        phone: formData.country_code ? `${formData.country_code}${formData.mobile_no}` : formData.mobile_no,
+        name: formData.name,
+      });
       setFormData(INITIAL_FORM_STATE);
       setErrors({});
       setAgree(false);

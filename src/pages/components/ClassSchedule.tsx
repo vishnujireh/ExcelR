@@ -87,7 +87,7 @@ const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeDat
       onClick={closeModal}
     >
       <div
-        className="bg-white rounded-lg shadow-lg w-full max-w-5xl mx-4 md:mx-6 max-h-[90vh] overflow-y-auto relative"
+        className="bg-white rounded-lg shadow-lg w-full max-w-xl mx-4 md:mx-6 max-h-[90vh] overflow-y-auto relative"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -101,10 +101,10 @@ const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeDat
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 pt-14 md:pt-6">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-6 p-6 pt-14 md:pt-6">
           {/* Left: Schedule */}
           <div className="col-span-1">
-            <h4 className="text-md font-semibold mb-4 text-center md:text-left">
+            <h4 className="text-md font-semibold mb-4 text-center md:text-center">
               {isClassroom
                 ? "Classroom Schedule"
                 : "Live Virtual Class Schedule"}
@@ -186,7 +186,7 @@ const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeDat
           </div>
 
           {/* Right: Benefits */}
-          <div className="col-span-1">
+          {/* <div className="col-span-1">
             <h4 className="text-md font-semibold mb-4">Benefits</h4>
             {modeData?.benefits_html ? (
               <div
@@ -201,7 +201,7 @@ const ClassSchedule: React.FC<ClassScheduleProps> = ({ type, closeModal, modeDat
                 <li>Only 40% of Occupancy will be available for Classroom</li>
               </ul>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
