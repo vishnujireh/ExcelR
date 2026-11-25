@@ -1,6 +1,7 @@
 "use client";
 import React, {useState} from "react";
 import Image from "next/image";
+// import Script from "next/script"; // CleverTap — commented out
 // import saurabh from "/public/saurabh.jpg"
 // import linkedin from "/public/linked-in.svg"
 // import facebook from "/public/face-book.svg"
@@ -9,8 +10,11 @@ import Image from "next/image";
 // import youtube from "/public/you-tube.svg"
 // import { FiSearch } from "react-icons/fi";
 import heroImage from "/public/hbndo.webp";
+//import heroImage from "/public/diwaliicon.webp";
 import deloitte from "/public/hom-deloitte.png";
 import nascom from "/public/hom-nasscom.png";
+//import bannerImageUrl from "/public/bannerhome.webp";
+//import bannerImagemob from "/public/mobilehbanner.webp";
 import bannerImageUrl from "/public/homebaner.webp";
 // import datascience from "/public/ds_home.svg"
 // import pmp from "/public/pmp_home.svg"
@@ -49,8 +53,8 @@ export default function Hero() {
 
   return (
      <>
-     <div className="w-full relative md:mx-auto 2xl:px-25 xl:px-20 lg:px-10 text-center relative">
-       {/* <div className="absolute inset-0 bg-gradient-to-r from-[#2781c8] via-black/100 via-[40%] to-[#52b7f3]"></div> */}
+     <div className="w-full relative md:mx-auto 2xl:px-25 xl:px-20 lg:px-10 text-center bg-[#000b74]">
+       {/*<div className="absolute inset-0 bg-gradient-to-r from-[#2781c8] via-black/100 via-[40%] to-[#52b7f3]"></div> */}
 <div className="md:block absolute inset-0 -z-10">
                       <Image
                           src={bannerImageUrl}
@@ -59,19 +63,38 @@ export default function Hero() {
                           priority
                           fetchPriority="high"
                           sizes="100vw"
-                          className="object-cover"
+                          className="object-cover hidden sm:block"
                         />
+                        {/* <Image
+                          src={bannerImagemob}
+                          alt="Enroll Course Banner"
+                          fill
+                          priority
+                          fetchPriority="high"
+                          sizes="100vw"
+                          className="object-cover block sm:hidden"
+                        /> */}
                         </div>
      <div className="relative z-10 p-8 sm:p-0">
 <div className="grid md:grid-cols-7 grid-cols-1 gap-4 items-center">
   <div className="col-span-6 lg:col-span-3 text-white  md:py-15">
+    {/*<h1 className="text-left md:text-4xl text-xl  md:mb-7 mb-5 md:leading-12">This Diwali,  Build Your
+      <span className="font-bold uppercase"> Career</span> 
+    <span className="block">At Flat <span className="font-bold uppercase">35% Off.</span></span></h1>
+    <ul className="text-left md:text-[19px] font-medium text-[14px] space-y-4">
+      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">13+ Years</span> of Training Experience</li>
+      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"   /> <span className="font-bold">400+</span> Corporate Clients</li>
+      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">800,000+</span> Learners Trained</li>
+      <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">75+</span> Indemand Courses</li>
+    </ul>*/}
+
     <h1 className="text-left md:text-4xl text-xl  md:mb-7 mb-5 md:leading-12">Upskilling <span className="font-bold uppercase">Careers.</span> <span className="block">Transforming <span className="font-bold uppercase">Workforces.</span></span></h1>
     <ul className="text-left md:text-[19px] font-medium text-[14px] space-y-4">
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">13+ Years</span> of Training Experience</li>
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"   /> <span className="font-bold">400+</span> Corporate Clients</li>
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">800,000+</span> Learners Trained</li>
       <li className="flex md:items-center items-start gap-2"><RiCheckboxCircleLine className="text-xl min-w-5 min-h-5 max-w-5 max-h-5 text-[#0089ff]"  /> <span className="font-bold">75+</span> Indemand Courses</li>
-    </ul>
+    </ul> 
 
     <div className="flex gap-4 mt-7 md:justify-start justify-center items-center sm:hidden">
       <div className="bg-white rounded-lg p-2">
@@ -105,14 +128,32 @@ export default function Hero() {
  
   {/* Second div takes 2 columns on small screens, 3 columns on large screens */}
   <div className="col-span-2 lg:col-span-4">
+         <div className="col-span-2 lg:col-span-3 items-center justify-center hidden md:flex">
+        {/* priority + fetchPriority ensure this above-the-fold desktop image
+            is fetched immediately alongside the banner, improving LCP on desktop.
+            width/height match the source asset dimensions (950×716) to prevent CLS. */}
+          <Image src={heroImage} alt="Hero Image" className="img-fluid"
+          width={950} height={716} priority fetchPriority="high" />  
+       {/* <Image src={heroImage} height={500} alt="Hero Image" className="img-fluid"
+           priority fetchPriority="high" />*/}
+          </div>
+    </div>
+  {/* <div className="col-span-2 lg:col-span-4">
        <div className="col-span-2 lg:col-span-3 items-center justify-center hidden md:flex">
-      {/* priority + fetchPriority ensure this above-the-fold desktop image
-          is fetched immediately alongside the banner, improving LCP on desktop.
-          width/height match the source asset dimensions (950×716) to prevent CLS. */}
-      <Image src={heroImage} alt="Hero Image" className="img-fluid"
-        width={950} height={716} priority fetchPriority="high" />
+ 
+      <section className="hero-banner-1 w-full">
+        <div
+          id="ctherobanner1"
+          className="w-full min-h-[300px] flex items-center justify-center"
+        />
+      </section>
+  <Image src={heroImage} alt="Hero Image" className="img-fluid"
+        width={950} height={716} priority fetchPriority="high" /> 
+        Default hero image — shown when CT container is empty (no campaign)  
+       <Image src={heroImage} height={500} alt="Hero Image" className="img-fluid"
+         priority fetchPriority="high" /> 
         </div>
-  </div>
+  </div> */}
 </div>
      </div>
     </div>
@@ -130,7 +171,30 @@ export default function Hero() {
     formName="enterprises"
     closeModal={() => setShowEnterprisesPopup(false)}
   />
-)} 
+)}
+
+      {/* ── CleverTap Web Native Display scripts (commented out) ──────────
+      <Script
+        id="ct-wnd-config"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.CT_WND_CONFIG = {
+              containerId: 'ctherobanner1',
+              isHomepage: true,
+              topics: { HERO_BANNER: 'hero_banner_1' },
+              fallbackImage: '/bannerhome.webp',
+              fallbackTimeoutMs: 6000
+            };
+          `,
+        }}
+      />
+      <Script
+        id="ct-native-display"
+        src="/scripts/ct-native-display.js"
+        strategy="afterInteractive"
+      />
+      ────────────────────────────────────────────────────────────────────── */}
      </>
   );
 }

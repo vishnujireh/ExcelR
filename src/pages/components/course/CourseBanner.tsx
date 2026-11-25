@@ -5,6 +5,7 @@ import Duration from "/public/duration.svg";
 import testimonialGif from "/public/testimonial.gif";
 import QuickEnquiry from "../QuickEnquiry";
 import { useState } from "react";
+import { useRouter } from "next/router";
 import { CourseData } from "@/redux/slices/courseSlice";
 import parse from "html-react-parser";
 import Link from "next/link";
@@ -14,6 +15,13 @@ interface CourseBannerProps {
 }
 
 export default function CourseBanner({ data }: CourseBannerProps) {
+  const router = useRouter();
+  const slugParam = router.query.slug;
+  const courseSlug = Array.isArray(slugParam) ? slugParam[0] : typeof slugParam === "string" ? slugParam : "";
+
+  // Feature flag: hides Course Stats on all Data Science course pages
+  const hideCourseBannerStats = courseSlug.includes("data-science");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 const [formName, setFormName] = useState("");
 const [variant, setVariant] = useState<"default" | "callback">("default");
@@ -39,8 +47,8 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
 
   // ✅ Build the banner image URL from course_image field
   const bannerImageUrl = data.course_image 
-    ? `https://www.excelr.com/uploads/course/${data.course_image}`
-   // ? `https://demo3.excelr.com/uploads/course/${data.course_image}`
+   //s ? `https://www.excelr.com/uploads/course/${data.course_image}`
+    ? `https://demo3.excelr.com/uploads/course/${data.course_image}`
     : '';
 
   return (
@@ -52,7 +60,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
     //     backgroundPosition: "center",
     //   }}
     // >
-    <section className="course-banner bg-[#05081b] md:bg-transparent relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white overflow-hidden">
+    <section className="course-banner bg-[#05081b] md:bg-transparent relative w-full md:mx-auto md:py-10 2xl:px-25 xl:px-20 lg:px-10 p-5 text-white overflow-hidden" style={hideCourseBannerStats ? { paddingBottom: 0 } : {}}>
       {/* Banner background image — shown on ALL viewports so it is always the LCP element.
           Mobile uses lower quality (40) to minimise bandwidth. */}
       {bannerImageUrl && (
@@ -84,7 +92,9 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
           </div>
 
           {/* ✅ Course Stats */}
-          <div className="md:mt-10 mt-4">
+          {!hideCourseBannerStats && (
+            <>
+              <div className="md:mt-10 mt-4">
             <div className="flex items-center gap-10 justify-center md:justify-start">
               {/* Students Enrolled */}
               {data.students_enroll && (
@@ -143,7 +153,7 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
               )}
             </div>
           </div>
-          <div className="flex justify-center">
+ <div className="flex justify-center">
  <button
             onClick={() => openModal("Quick Enquiry", "default")}
             className="md:mt-8 mt-4 mx-auto md:mx-0 block px-6 py-3 bg-white text-black font-semibold text-sm border border-white cursor-pointer hover:bg-black hover:text-white rounded-lg"
@@ -152,6 +162,10 @@ const openModal = (name: string, type: "default" | "callback" = "default") => {
           </button>
           </div>
           {/* ✅ CTA Button */}
+
+            </>
+          )}
+         
          
         </div>
 

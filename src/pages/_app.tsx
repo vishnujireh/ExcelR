@@ -40,6 +40,20 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   const isCoursePage = router.pathname.startsWith("/course/");
   const isBlogPage = router.pathname.startsWith("/blog");
 
+  // ── CleverTap SPA support (commented out) ────────────────────────────
+  // useEffect(() => {
+  //   const handleRouteChange = () => {
+  //     const win = window as any;
+  //     if (win.clevertap && typeof win.clevertap.pageChanged === "function") {
+  //       win.clevertap.pageChanged();
+  //     }
+  //   };
+  //   router.events.on("routeChangeComplete", handleRouteChange);
+  //   return () => {
+  //     router.events.off("routeChangeComplete", handleRouteChange);
+  //   };
+  // }, [router.events]);
+
   /* URLs where Zoho should NOT load */
   const excludedUrls = [
     "excelr-free-courses-registration-form",

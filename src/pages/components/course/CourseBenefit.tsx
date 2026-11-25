@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 
+import { useRouter } from "next/router";
 import { CourseData } from "@/redux/slices/courseSlice";
 
 interface CourseBenefitProps {
@@ -82,10 +83,12 @@ const ShowMoreSection = ({
   children,
   count,
   className,
+  isDataScience,
 }: {
   children: React.ReactNode;
   count: number;
   className?: string;
+  isDataScience?: boolean;
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -101,16 +104,31 @@ const ShowMoreSection = ({
       {visibleItems}
 
       {hasMore && (
-        <div className="col-span-full flex justify-end mt-1 mb-5">
-          <button
-            type="button"
-            onClick={() => setExpanded((previous) => !previous)}
-            aria-expanded={expanded}
-            className="inline-flex items-center justify-center cursor-pointer rounded-lg  px-5 py-2.5 text-sm font-semibold text-[#ff9600] transition hover:opacity-90 focus:outline-none "
-          >
-            {expanded ? "Show Less >>" : "Show More >>"}
-          </button>
-        </div>
+        <>
+          {isDataScience ? (
+            <div className="col-span-full flex justify-center mt-1 mb-5">
+              <button
+                type="button"
+                onClick={() => setExpanded((previous) => !previous)}
+                aria-expanded={expanded}
+                className="inline-flex items-center justify-center cursor-pointer rounded-md px-6 py-2 text-sm font-semibold text-white bg-[#1a6fd4] border border-[#1a6fd4] hover:bg-[#155cb5] transition focus:outline-none"
+              >
+                {expanded ? "Show Less..." : "Show More..."}
+              </button>
+            </div>
+          ) : (
+            <div className="col-span-full flex justify-end mt-1 mb-5">
+              <button
+                type="button"
+                onClick={() => setExpanded((previous) => !previous)}
+                aria-expanded={expanded}
+                className="inline-flex items-center justify-center cursor-pointer rounded-lg px-5 py-2.5 text-sm font-semibold text-[#ff9600] transition hover:opacity-90 focus:outline-none"
+              >
+                {expanded ? "Show Less >>" : "Show More >>"}
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -143,6 +161,11 @@ const extractItemBlocks = (carouselHtml: string) => {
 /* ------------------ Component ------------------ */
 
 export default function CourseBenefit({ data }: CourseBenefitProps) {
+  const router = useRouter();
+  const slugParam = router.query.slug;
+  const courseSlug = Array.isArray(slugParam) ? slugParam[0] : typeof slugParam === "string" ? slugParam : "";
+  const isDataSciencePage = courseSlug.includes("data-science");
+
   const bannerHtml = data?.course_banner2 ?? "";
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -332,6 +355,49 @@ export default function CourseBenefit({ data }: CourseBenefitProps) {
      * The Next.js component automatically adds the button and handles
      * Show More / Show Less. Admin does not need to add JavaScript.
      */
+    /* -------------------------------------------------------
+       Swiper Slider — admin adds data-swiper="true" on a div.
+       Only renders as Swiper on data-science pages.
+       Optional attributes:
+         data-swiper-delay="3000"   (autoplay delay in ms)
+         data-swiper-slides="1"     (slidesPerView)
+    --------------------------------------------------------*/
+    if (
+      domNode.attribs &&
+      domNode.attribs["data-swiper"] !== undefined &&
+      isDataSciencePage
+    ) {
+      const delay = Number(sanitizeParsedUrl(domNode.attribs["data-swiper-delay"])) || 3000;
+      const slidesPerView = Number(sanitizeParsedUrl(domNode.attribs["data-swiper-slides"])) || 1;
+      const { class: classAttr, className: classNameAttr } = domNode.attribs;
+      const className = (classAttr || classNameAttr || "").toString();
+
+      const slideNodes = (domNode.children || []).filter(
+        (child: any) => child.type === "tag"
+      );
+
+      return (
+        <Swiper
+          modules={[Pagination, Autoplay]}
+          spaceBetween={20}
+          slidesPerView={1}
+          breakpoints={{
+            768: { slidesPerView: slidesPerView, spaceBetween: 30 },
+          }}
+          autoplay={{ delay, disableOnInteraction: false }}
+          loop
+          pagination={{ clickable: true }}
+          className={className || "w-full"}
+        >
+          {slideNodes.map((slide: any, index: number) => (
+            <SwiperSlide key={index}>
+              {domToReact([slide], { replace: replaceFn })}
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      );
+    }
+
     if (
       domNode.attribs &&
       domNode.attribs["data-show-more-count"] !== undefined
@@ -351,7 +417,7 @@ export default function CourseBenefit({ data }: CourseBenefitProps) {
       const className = (classAttr || classNameAttr || "").toString();
 
       return (
-        <ShowMoreSection count={count} className={className}>
+        <ShowMoreSection count={count} className={className} isDataScience={isDataSciencePage}>
           {domToReact(domNode.children || [], { replace: replaceFn })}
         </ShowMoreSection>
       );
@@ -543,3 +609,15 @@ export default function CourseBenefit({ data }: CourseBenefitProps) {
     </>
   );
 }
+
+
+{/* <div className="mt-5">
+<div className="grid lg:grid-cols-2 gap-8 items-center relative z-10">
+<div className="flex justify-start md:mb-12"><button className="md:mt-5 mt-0  md:mx-auto flex md:mx-0 items-center gap-2.5 px-6 py-3 bg-[#F55325] text-[#ffffff] font-semibold text-base  cursor-pointer hover:text-white rounded-lg lead">Download Brochure</button></div>
+<div>
+<div className="p-4 md:rounded-t-lg rounded-lg md:w-40 w-44 bg-white py-2 md:absolute bottom-3 relative mx-auto" style="bottom: 0;border-bottom-left-radius: 0;border-bottom-right-radius: 0;">
+<p className="text-sm pb-2 text-black hidden md-block">Award Winner</p>
+<img alt="Learners " className="md:w-full h-auto object-contain icon" src="https://excelrcom.b-cdn.net/assets/admin/ckfinder/userfiles/images/2026_Uploads/da_img_2026/homt-deloitte.png" /></div>
+</div>
+</div>
+</div> */}

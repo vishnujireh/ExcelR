@@ -33,6 +33,27 @@ export default class MyDocument extends Document {
           /> */}
 
           {/* Preconnect to image origins so DNS+TCP+TLS is resolved before banner image fetch */}
+
+          {/* ── CleverTap SDK (commented out) ───────────────────────────────
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                var clevertap = {event:[], profile:[], account:[], onUserLogin:[], notifications:[], privacy:[]};
+                clevertap.account.push({"id": "WWW-WR9-787Z"}, "in1");
+                clevertap.privacy.push({optOut: false});
+                clevertap.privacy.push({useIP: true});
+                clevertap.spa = true;
+              `,
+            }}
+          />
+          <script
+            async
+            src="https://d2r1yp2w7bby2u.cloudfront.net/js/clevertap.min.js"
+          />
+          <link rel="preconnect" href="https://d2r1yp2w7bby2u.cloudfront.net" />
+          <link rel="dns-prefetch" href="https://d2r1yp2w7bby2u.cloudfront.net" />
+          ──────────────────────────────────────────────────────────────────── */}
+
           <link rel="preconnect" href="https://www.excelr.com" />
           <link rel="dns-prefetch" href="https://www.excelr.com" />
           <link rel="preconnect" href="https://excelrcom.b-cdn.net" />
